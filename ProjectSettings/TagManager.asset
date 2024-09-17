@@ -3,7 +3,12 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - World_Wall
+  - Effect_Projectile
+  - Logic_Ent
+  - Character_Player
+  - Effect_Particle
   layers:
   - Default
   - TransparentFX
@@ -40,4 +45,73 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Layer_Background
+    uniqueID: 53212865
+    locked: 0
+  - name: Layer_Floor
+    uniqueID: 1872713263
+    locked: 0
+  - name: Layer_FloorDecoration
+    uniqueID: 3436387631
+    locked: 0
+  - name: Layer_FloorDecal
+    uniqueID: 1473974317
+    locked: 0
+  - name: Layer_Wall
+    uniqueID: 3658845287
+    locked: 0
+  - name: Layer_WallDecal
+    uniqueID: 1396590215
+    locked: 0
+  - name: Layer_EntDecoration
+    uniqueID: 4240054063
+    locked: 0
+  - name: Layer_EntUsable
+    uniqueID: 695122591
+    locked: 0
+  - name: Layer_EntDynamic
+    uniqueID: 703383085
+    locked: 0
+  - name: Layer_Item
+    uniqueID: 657551439
+    locked: 0
+  - name: Layer_NPC
+    uniqueID: 1077633289
+    locked: 0
+  - name: Layer_NPCBoss
+    uniqueID: 3612904085
+    locked: 0
+  - name: Layer_PlayerUnder
+    uniqueID: 2977331099
+    locked: 0
+  - name: Layer_PlayerBody
+    uniqueID: 4077413763
+    locked: 0
+  - name: Layer_PlayerOver
+    uniqueID: 1428470007
+    locked: 0
+  - name: Layer_Particle
+    uniqueID: 258391249
+    locked: 0
+  - name: Layer_Effect
+    uniqueID: 3239216095
+    locked: 0
+  - name: Layer_Projectile
+    uniqueID: 1237067951
+    locked: 0
+  - name: Layer_Hud
+    uniqueID: 721807321
+    locked: 0
+  - name: LayerPopUps
+    uniqueID: 1345577711
+    locked: 0
+  - name: Layer_Gui
+    uniqueID: 3547795725
+    locked: 0
+  - name: Layer_Logic
+    uniqueID: 3416268933
+    locked: 0
+  - name: Layer_DebugAlwaysTop
+    uniqueID: 160931645
     locked: 0
