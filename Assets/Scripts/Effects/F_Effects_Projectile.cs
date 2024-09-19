@@ -9,6 +9,8 @@ public class F_Effects_Projectile : MonoBehaviour
 
     public GameObject projectileImpactObject;
 
+    public Color bloodColour;
+
 
     // Start is called before the first frame update
     void Start()
@@ -26,22 +28,23 @@ public class F_Effects_Projectile : MonoBehaviour
   
     }
 
-    void OnTriggerEnter2D(Collider2D other)
+    void OnCollisionEnter2D(Collision2D other) 
     {
         switch(other.gameObject.tag)
         {
-            case F_Logic_Globals.tagWorldWall:
-                CreateProjectileImpact();
+            case F_Logic_Globals.tagEnt:
+                CreateProjectileImpact(other);
                 Destroy(gameObject);
             break;
         }
     }
 
-    void CreateProjectileImpact() {
+    void CreateProjectileImpact(Collision2D other) {
 
         // Work out the angel to make the particles shoot back towards the shooter
-        Quaternion newRotation = Quaternion.LookRotation(-this.rb.velocity, Vector2.right);
-
+        Vector2 dir = other.relativeVelocity.normalized;
+        Quaternion newRotation = Quaternion.LookRotation(dir, Vector2.right);
         GameObject projecileImpact = Instantiate(projectileImpactObject,this.transform.position, newRotation);
+        projecileImpact.GetComponent<F_Effects_Projectile_Impact>().bloodColour = other.gameObject.GetComponent<F_Ent>().bloodColour;
     }
 }

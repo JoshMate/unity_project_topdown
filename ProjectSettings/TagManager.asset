@@ -4,11 +4,9 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - World_Wall
-  - Effect_Projectile
-  - Logic_Ent
-  - Character_Player
+  - Tag_Ent
   - Effect_Particle
+  - Effect_Projectile
   layers:
   - Default
   - TransparentFX
@@ -103,7 +101,7 @@ TagManager:
   - name: Layer_Hud
     uniqueID: 721807321
     locked: 0
-  - name: LayerPopUps
+  - name: Layer_PopUps
     uniqueID: 1345577711
     locked: 0
   - name: Layer_Gui

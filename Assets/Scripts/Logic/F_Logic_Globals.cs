@@ -6,18 +6,15 @@ public class F_Logic_Globals : MonoBehaviour
 {
 
     [Header("Tag Names")]
-    public const string tagWorldWall = "World_Wall";
-    public const string tagEffectProjectile = "Effect_Projecile";
-    public const string tagLogicEnt = "Logic_Ent";
-    public const string tagCharacterPlayer = "Character_Player";
-    public const string tagEffectParticle = "Effect_Particle";
+
+    public const string tagEnt = "Tag_Ent";
 
     [Header("Layers")]
 
     public const string layerDebugAlwaysTop = "Layer_DebugAlwaysTop";
     public const string layerLogic = "Layer_Logic";
     public const string layerGui = "Layer_Gui";
-    public const string layerPopUps = "Layer_PopUp";
+    public const string layerPopUps = "Layer_PopUps";
     public const string layerHud = "Layer_HudBottom";
     public const string layerProjectile = "Layer_Projectile";
     public const string layerEffect = "Layer_Effect";

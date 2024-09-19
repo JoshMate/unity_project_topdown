@@ -8,14 +8,18 @@ public class F_PlayerHeldWeapon : MonoBehaviour
 
     [Header("Art")]
     public Sprite weaponSprite;
-    public SpriteRenderer spriteRenderer;
 
     [Header("Object Refs")]
     public GameObject projectileObject;
     public GameObject projectileImpactObject;
-    public Transform projectileFirePoint;
+    public F_playerHeldWeaponIndividual heldWeaponCurrentlySelected;
+    public F_playerHeldWeaponIndividual heldWeaponGunBig;
+    public F_playerHeldWeaponIndividual heldWeaponGunSmall;
+    public F_playerHeldWeaponIndividual heldWeaponMeleeBig;
+    public F_playerHeldWeaponIndividual heldWeaponMeleeSmall;
+    
 
-    public float pojecileSpeed;
+    public float projectileSpeed;
 
     // Start is called before the first frame update
     void Start()
@@ -26,14 +30,24 @@ public class F_PlayerHeldWeapon : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        spriteRenderer.sprite = weaponSprite;
+        UpdateHeldWeaponSprite();
     }
 
     public void FireWeapon()
     {
-        
-       GameObject projecile = Instantiate(projectileObject,projectileFirePoint.position, projectileFirePoint.rotation);
-       projecile.GetComponent<Rigidbody2D>().AddForce(projectileFirePoint.right * pojecileSpeed, ForceMode2D.Impulse);
-       projecile.GetComponent<F_Effects_Projectile>().projectileImpactObject = projectileImpactObject;
+        GameObject projecile = Instantiate(projectileObject,heldWeaponCurrentlySelected.firePosition.position, heldWeaponCurrentlySelected.firePosition.rotation);
+        projecile.GetComponent<Rigidbody2D>().AddForce(heldWeaponCurrentlySelected.firePosition.right * projectileSpeed, ForceMode2D.Impulse);
+        projecile.GetComponent<F_Effects_Projectile>().projectileImpactObject = projectileImpactObject;
+    }
+
+    public void UpdateHeldWeaponSprite()
+    {
+        heldWeaponCurrentlySelected = heldWeaponGunBig;
+
+        heldWeaponGunBig.spriteRenderer.enabled = false;
+        heldWeaponGunSmall.spriteRenderer.enabled = false;
+        heldWeaponMeleeBig.spriteRenderer.enabled = false;
+        heldWeaponMeleeSmall.spriteRenderer.enabled = false;
+        heldWeaponCurrentlySelected.spriteRenderer.enabled = true;
     }
 }

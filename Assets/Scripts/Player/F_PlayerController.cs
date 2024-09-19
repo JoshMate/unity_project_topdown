@@ -6,9 +6,10 @@ public class F_PlayerController : MonoBehaviour
 {
 
     [Header("Object Refs")]
-    public Camera sceneCamera;
+    public Camera playerCamera;
     public Rigidbody2D rb;
     public F_PlayerHeldWeapon playerHeldWeapon;
+    
 
     [Header("Stats")]
     public float statMovementSpeed = 2;
@@ -19,12 +20,13 @@ public class F_PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        playerCamera.GetComponent<F_Logic_Camera>().playerObject = this.transform;
     }
 
     // Update is called once per frame
     void Update()
     {
+        
         ProcessInputs();
     }
 
@@ -41,7 +43,7 @@ public class F_PlayerController : MonoBehaviour
 
         moveDirection = new Vector2(moveX, moveY).normalized;
 
-        mousePosition = sceneCamera.ScreenToWorldPoint(Input.mousePosition);
+        mousePosition = playerCamera.ScreenToWorldPoint(Input.mousePosition);
 
         // Weapon Controls
         if (Input.GetMouseButtonDown(0))
