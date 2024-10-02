@@ -368,8 +368,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 4, y: 0}
-  m_SizeDelta: {x: -8, y: 0}
+  m_AnchoredPosition: {x: 5, y: 0}
+  m_SizeDelta: {x: -10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &161772114
 MonoBehaviour:
@@ -418,13 +418,13 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 20
-  m_fontSizeBase: 20
+  m_fontSize: 26
+  m_fontSizeBase: 26
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 1
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -624,6 +624,7 @@ GameObject:
   m_Component:
   - component: {fileID: 303091063}
   - component: {fileID: 303091064}
+  - component: {fileID: 303091065}
   m_Layer: 5
   m_Name: Bar_Thirst
   m_TagString: Untagged
@@ -651,8 +652,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 8, y: 42}
-  m_SizeDelta: {x: 320, y: 32}
+  m_AnchoredPosition: {x: 8, y: 43}
+  m_SizeDelta: {x: 400, y: 32}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &303091064
 MonoBehaviour:
@@ -705,6 +706,20 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &303091065
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 303091062}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ac46f8bfd5700f4e83db0ce5c5b1372, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  barSlider: {fileID: 303091064}
+  barText: {fileID: 429529040}
 --- !u!4 &350237579 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1000238371947742931, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
@@ -956,12 +971,14 @@ MonoBehaviour:
   healthMax: 100
   stamina: 100
   staminaMax: 100
-  staminaRegenRate: 1
-  staminaSprintDrainRate: 2
+  staminaRegenDelay: 0.1
+  staminaSprintDrainDelay: 0.05
   hunger: 100
   hungerMax: 100
+  hungerDrainRateDelay: 30
   thirst: 100
   thirstMax: 100
+  thirstDrainRateDelay: 15
   toxic: 0
   toxicMax: 100
   speedMove: 3
@@ -1006,8 +1023,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 4, y: 0}
-  m_SizeDelta: {x: -8, y: 0}
+  m_AnchoredPosition: {x: 5, y: 0}
+  m_SizeDelta: {x: -10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &429529040
 MonoBehaviour:
@@ -1056,13 +1073,13 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 20
-  m_fontSizeBase: 20
+  m_fontSize: 26
+  m_fontSizeBase: 26
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 1
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -2215,6 +2232,7 @@ GameObject:
   m_Component:
   - component: {fileID: 850838951}
   - component: {fileID: 850838952}
+  - component: {fileID: 850838953}
   m_Layer: 5
   m_Name: Bar_Toxic
   m_TagString: Untagged
@@ -2243,7 +2261,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 8, y: 8}
-  m_SizeDelta: {x: 320, y: 32}
+  m_SizeDelta: {x: 400, y: 32}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &850838952
 MonoBehaviour:
@@ -2296,6 +2314,20 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &850838953
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 850838950}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ac46f8bfd5700f4e83db0ce5c5b1372, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  barSlider: {fileID: 850838952}
+  barText: {fileID: 1370100752}
 --- !u!1001 &876089891
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2443,6 +2475,7 @@ GameObject:
   m_Component:
   - component: {fileID: 912663588}
   - component: {fileID: 912663589}
+  - component: {fileID: 912663590}
   m_Layer: 5
   m_Name: Bar_Hunger
   m_TagString: Untagged
@@ -2470,8 +2503,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 8, y: 76}
-  m_SizeDelta: {x: 320, y: 32}
+  m_AnchoredPosition: {x: 8, y: 78}
+  m_SizeDelta: {x: 400, y: 32}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &912663589
 MonoBehaviour:
@@ -2524,6 +2557,20 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &912663590
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 912663587}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ac46f8bfd5700f4e83db0ce5c5b1372, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  barSlider: {fileID: 912663589}
+  barText: {fileID: 161772114}
 --- !u!4 &949531767 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1000238371947742931, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
@@ -2904,11 +2951,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f519777b39f9c25469c53c5d8d9b23e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  healthBar: {fileID: 1572515211}
-  staminaBar: {fileID: 1439665558}
-  hungerBar: {fileID: 912663589}
-  thirstBar: {fileID: 303091064}
-  toxicBar: {fileID: 850838952}
+  healthBar: {fileID: 1572515212}
+  staminaBar: {fileID: 1439665559}
+  hungerBar: {fileID: 912663590}
+  thirstBar: {fileID: 303091065}
+  toxicBar: {fileID: 850838953}
 --- !u!4 &1059354853 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1000238371947742931, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
@@ -3530,8 +3577,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 4, y: 0}
-  m_SizeDelta: {x: -8, y: 0}
+  m_AnchoredPosition: {x: 5, y: 0}
+  m_SizeDelta: {x: -10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1354586727
 MonoBehaviour:
@@ -3580,13 +3627,13 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 20
-  m_fontSizeBase: 20
+  m_fontSize: 26
+  m_fontSizeBase: 26
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 1
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -3664,8 +3711,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 4, y: 0}
-  m_SizeDelta: {x: -8, y: 0}
+  m_AnchoredPosition: {x: 5, y: 0}
+  m_SizeDelta: {x: -10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1362505259
 MonoBehaviour:
@@ -3714,13 +3761,13 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 20
-  m_fontSizeBase: 20
+  m_fontSize: 26
+  m_fontSizeBase: 26
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 1
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -3798,8 +3845,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 4, y: 0}
-  m_SizeDelta: {x: -8, y: 0}
+  m_AnchoredPosition: {x: 5, y: 0}
+  m_SizeDelta: {x: -10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1370100752
 MonoBehaviour:
@@ -3848,13 +3895,13 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 20
-  m_fontSizeBase: 20
+  m_fontSize: 26
+  m_fontSizeBase: 26
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 1
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -4129,6 +4176,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1439665557}
   - component: {fileID: 1439665558}
+  - component: {fileID: 1439665559}
   m_Layer: 5
   m_Name: Bar_Stamina
   m_TagString: Untagged
@@ -4156,8 +4204,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 8, y: 110}
-  m_SizeDelta: {x: 320, y: 32}
+  m_AnchoredPosition: {x: 8, y: 113}
+  m_SizeDelta: {x: 400, y: 32}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &1439665558
 MonoBehaviour:
@@ -4210,6 +4258,20 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1439665559
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1439665556}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ac46f8bfd5700f4e83db0ce5c5b1372, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  barSlider: {fileID: 1439665558}
+  barText: {fileID: 1362505259}
 --- !u!4 &1448659949 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1000238371947742931, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
@@ -4502,6 +4564,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1572515210}
   - component: {fileID: 1572515211}
+  - component: {fileID: 1572515212}
   m_Layer: 5
   m_Name: Bar_Health
   m_TagString: Untagged
@@ -4529,8 +4592,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 8, y: 144}
-  m_SizeDelta: {x: 320, y: 32}
+  m_AnchoredPosition: {x: 8, y: 149}
+  m_SizeDelta: {x: 400, y: 32}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &1572515211
 MonoBehaviour:
@@ -4583,6 +4646,20 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1572515212
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1572515209}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ac46f8bfd5700f4e83db0ce5c5b1372, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  barSlider: {fileID: 1572515211}
+  barText: {fileID: 1354586727}
 --- !u!1001 &1575780031
 PrefabInstance:
   m_ObjectHideFlags: 0
