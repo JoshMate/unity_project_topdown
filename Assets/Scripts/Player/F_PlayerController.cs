@@ -9,10 +9,9 @@ public class F_PlayerController : MonoBehaviour
     public Camera playerCamera;
     public Rigidbody2D rb;
     public F_PlayerHeldWeapon playerHeldWeapon;
-    
+    public F_PlayerStats playerStats;
 
-    [Header("Stats")]
-    public float statMovementSpeed = 2;
+    [Header("Object Refs")]
     
     private Vector2 moveDirection;
     private Vector2 mousePosition;
@@ -26,7 +25,6 @@ public class F_PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
         ProcessInputs();
     }
 
@@ -45,6 +43,18 @@ public class F_PlayerController : MonoBehaviour
 
         mousePosition = playerCamera.ScreenToWorldPoint(Input.mousePosition);
 
+        // Sprint Controls
+        if(Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            playerStats.SprintStart();
+        }
+        // Sprint Controls
+        if(Input.GetKeyUp(KeyCode.LeftShift))
+        {
+            playerStats.SprintEnd();
+        }
+        
+
         // Weapon Controls
         if (Input.GetMouseButtonDown(0))
         {
@@ -59,7 +69,16 @@ public class F_PlayerController : MonoBehaviour
         float aimAngle = Mathf.Atan2(aimDirection.y,aimDirection.x) * Mathf.Rad2Deg;
         rb.rotation = aimAngle;
 
+        float finalSpeed = playerStats.speedMove;
+
+        // Handle Sprinting
+        if (playerStats.isSprinting == true && playerStats.stamina > 0)
+        {
+            finalSpeed = playerStats.speedSprint;
+        }
+
+
         // Movement
-        rb.velocity = new Vector2(moveDirection.x, moveDirection.y) * statMovementSpeed;
+        rb.velocity = new Vector2(moveDirection.x, moveDirection.y) * finalSpeed;
     }
 }
