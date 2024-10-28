@@ -1,0 +1,3 @@
+Your Thirst bar drains faster when your stamina is low
+
+Your Hunger bar drains faster when your health is low
