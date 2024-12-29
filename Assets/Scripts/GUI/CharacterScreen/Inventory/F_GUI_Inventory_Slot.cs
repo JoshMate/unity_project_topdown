@@ -9,8 +9,16 @@ public class F_GUI_Inventory_Slot : MonoBehaviour, IPointerClickHandler, IPointe
 {
 
     [Header("Object Refs")]
-    public UnityEngine.UI.Image slotBorderArt;
-    public UnityEngine.UI.Image slotItemArt;
+
+    public UnityEngine.UI.Image slotDrawBackGroundObj;
+    public UnityEngine.UI.Image slotDrawBorderObj;
+    public UnityEngine.UI.Image slotDrawItemObj;
+    
+
+    [Header("Art")]
+    public Sprite slotIconLocked;
+    public Sprite slotIconPlaceHolder;
+    
 
     [Header("InventorySlotFlags")]
     public bool isSlotLocked;
@@ -39,17 +47,40 @@ public class F_GUI_Inventory_Slot : MonoBehaviour, IPointerClickHandler, IPointe
         
     }
 
+    void DrawSlotIcon() {
+
+        Sprite slotIconToDraw = slotIconPlaceHolder;
+
+        if (isSlotLocked == true) slotIconToDraw = slotIconLocked;
+        
+        
+        
+        if (slotIconToDraw == null)
+        {
+            return;
+        } 
+        else 
+        {
+            slotDrawItemObj.sprite = slotIconToDraw;
+        }
+
+    }
+
     // Update is called once per frame
     void Update()
     {
         // Update Border Colour For Hover
         if (isSlotHovered == true) 
         {
-            slotBorderArt.color = Color.white;
+            slotDrawBorderObj.color = Color.white;
         }
         if (isSlotHovered == false) 
         {
-            slotBorderArt.color = Color.gray;
+            slotDrawBorderObj.color = Color.gray;
         }
+
+        // Draw the Icon in the Slot
+        DrawSlotIcon();
+        
     }
 }
