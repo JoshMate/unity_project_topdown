@@ -7,11 +7,12 @@ public class F_PlayerController : MonoBehaviour
 
     [Header("Object Refs")]
     public Camera playerCamera;
+    public F_PlayerStats playerStats;
+    public F_GUI_CharacterScreen_Manager characterScreenManager;
     public Rigidbody2D rb;
     public F_PlayerHeldWeapon playerHeldWeapon;
-    public F_PlayerStats playerStats;
-
-    [Header("Object Refs")]
+    
+    [Header("Privates")]
     
     private Vector2 moveDirection;
     private Vector2 mousePosition;
@@ -35,8 +36,15 @@ public class F_PlayerController : MonoBehaviour
 
     void ProcessInputs()
     {
+        // Menu Controls
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            characterScreenManager.ToggleInventoryScreen();
+        }
+
+
         // Movement Controls
-        float moveX = Input.GetAxisRaw("Horizontal");
+            float moveX = Input.GetAxisRaw("Horizontal");
         float moveY = Input.GetAxisRaw("Vertical");
 
         moveDirection = new Vector2(moveX, moveY).normalized;
@@ -79,6 +87,6 @@ public class F_PlayerController : MonoBehaviour
 
 
         // Movement
-        rb.velocity = new Vector2(moveDirection.x, moveDirection.y) * finalSpeed;
+        rb.linearVelocity = new Vector2(moveDirection.x, moveDirection.y) * finalSpeed;
     }
 }

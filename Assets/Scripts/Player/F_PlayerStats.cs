@@ -7,6 +7,7 @@ public class F_PlayerStats : MonoBehaviour
 {
     [Header("Object Refs")]
     public F_GUI_HUD_Manager hudManager;
+    public F_GUI_CharacterScreen_Manager characterScreenManager;
 
     [Header("Health Stats")]
     public float health;
