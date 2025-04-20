@@ -40,6 +40,6 @@ public class F_Logic_Globals : MonoBehaviour
 
     void Start()
     {
-        DontDestroyOnLoad(gameObject);
+
     }
 }

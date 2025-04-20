@@ -39,6 +39,12 @@ public class F_GUI_Inventory_Slot : MonoBehaviour, IPointerClickHandler, IPointe
         isSlotHovered = false;
    }
 
+    // Disable the slot highlight on closing the menu. Fixes the bug with persistent highlights.
+    void OnDisable()
+    {
+        isSlotHovered = false;
+    }
+
 
 
     // Start is called before the first frame update
