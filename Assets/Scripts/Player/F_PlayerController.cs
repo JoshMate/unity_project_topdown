@@ -11,6 +11,8 @@ public class F_PlayerController : MonoBehaviour
     public F_GUI_CharacterScreen_Manager characterScreenManager;
     public Rigidbody2D rb;
     public F_PlayerHeldWeapon playerHeldWeapon;
+    public F_PlayerInventory playerInventory;
+    public F_PlayerHandInteractions playerHandInteractions;
     
     [Header("Privates")]
     
@@ -44,7 +46,7 @@ public class F_PlayerController : MonoBehaviour
 
 
         // Movement Controls
-            float moveX = Input.GetAxisRaw("Horizontal");
+        float moveX = Input.GetAxisRaw("Horizontal");
         float moveY = Input.GetAxisRaw("Vertical");
 
         moveDirection = new Vector2(moveX, moveY).normalized;
@@ -52,22 +54,34 @@ public class F_PlayerController : MonoBehaviour
         mousePosition = playerCamera.ScreenToWorldPoint(Input.mousePosition);
 
         // Sprint Controls
-        if(Input.GetKeyDown(KeyCode.LeftShift))
+        if (Input.GetKeyDown(KeyCode.LeftShift))
         {
             playerStats.SprintStart();
         }
         // Sprint Controls
-        if(Input.GetKeyUp(KeyCode.LeftShift))
+        if (Input.GetKeyUp(KeyCode.LeftShift))
         {
             playerStats.SprintEnd();
         }
-        
 
-        // Weapon Controls
-        if (Input.GetMouseButtonDown(0))
+        //Left Click Controls
+        if (characterScreenManager.isMenuOpen == false)
         {
-            playerHeldWeapon.FireWeapon();
+            // Fire Weapon if Menu is Closed
+            if (Input.GetMouseButtonDown(0))
+            {
+                playerHeldWeapon.FireWeapon();
+            }
         }
+        if (characterScreenManager.isMenuOpen == false)
+        {
+            // Interact with Items if menu is open
+            if (Input.GetMouseButtonDown(0))
+            {
+                playerHeldWeapon.FireWeapon();
+            }
+        }
+
     }
 
     void Move()

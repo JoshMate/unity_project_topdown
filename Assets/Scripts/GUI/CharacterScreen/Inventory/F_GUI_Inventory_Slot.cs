@@ -10,9 +10,11 @@ public class F_GUI_Inventory_Slot : MonoBehaviour, IPointerClickHandler, IPointe
 
     [Header("Object Refs")]
 
+    public F_Item slotItemObj;
     public UnityEngine.UI.Image slotDrawBackGroundObj;
     public UnityEngine.UI.Image slotDrawBorderObj;
     public UnityEngine.UI.Image slotDrawItemObj;
+    
     
 
     [Header("Art")]
@@ -58,14 +60,15 @@ public class F_GUI_Inventory_Slot : MonoBehaviour, IPointerClickHandler, IPointe
         Sprite slotIconToDraw = slotIconPlaceHolder;
 
         if (isSlotLocked == true) slotIconToDraw = slotIconLocked;
+        if (slotItemObj != null) slotIconToDraw = slotItemObj.GetComponent<SpriteRenderer>().sprite;
         
         
         
         if (slotIconToDraw == null)
         {
             return;
-        } 
-        else 
+        }
+        else
         {
             slotDrawItemObj.sprite = slotIconToDraw;
         }

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class F_Logic_Profile_Inventory : MonoBehaviour
+public class F_PlayerInventory : MonoBehaviour
 {
     
 
