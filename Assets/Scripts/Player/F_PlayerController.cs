@@ -12,7 +12,7 @@ public class F_PlayerController : MonoBehaviour
     public Rigidbody2D rb;
     public F_PlayerHeldWeapon playerHeldWeapon;
     public F_PlayerInventory playerInventory;
-    public F_PlayerHandInteractions playerHandInteractions;
+    public F_PlayerCursor playerCursor;
     
     [Header("Privates")]
     

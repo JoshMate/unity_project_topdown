@@ -2,7 +2,7 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!78 &1
 TagManager:
-  serializedVersion: 2
+  serializedVersion: 3
   tags:
   - Tag_Ent
   - Effect_Particle
@@ -107,9 +107,14 @@ TagManager:
   - name: Layer_Gui
     uniqueID: 3547795725
     locked: 0
+  - name: Layer_Cursor
+    uniqueID: 1446061933
+    locked: 0
   - name: Layer_Logic
     uniqueID: 3416268933
     locked: 0
   - name: Layer_DebugAlwaysTop
     uniqueID: 160931645
     locked: 0
+  m_RenderingLayers:
+  - Default
