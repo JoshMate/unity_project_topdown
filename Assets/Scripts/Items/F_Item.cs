@@ -2,10 +2,13 @@ using UnityEngine;
 
 public class F_Item : MonoBehaviour
 {
+    [Header("Object Refs")]
+    public SpriteRenderer itemSpriteRenderer;
+
     [Header("Item Information")]
 
     public string itemName = "<Item Name>";
-    public string itemDescription = "<Item Name>";
+    public string itemDescription = "<Item Description>";
     public float itemWeight = 0.0f;
     public int itemValue = 1;
 
