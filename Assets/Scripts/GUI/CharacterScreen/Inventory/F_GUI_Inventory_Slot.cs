@@ -21,6 +21,9 @@ public class F_GUI_Inventory_Slot : MonoBehaviour, IPointerClickHandler, IPointe
     [Header("Art")]
     public Sprite slotIconLocked;
     public Sprite slotIconPlaceHolder;
+
+    [Header("Stats")]
+    public enumSlotType slotType;
     
 
     [Header("InventorySlotFlags")]
@@ -29,8 +32,27 @@ public class F_GUI_Inventory_Slot : MonoBehaviour, IPointerClickHandler, IPointe
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        // Swap the item held between the cursor and the inventory slot (Using a posh Tuple)
-        (cursorObj.cursorHeldItemObj, slotItemObj) = (slotItemObj, cursorObj.cursorHeldItemObj);
+
+        // Check if the Cursor is holding something first
+        if (cursorObj.cursorHeldItemObj != null)
+        {
+            // First check if the cursor item type matches the slot type
+            if (F_Utility_Helper_Inventory.CheckIfItemTypeMatchesSlotType(this,cursorObj.cursorHeldItemObj) == false)
+            {
+                Debug.Log("The held item type does not fit in that slot!");
+            }
+            else
+            {
+                // Swap the item held between the cursor and the inventory slot (Using a posh Tuple)
+                (cursorObj.cursorHeldItemObj, slotItemObj) = (slotItemObj, cursorObj.cursorHeldItemObj);
+            }
+        }
+        else
+        {
+            // Swap the item held between the cursor and the inventory slot (Using a posh Tuple)
+            (cursorObj.cursorHeldItemObj, slotItemObj) = (slotItemObj, cursorObj.cursorHeldItemObj);
+        }
+        
     }
 
    public void OnPointerEnter(PointerEventData eventData)

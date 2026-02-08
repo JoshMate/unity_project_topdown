@@ -714,6 +714,10 @@ PrefabInstance:
       value: Inventory_Slot_QuickSlot_04
       objectReference: {fileID: 0}
     - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: slotType
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
       propertyPath: cursorObj
       value: 
       objectReference: {fileID: 727602943}
@@ -3662,6 +3666,10 @@ PrefabInstance:
       value: Inventory_Slot_QuickSlot_02
       objectReference: {fileID: 0}
     - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: slotType
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
       propertyPath: cursorObj
       value: 
       objectReference: {fileID: 727602943}
@@ -4139,6 +4147,10 @@ PrefabInstance:
       value: Inventory_Slot_Gear_Feet
       objectReference: {fileID: 0}
     - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: slotType
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
       propertyPath: cursorObj
       value: 
       objectReference: {fileID: 727602943}
@@ -4525,6 +4537,10 @@ PrefabInstance:
     - target: {fileID: 923030669377139830, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
       propertyPath: m_Name
       value: Inventory_Slot_Weapon_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: slotType
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
       propertyPath: cursorObj
@@ -5273,6 +5289,10 @@ PrefabInstance:
     - target: {fileID: 923030669377139830, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
       propertyPath: m_Name
       value: Inventory_Slot_Weapon_04
+      objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: slotType
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
       propertyPath: cursorObj
@@ -6367,6 +6387,10 @@ PrefabInstance:
     - target: {fileID: 923030669377139830, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
       propertyPath: m_Name
       value: Inventory_Slot_Gear_Legs
+      objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: slotType
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
       propertyPath: cursorObj
@@ -7850,6 +7874,10 @@ PrefabInstance:
       value: Inventory_Slot_Weapon_03
       objectReference: {fileID: 0}
     - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: slotType
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
       propertyPath: cursorObj
       value: 
       objectReference: {fileID: 727602943}
@@ -8028,6 +8056,10 @@ PrefabInstance:
     - target: {fileID: 923030669377139830, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
       propertyPath: m_Name
       value: Inventory_Slot_Weapon_02
+      objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: slotType
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
       propertyPath: cursorObj
@@ -9492,6 +9524,10 @@ PrefabInstance:
     - target: {fileID: 923030669377139830, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
       propertyPath: m_Name
       value: Inventory_Slot_Gear_Head
+      objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: slotType
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
       propertyPath: cursorObj
@@ -12466,6 +12502,10 @@ PrefabInstance:
       value: Inventory_Slot_QuickSlot_01
       objectReference: {fileID: 0}
     - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: slotType
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
       propertyPath: cursorObj
       value: 
       objectReference: {fileID: 727602943}
@@ -12565,6 +12605,10 @@ PrefabInstance:
     - target: {fileID: 923030669377139830, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
       propertyPath: m_Name
       value: Inventory_Slot_Gear_Torso
+      objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: slotType
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
       propertyPath: cursorObj
@@ -13382,6 +13426,10 @@ PrefabInstance:
       value: Inventory_Slot_Gear_Belt
       objectReference: {fileID: 0}
     - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: slotType
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
       propertyPath: cursorObj
       value: 
       objectReference: {fileID: 727602943}
@@ -13547,6 +13595,10 @@ PrefabInstance:
     - target: {fileID: 923030669377139830, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
       propertyPath: m_Name
       value: Inventory_Slot_Gear_Hands
+      objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: slotType
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
       propertyPath: cursorObj
@@ -14878,6 +14930,10 @@ PrefabInstance:
       value: Inventory_Slot_QuickSlot_03
       objectReference: {fileID: 0}
     - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: slotType
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
       propertyPath: cursorObj
       value: 
       objectReference: {fileID: 727602943}
@@ -15256,6 +15312,10 @@ PrefabInstance:
     - target: {fileID: 923030669377139830, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
       propertyPath: m_Name
       value: Inventory_Slot_Gear_Face
+      objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: slotType
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
       propertyPath: cursorObj
@@ -17070,6 +17130,10 @@ PrefabInstance:
     - target: {fileID: 923030669377139830, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
       propertyPath: m_Name
       value: Inventory_Slot_Gear_Back
+      objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: slotType
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
       propertyPath: cursorObj

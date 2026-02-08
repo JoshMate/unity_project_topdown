@@ -108,7 +108,7 @@ public class F_Logic_Cursor : MonoBehaviour
                 }
                 else
                 {
-                    Debug.Log("No item or slot to pickup");
+                    Debug.Log("No item to pickup");
                 }
 
             }
