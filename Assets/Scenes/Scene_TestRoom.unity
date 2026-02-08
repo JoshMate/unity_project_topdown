@@ -305,7 +305,7 @@ GameObject:
   - component: {fileID: 55888307}
   - component: {fileID: 55888306}
   m_Layer: 5
-  m_Name: ' Logic_Cursor_Text'
+  m_Name: Logic_Cursor_Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -319,16 +319,16 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 55888304}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 100}
-  m_LocalScale: {x: 0.02112676, y: 0.02112676, z: 0.02112676}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 727602944}
+  m_Father: {fileID: 1839282866}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 64, y: 64}
+  m_SizeDelta: {x: 128, y: 128}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &55888306
 MonoBehaviour:
@@ -377,8 +377,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 164
+  m_fontSizeBase: 164
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -388,12 +388,13 @@ MonoBehaviour:
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_TextWrappingMode: 1
+  m_TextWrappingMode: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
@@ -407,8 +408,8 @@ MonoBehaviour:
   m_parseCtrlCharacters: 1
   m_isOrthographic: 0
   m_isCullingEnabled: 0
-  m_horizontalMapping: 0
-  m_verticalMapping: 0
+  m_horizontalMapping: 1
+  m_verticalMapping: 1
   m_uvLineOffset: 0
   m_geometrySortingOrder: 0
   m_IsTextObjectScaleStatic: 0
@@ -444,6 +445,8 @@ MeshRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -465,9 +468,11 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 1446061933
+  m_SortingLayer: 22
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!224 &59601102 stripped
 RectTransform:
@@ -569,6 +574,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -707,6 +713,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_QuickSlot_04
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -866,6 +876,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_InventorySlot (49)
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1039,6 +1053,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -1175,6 +1190,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -1368,6 +1384,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -1623,6 +1640,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_InventorySlot (45)
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1736,6 +1757,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_InventorySlot (22)
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1849,6 +1874,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_InventorySlot (23)
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1956,6 +1985,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_InventorySlot (53)
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2105,6 +2138,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_InventorySlot (34)
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2394,6 +2431,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_InventorySlot (47)
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2607,6 +2648,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_InventorySlot (17)
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2789,6 +2834,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_InventorySlot (48)
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2934,6 +2983,7 @@ Rigidbody2D:
   m_Constraints: 4
 --- !u!212 &412122229
 SpriteRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -2952,6 +3002,8 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -2973,9 +3025,11 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -217553533
   m_SortingLayer: 14
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: e4dfe6268d5eee849818d918e71d0a98, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -2985,7 +3039,6 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &412122230
 Transform:
@@ -3264,6 +3317,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_InventorySlot (27)
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3385,6 +3442,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -3603,6 +3661,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_QuickSlot_02
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3703,6 +3765,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -3836,6 +3899,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_InventorySlot (12)
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3949,6 +4016,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_InventorySlot (46)
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -4067,6 +4138,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_Gear_Feet
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
       propertyPath: slotIconPlaceHolder
       value: 
@@ -4302,6 +4377,7 @@ MonoBehaviour:
   sprite: {fileID: 21300000, guid: c8f57e671555d5f49a6c2d4d50b5aa4a, type: 3}
 --- !u!212 &555438550
 SpriteRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -4320,6 +4396,8 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -4341,9 +4419,11 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -1317636197
   m_SortingLayer: 13
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: c8f57e671555d5f49a6c2d4d50b5aa4a, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -4353,7 +4433,6 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1001 &555988444
 PrefabInstance:
@@ -4447,6 +4526,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_Weapon_01
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
       propertyPath: slotIconPlaceHolder
       value: 
@@ -4548,6 +4631,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_InventorySlot (19)
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -4912,6 +4999,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_InventorySlot (28)
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -5017,6 +5108,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -5183,6 +5275,10 @@ PrefabInstance:
       value: Inventory_Slot_Weapon_04
       objectReference: {fileID: 0}
     - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
       propertyPath: slotIconPlaceHolder
       value: 
       objectReference: {fileID: 21300000, guid: fa690d10a33254944a3efed5448d4b09, type: 3}
@@ -5302,10 +5398,14 @@ MonoBehaviour:
   itemSpriteRenderer: {fileID: 645085443}
   itemName: Hunting Rifle
   itemDescription: A basic long ranged rifle used for hunting.
-  itemWeight: 1
+  itemType: 8
+  itemRarity: 1
+  itemWeight: 3
   itemValue: 300
+  isInInventorySlot: 0
 --- !u!212 &645085443
 SpriteRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -5324,6 +5424,8 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -5345,9 +5447,11 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 657551439
   m_SortingLayer: 10
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: 10a59948f9a223a4ab0f3e2bb1c3a144, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -5357,7 +5461,6 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!60 &645085444
 PolygonCollider2D:
@@ -5628,7 +5731,7 @@ MonoBehaviour:
   cursorRendererItem: {fileID: 1332256143}
   cursorTransformPointer: {fileID: 727602944}
   cursorTransformItem: {fileID: 1332256142}
-  cursorText: {fileID: 0}
+  cursorText: {fileID: 55888306}
   cursorSpritePointer: {fileID: 21300000, guid: 1cd9f277f11a4da49add9e5ebdf708de, type: 3}
   cursorSpriteAim: {fileID: 21300000, guid: fc18ac77193f2bd45aed7bd8f15f16bc, type: 3}
 --- !u!4 &727602944
@@ -5645,11 +5748,12 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1332256142}
-  - {fileID: 55888305}
+  - {fileID: 1839282866}
   m_Father: {fileID: 1999702261}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &727602947
 SpriteRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -5668,6 +5772,8 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -5689,9 +5795,11 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 1446061933
   m_SortingLayer: 22
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -5701,7 +5809,6 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 0
-  m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &733553669
 GameObject:
@@ -5927,6 +6034,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_InventorySlot (42)
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -6151,6 +6262,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_InventorySlot (16)
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -6253,6 +6368,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_Gear_Legs
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
       propertyPath: slotIconPlaceHolder
       value: 
@@ -6439,6 +6558,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_InventorySlot (43)
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -6541,6 +6664,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_InventorySlot (5)
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -6648,6 +6775,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_InventorySlot (11)
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -6750,6 +6881,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_InventorySlot (20)
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -6919,6 +7054,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_InventorySlot (26)
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -7127,6 +7266,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_InventorySlot (39)
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -7302,6 +7445,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_InventorySlot (15)
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -7404,6 +7551,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_InventorySlot (24)
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -7699,6 +7850,10 @@ PrefabInstance:
       value: Inventory_Slot_Weapon_03
       objectReference: {fileID: 0}
     - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
       propertyPath: slotIconPlaceHolder
       value: 
       objectReference: {fileID: 21300000, guid: fa690d10a33254944a3efed5448d4b09, type: 3}
@@ -7875,6 +8030,10 @@ PrefabInstance:
       value: Inventory_Slot_Weapon_02
       objectReference: {fileID: 0}
     - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
       propertyPath: slotIconPlaceHolder
       value: 
       objectReference: {fileID: 21300000, guid: a9e7f6d1a00c1b64285d6faca737c271, type: 3}
@@ -7975,6 +8134,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_InventorySlot (8)
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -8139,6 +8302,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_InventorySlot (30)
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -8319,6 +8486,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_InventorySlot (40)
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -8421,6 +8592,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_InventorySlot (10)
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -8598,6 +8773,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_InventorySlot (50)
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -8830,6 +9009,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_InventorySlot (44)
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -9136,6 +9319,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_InventorySlot (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -9307,6 +9494,10 @@ PrefabInstance:
       value: Inventory_Slot_Gear_Head
       objectReference: {fileID: 0}
     - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
       propertyPath: slotIconPlaceHolder
       value: 
       objectReference: {fileID: 21300000, guid: 3cf6a80c5767a0a4891b7a5674843a50, type: 3}
@@ -9407,6 +9598,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_InventorySlot (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -9595,6 +9790,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_InventorySlot (33)
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -9708,6 +9907,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_InventorySlot (38)
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -10255,6 +10458,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_InventorySlot (25)
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -10723,6 +10930,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_InventorySlot (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -10825,6 +11036,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_InventorySlot (41)
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -10938,6 +11153,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_InventorySlot (18)
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -10973,7 +11192,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1332256142}
-  - component: {fileID: 1332256141}
   - component: {fileID: 1332256143}
   m_Layer: 5
   m_Name: Logic_Cursor_ItemDrawer
@@ -10982,14 +11200,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!222 &1332256141
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1332256139}
-  m_CullTransparentMesh: 1
 --- !u!4 &1332256142
 Transform:
   m_ObjectHideFlags: 0
@@ -10998,8 +11208,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1332256139}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.5, y: -0.5, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.5, y: -0.5, z: 100}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -11007,6 +11217,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &1332256143
 SpriteRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -11025,6 +11236,8 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -11046,9 +11259,11 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 1446061933
   m_SortingLayer: 22
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -11058,7 +11273,6 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 0
-  m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!114 &1347142961 stripped
 MonoBehaviour:
@@ -11166,6 +11380,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -11302,6 +11517,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -11438,6 +11654,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -11909,6 +12126,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_InventorySlot (29)
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -12138,6 +12359,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_InventorySlot (6)
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -12240,6 +12465,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_QuickSlot_01
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -12337,6 +12566,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_Gear_Torso
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
       propertyPath: slotIconPlaceHolder
       value: 
@@ -12443,6 +12676,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_InventorySlot (32)
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -12600,6 +12837,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_InventorySlot (52)
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -12788,6 +13029,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_InventorySlot (7)
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -12971,6 +13216,7 @@ MonoBehaviour:
   sprite: {fileID: 21300000, guid: 7e95bb90a76550642b13ca70f2325970, type: 3}
 --- !u!212 &1535385769
 SpriteRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -12989,6 +13235,8 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -13010,9 +13258,11 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -1317636197
   m_SortingLayer: 13
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: 7e95bb90a76550642b13ca70f2325970, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -13022,7 +13272,6 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &1535385770
 Transform:
@@ -13132,6 +13381,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_Gear_Belt
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
       propertyPath: slotIconPlaceHolder
       value: 
@@ -13295,6 +13548,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_Gear_Hands
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
       propertyPath: slotIconPlaceHolder
       value: 
@@ -13586,6 +13843,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_InventorySlot (35)
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -13688,6 +13949,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_InventorySlot (51)
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -13978,6 +14243,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_InventorySlot (36)
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -14102,6 +14371,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_InventorySlot (9)
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -14441,6 +14714,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_InventorySlot (37)
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -14600,6 +14877,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_QuickSlot_03
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -14662,6 +14943,90 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+--- !u!1 &1839282865
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1839282866}
+  - component: {fileID: 1839282867}
+  - component: {fileID: 1839282868}
+  m_Layer: 0
+  m_Name: Logic_Cursor_Canvas
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1839282866
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1839282865}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0, y: 0, z: 0}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 55888305}
+  m_Father: {fileID: 727602944}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0, y: 0}
+--- !u!223 &1839282867
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1839282865}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 1
+  m_Camera: {fileID: 519420031}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 1
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 1
+  m_AdditionalShaderChannelsFlag: 25
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 1446061933
+  m_SortingOrder: 0
+  m_TargetDisplay: 0
+--- !u!114 &1839282868
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1839282865}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_UiScaleMode: 1
+  m_ReferencePixelsPerUnit: 64
+  m_ScaleFactor: 1
+  m_ReferenceResolution: {x: 1920, y: 1080}
+  m_ScreenMatchMode: 0
+  m_MatchWidthOrHeight: 0
+  m_PhysicalUnit: 3
+  m_FallbackScreenDPI: 96
+  m_DefaultSpriteDPI: 96
+  m_DynamicPixelsPerUnit: 1
+  m_PresetInfoIsWorld: 0
 --- !u!4 &1849247685 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1000238371947742931, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
@@ -14759,6 +15124,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_InventorySlot (31)
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -14888,6 +15257,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_Gear_Face
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
       propertyPath: slotIconPlaceHolder
       value: 
@@ -15165,6 +15538,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_InventorySlot (21)
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -15362,6 +15739,7 @@ MonoBehaviour:
   sprite: {fileID: 21300000, guid: 7e95bb90a76550642b13ca70f2325970, type: 3}
 --- !u!212 &1923523677
 SpriteRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -15380,6 +15758,8 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -15401,9 +15781,11 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -1317636197
   m_SortingLayer: 13
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: ef1aaa535e616e245ade5bfae642bded, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -15413,7 +15795,6 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &1936312696 stripped
 Transform:
@@ -15660,6 +16041,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_InventorySlot (14)
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -16041,6 +16426,7 @@ MonoBehaviour:
   sprite: {fileID: 21300000, guid: 7e95bb90a76550642b13ca70f2325970, type: 3}
 --- !u!212 &2049400145
 SpriteRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -16059,6 +16445,8 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -16080,9 +16468,11 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -1317636197
   m_SortingLayer: 13
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: b14e0493e1fe105489039d47840b9045, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -16092,7 +16482,6 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!114 &2065442868 stripped
 MonoBehaviour:
@@ -16208,6 +16597,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_InventorySlot (4)
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -16326,6 +16719,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_InventorySlot
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -16483,6 +16880,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -16673,6 +17071,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_Gear_Back
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
       propertyPath: slotIconPlaceHolder
       value: 
@@ -16915,6 +17317,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Slot_InventorySlot (13)
       objectReference: {fileID: 0}
+    - target: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}
+      propertyPath: cursorObj
+      value: 
+      objectReference: {fileID: 727602943}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

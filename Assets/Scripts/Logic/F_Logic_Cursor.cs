@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class F_Logic_Cursor : MonoBehaviour
 {
@@ -52,6 +53,11 @@ public class F_Logic_Cursor : MonoBehaviour
 
     void RayCastCursorToGetHoveredElement()
     {
+        // Check if the mouse is over a UI element (Then Don't look for Game Objects to hover over)
+        if (EventSystem.current.IsPointerOverGameObject()) {
+            return; 
+        }
+        
         // Ray Cast to hit game objects in the world
         // Perform a 2D raycast at the mouse position
         RaycastHit2D hit = Physics2D.Raycast(mousePosition, Vector2.zero);
@@ -61,7 +67,13 @@ public class F_Logic_Cursor : MonoBehaviour
             cursorHoveredObject = hit.collider.gameObject;
             Vector2 mousePos = Input.mousePosition;
             cursorText.transform.position = mousePosition + new Vector2(0.5f, -1.2f);
-            cursorText.text = cursorHoveredObject.name;
+
+            if (cursorHoveredObject != null && cursorHoveredObject.GetComponent<F_Item>() != null)
+            {
+                cursorText.text = cursorHoveredObject.GetComponent<F_Item>().itemName;
+            }
+
+            
 
         }
         else
@@ -86,17 +98,11 @@ public class F_Logic_Cursor : MonoBehaviour
             {
                 if (cursorHoveredObject != null)
                 {
-                    // Pick Item up out of Inventory Slot (Do First)
-                    if (cursorHoveredObject.GetComponent<F_GUI_Inventory_Slot>() != null)
-                    {
-                        F_GUI_Inventory_Slot cursorHoveredSlot = cursorHoveredObject.GetComponent<F_GUI_Inventory_Slot>();
-                        cursorHeldItemObj = cursorHoveredSlot.slotItemObj.GetComponent<F_Item>();
-                        Debug.Log("Inventory Slot Clicked");
-                    }
                     // Pick Item up off the floor (If no inventory slot found)
-                    else if (cursorHoveredObject.GetComponent<F_Item>() != null)
+                    if (cursorHoveredObject.GetComponent<F_Item>() != null)
                     {
                         cursorHeldItemObj = cursorHoveredObject.GetComponent<F_Item>();
+                        cursorHeldItemObj.MoveItemToInventory();
                         Debug.Log("Floor Item Clicked");
                     }
                 }

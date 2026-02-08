@@ -11,6 +11,7 @@ public class F_GUI_Inventory_Slot : MonoBehaviour, IPointerClickHandler, IPointe
     [Header("Object Refs")]
 
     public F_Item slotItemObj;
+    public F_Logic_Cursor cursorObj;
     public UnityEngine.UI.Image slotDrawBackGroundObj;
     public UnityEngine.UI.Image slotDrawBorderObj;
     public UnityEngine.UI.Image slotDrawItemObj;
@@ -28,7 +29,8 @@ public class F_GUI_Inventory_Slot : MonoBehaviour, IPointerClickHandler, IPointe
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        
+        // Swap the item held between the cursor and the inventory slot (Using a posh Tuple)
+        (cursorObj.cursorHeldItemObj, slotItemObj) = (slotItemObj, cursorObj.cursorHeldItemObj);
     }
 
    public void OnPointerEnter(PointerEventData eventData)
