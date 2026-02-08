@@ -1,7 +1,10 @@
 fileFormatVersion: 2
-guid: 10a59948f9a223a4ab0f3e2bb1c3a144
+guid: f5159693ba114b244a0aa70a94d7e23c
 TextureImporter:
-  internalIDToNameTable: []
+  internalIDToNameTable:
+  - first:
+      213: 3083684141430229233
+    second: SP_Ammo_Rifle_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -86,6 +89,19 @@ TextureImporter:
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0

@@ -2,6 +2,7 @@ public enum enumItemType
 {
     MiscJunk,
     MiscMaterial,
+    MiscAmmo,
     MiscQuestItem,
     MiscMod,
     ActiveConsumable,

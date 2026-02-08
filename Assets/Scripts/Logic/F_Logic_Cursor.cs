@@ -19,8 +19,10 @@ public class F_Logic_Cursor : MonoBehaviour
     public Sprite cursorSpritePointer;
     public Sprite cursorSpriteAim;
 
-    [Header("Privates")]
+    [Header("Stats")]
+    public float cursorPlaceMaxDistance = 128;
 
+    [Header("Privates")]
     private Vector2 mousePosition;
     private GameObject cursorHoveredObject;
 
@@ -96,6 +98,15 @@ public class F_Logic_Cursor : MonoBehaviour
         {
             if (characterScreenManager.isMenuOpen == true)
             {
+
+                // Drop Held Cursor Item on the floor at mouse position (Only if no GUI element is in the way)
+                if (cursorHeldItemObj != null && !EventSystem.current.IsPointerOverGameObject())
+                {
+                    cursorHeldItemObj.MoveItemOutOfInventory();
+                    cursorHeldItemObj.gameObject.transform.position = new Vector2(mousePosition.x,mousePosition.y);
+                    cursorHeldItemObj = null;
+                }
+
                 if (cursorHoveredObject != null)
                 {
                     // Pick Item up off the floor (If no inventory slot found)
@@ -105,10 +116,6 @@ public class F_Logic_Cursor : MonoBehaviour
                         cursorHeldItemObj.MoveItemToInventory();
                         Debug.Log("Floor Item Clicked");
                     }
-                }
-                else
-                {
-                    Debug.Log("No item to pickup");
                 }
 
             }
