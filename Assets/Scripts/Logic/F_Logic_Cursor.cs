@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using System.Collections.Generic;
 
 public class F_Logic_Cursor : MonoBehaviour
 {
@@ -45,6 +46,7 @@ public class F_Logic_Cursor : MonoBehaviour
         CursorItemDisplay();
         processInputs();
         RayCastCursorToGetHoveredElement();
+        CursorDropHeldItemWhenMenuClosed();
     }
 
     void OnTriggerEnter(Collider otherCollider)
@@ -57,6 +59,37 @@ public class F_Logic_Cursor : MonoBehaviour
     {
         // Check if the mouse is over a UI element (Then Don't look for Game Objects to hover over)
         if (EventSystem.current.IsPointerOverGameObject()) {
+
+            // 2. Create fake pointer data at the mouse position
+            PointerEventData pointerData = new PointerEventData(EventSystem.current)
+            {
+                position = Input.mousePosition
+            };
+
+            // 3. Raycast to find what we hit
+            List<RaycastResult> raycastResults = new List<RaycastResult>();
+            EventSystem.current.RaycastAll(pointerData, raycastResults);
+
+            // 4. Check if we hit any UI elements
+            if (raycastResults.Count > 0)
+            {
+                GameObject hitObject = raycastResults[0].gameObject;
+
+                // 5. Try to find the F_GUI_Inventory_Slot component on the hit object
+                F_GUI_Inventory_Slot hoveredSlot = hitObject.GetComponentInParent<F_GUI_Inventory_Slot>();
+
+                // 6. If it's not null, we are successfully hovering over an inventory slot!
+                if (hoveredSlot != null)
+                {
+                    // Optional: Check if the slot actually has an item in it before checking the name
+                    if (hoveredSlot.slotItemObj != null)
+                    {
+                        Vector2 mousePos = Input.mousePosition;
+                        cursorText.transform.position = mousePosition + new Vector2(0.5f, -1.2f);
+                        cursorText.text =hoveredSlot.slotItemObj.itemName;
+                    }
+                }
+            }
             return; 
         }
         
@@ -102,9 +135,7 @@ public class F_Logic_Cursor : MonoBehaviour
                 // Drop Held Cursor Item on the floor at mouse position (Only if no GUI element is in the way)
                 if (cursorHeldItemObj != null && !EventSystem.current.IsPointerOverGameObject())
                 {
-                    cursorHeldItemObj.MoveItemOutOfInventory();
-                    cursorHeldItemObj.gameObject.transform.position = new Vector2(mousePosition.x,mousePosition.y);
-                    cursorHeldItemObj = null;
+                    CursorDropItemAtLocation();
                 }
 
                 if (cursorHoveredObject != null)
@@ -133,6 +164,23 @@ public class F_Logic_Cursor : MonoBehaviour
             cursorRendererPointer.sprite = cursorSpriteAim;
         }
 
+    }
+
+    void CursorDropHeldItemWhenMenuClosed()
+    {
+        if (characterScreenManager.isMenuOpen == false)
+        {
+            CursorDropItemAtLocation();
+        }
+    }
+
+    void CursorDropItemAtLocation()
+    {
+        if (cursorHeldItemObj == null) return;
+        
+        cursorHeldItemObj.MoveItemOutOfInventory();
+        cursorHeldItemObj.gameObject.transform.position = new Vector2(mousePosition.x,mousePosition.y);
+        cursorHeldItemObj = null;
     }
 
     void CursorItemDisplay()
