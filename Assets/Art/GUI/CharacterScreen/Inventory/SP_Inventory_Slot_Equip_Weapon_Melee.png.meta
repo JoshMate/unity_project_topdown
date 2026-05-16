@@ -1,7 +1,10 @@
 fileFormatVersion: 2
-guid: d01450bd332ed144086ba5154cafce29
+guid: ce011763504b7bb428a41fd9140918de
 TextureImporter:
-  internalIDToNameTable: []
+  internalIDToNameTable:
+  - first:
+      213: -6904721681135005453
+    second: SP_Inventory_Slot_Equip_Weapon_Melee_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:

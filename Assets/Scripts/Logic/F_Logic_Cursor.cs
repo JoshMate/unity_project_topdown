@@ -21,7 +21,7 @@ public class F_Logic_Cursor : MonoBehaviour
     public Sprite cursorSpriteAim;
 
     [Header("Stats")]
-    public float cursorPlaceMaxDistance = 128;
+    private float cursorPlaceMaxDistance = 2.5f;
 
     [Header("Privates")]
     private Vector2 mousePosition;
@@ -86,8 +86,14 @@ public class F_Logic_Cursor : MonoBehaviour
                     {
                         Vector2 mousePos = Input.mousePosition;
                         cursorText.transform.position = mousePosition + new Vector2(0.5f, -1.2f);
-                        cursorText.text =hoveredSlot.slotItemObj.itemName;
+                        cursorHoveredObject = hitObject;
+                        cursorText.text = hoveredSlot.slotItemObj.itemName;
                     }
+                }
+                else
+                {
+                    cursorHoveredObject = null;
+                    cursorText.text = "";
                 }
             }
             return; 
@@ -143,9 +149,14 @@ public class F_Logic_Cursor : MonoBehaviour
                     // Pick Item up off the floor (If no inventory slot found)
                     if (cursorHoveredObject.GetComponent<F_Item>() != null)
                     {
-                        cursorHeldItemObj = cursorHoveredObject.GetComponent<F_Item>();
-                        cursorHeldItemObj.MoveItemToInventory();
-                        Debug.Log("Floor Item Clicked");
+                        // Check if the item is within pikcup range first
+                        float distanceBetweenCuroseObjectAndPlayer = Vector2.Distance (cursorHoveredObject.transform.position, playerController.transform.position);
+                        if (distanceBetweenCuroseObjectAndPlayer <= cursorPlaceMaxDistance)
+                        {
+                            cursorHeldItemObj = cursorHoveredObject.GetComponent<F_Item>();
+                            cursorHeldItemObj.MoveItemToInventory();
+                        }
+                        
                     }
                 }
 
@@ -177,10 +188,21 @@ public class F_Logic_Cursor : MonoBehaviour
     void CursorDropItemAtLocation()
     {
         if (cursorHeldItemObj == null) return;
-        
-        cursorHeldItemObj.MoveItemOutOfInventory();
-        cursorHeldItemObj.gameObject.transform.position = new Vector2(mousePosition.x,mousePosition.y);
-        cursorHeldItemObj = null;
+
+        // Check if the item is within pikcup range first
+        float distanceBetweenCuroseObjectAndPlayer = Vector2.Distance (new Vector2(mousePosition.x,mousePosition.y), playerController.transform.position);
+        if (distanceBetweenCuroseObjectAndPlayer <= cursorPlaceMaxDistance)
+        {
+            cursorHeldItemObj.MoveItemOutOfInventory();
+            cursorHeldItemObj.gameObject.transform.position = new Vector2(mousePosition.x,mousePosition.y);
+            cursorHeldItemObj = null;
+        }
+        else
+        {
+            cursorHeldItemObj.MoveItemOutOfInventory();
+            cursorHeldItemObj.gameObject.transform.position = playerController.transform.position;
+            cursorHeldItemObj = null;
+        }
     }
 
     void CursorItemDisplay()

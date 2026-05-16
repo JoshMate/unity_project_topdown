@@ -12,6 +12,7 @@ public class F_GUI_HUD_Manager : MonoBehaviour
     public F_GUI_HUD_Bar hungerBar;
     public F_GUI_HUD_Bar thirstBar;
     public F_GUI_HUD_Bar toxicBar;
+    public F_GUI_HUD_Bar weightBar;
 
     // Start is called before the first frame update
     void Start()

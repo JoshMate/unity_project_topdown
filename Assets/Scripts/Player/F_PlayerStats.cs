@@ -29,6 +29,9 @@ public class F_PlayerStats : MonoBehaviour
     public float thirstDrainRateDelay;
     public float toxic; 
     public float toxicMax;
+    public float weight;
+    public float weightMax;
+
 
     [Header("Movement Stats")]
     public float speedMove;
@@ -76,25 +79,35 @@ public class F_PlayerStats : MonoBehaviour
     // Update HUD
     private void HUDUpdate()
     {
-        hudManager.healthBar.barText.text = Math.Ceiling(health).ToString(); 
+        hudManager.healthBar.barText.text = Math.Ceiling(health).ToString();
+        hudManager.healthBar.barTextMax.text = Math.Ceiling(healthMax).ToString();  
         hudManager.healthBar.barSlider.value = health;
         hudManager.healthBar.barSlider.maxValue = healthMax;
 
         hudManager.staminaBar.barText.text = Math.Ceiling(stamina).ToString();
+        hudManager.staminaBar.barTextMax.text = Math.Ceiling(staminaMax).ToString();
         hudManager.staminaBar.barSlider.value = stamina;
         hudManager.staminaBar.barSlider.maxValue = staminaMax;
 
         hudManager.hungerBar.barText.text = Math.Ceiling(hunger).ToString();
+        hudManager.hungerBar.barTextMax.text = Math.Ceiling(hungerMax).ToString();
         hudManager.hungerBar.barSlider.value = hunger;
         hudManager.hungerBar.barSlider.maxValue = hungerMax;
 
         hudManager.thirstBar.barText.text = Math.Ceiling(thirst).ToString();
+        hudManager.thirstBar.barTextMax.text = Math.Ceiling(thirstMax).ToString();
         hudManager.thirstBar.barSlider.value = thirst;
         hudManager.thirstBar.barSlider.maxValue = thirstMax;
 
         hudManager.toxicBar.barText.text = Math.Ceiling(toxic).ToString();
+        hudManager.toxicBar.barTextMax.text = Math.Ceiling(toxicMax).ToString();
         hudManager.toxicBar.barSlider.value = toxic;
         hudManager.toxicBar.barSlider.maxValue = toxicMax;
+
+        hudManager.weightBar.barText.text = Math.Ceiling(weight).ToString();
+        hudManager.weightBar.barTextMax.text = Math.Ceiling(weightMax).ToString();
+        hudManager.weightBar.barSlider.value = weight;
+        hudManager.weightBar.barSlider.maxValue = weightMax;
     }
 
     // Handle Stamina Regeneration

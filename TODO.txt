@@ -1,0 +1,15 @@
+###################################################
+### TODO
+###################################################
+- Dropping an item out of range puts it as close to the cursor as possible, not just below the player
+- Display Min and Max values of the Weight bar in the inventory
+
+
+
+
+
+
+
+###################################################
+### Done
+###################################################
