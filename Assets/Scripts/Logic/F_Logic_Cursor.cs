@@ -189,20 +189,29 @@ public class F_Logic_Cursor : MonoBehaviour
     {
         if (cursorHeldItemObj == null) return;
 
-        // Check if the item is within pikcup range first
-        float distanceBetweenCuroseObjectAndPlayer = Vector2.Distance (new Vector2(mousePosition.x,mousePosition.y), playerController.transform.position);
-        if (distanceBetweenCuroseObjectAndPlayer <= cursorPlaceMaxDistance)
+        Vector2 playerPos = playerController.transform.position;
+        Vector2 cursorPos = new Vector2(mousePosition.x, mousePosition.y);
+        
+        Vector2 finalDropPosition;
+
+        // Check if the item is within pickup range
+        if (Vector2.Distance(cursorPos, playerPos) <= cursorPlaceMaxDistance)
         {
-            cursorHeldItemObj.MoveItemOutOfInventory();
-            cursorHeldItemObj.gameObject.transform.position = new Vector2(mousePosition.x,mousePosition.y);
-            cursorHeldItemObj = null;
+            finalDropPosition = cursorPos;
         }
         else
         {
-            cursorHeldItemObj.MoveItemOutOfInventory();
-            cursorHeldItemObj.gameObject.transform.position = playerController.transform.position;
-            cursorHeldItemObj = null;
+            // Calculate the direction from the player to the mouse
+            Vector2 directionToCursor = (cursorPos - playerPos).normalized;
+            
+            // Set the position to the maximum distance in that direction
+            finalDropPosition = playerPos + (directionToCursor * cursorPlaceMaxDistance);
         }
+
+        // Apply the drop
+        cursorHeldItemObj.MoveItemOutOfInventory();
+        cursorHeldItemObj.gameObject.transform.position = finalDropPosition;
+        cursorHeldItemObj = null;
     }
 
     void CursorItemDisplay()
