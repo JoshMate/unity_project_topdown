@@ -37,6 +37,8 @@ public class F_PlayerStats : MonoBehaviour
     public float speedMove;
     public float speedSprint;
 
+      [Header("Inventory Stats")]
+
     [Header("Private Checks")]
     public bool isSprinting = false;
     private float lastStaminaUseTime = 0f;
