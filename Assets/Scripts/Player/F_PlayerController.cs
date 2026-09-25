@@ -73,15 +73,7 @@ public class F_PlayerController : MonoBehaviour
                 playerHeldWeapon.FireWeapon();
             }
         }
-        if (characterScreenManager.isMenuOpen == false)
-        {
-            // Interact with Items if menu is open
-            if (Input.GetMouseButtonDown(0))
-            {
-                playerHeldWeapon.FireWeapon();
-            }
-        }
-
+        // The duplicate mouse-click fire handler was removed.
     }
 
     void Move()
