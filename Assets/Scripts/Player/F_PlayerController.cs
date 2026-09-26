@@ -13,6 +13,7 @@ public class F_PlayerController : MonoBehaviour
     public F_PlayerHeldWeapon playerHeldWeapon;
     public F_PlayerInventory playerInventory;
     public F_Logic_Cursor playerCursor;
+    public F_Logic_Controls controls;
     
     [Header("Privates")]
     
@@ -45,27 +46,24 @@ public class F_PlayerController : MonoBehaviour
     void ProcessInputs()
     {
         // Menu Controls
-        if (Input.GetKeyDown(KeyCode.Tab))
+        if (controls.IsInventoryTogglePressed())
         {
             characterScreenManager.ToggleInventoryScreen();
         }
 
 
         // Movement Controls
-        float moveX = Input.GetAxisRaw("Horizontal");
-        float moveY = Input.GetAxisRaw("Vertical");
+        moveDirection = controls.GetMovementInput();
 
-        moveDirection = new Vector2(moveX, moveY).normalized;
-
-        mousePosition = playerCamera.ScreenToWorldPoint(Input.mousePosition);
+        mousePosition = playerCamera.ScreenToWorldPoint(controls.GetMouseScreenPosition());
 
         // Sprint Controls
-        if (Input.GetKeyDown(KeyCode.LeftShift))
+        if (controls.IsSprintPressed())
         {
             playerStats.SprintStart();
         }
         // Sprint Controls
-        if (Input.GetKeyUp(KeyCode.LeftShift))
+        if (controls.IsSprintReleased())
         {
             playerStats.SprintEnd();
         }
@@ -74,7 +72,7 @@ public class F_PlayerController : MonoBehaviour
         if (characterScreenManager.isMenuOpen == false)
         {
             // Fire Weapon if Menu is Closed
-            if (Input.GetMouseButtonDown(0))
+            if (controls.IsPrimaryActionPressed())
             {
                 playerHeldWeapon.FireWeapon();
             }

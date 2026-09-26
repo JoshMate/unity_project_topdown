@@ -32,6 +32,7 @@ public class F_PlayerInventory : MonoBehaviour
     public F_GUI_Inventory_Slot invSlotQuick02;
     public F_GUI_Inventory_Slot invSlotQuick03;
     public F_GUI_Inventory_Slot invSlotQuick04;
+    public F_GUI_Inventory_Slot invSlotQuick05;
 
     [Header("Inventory Slot - Inventory")]
 

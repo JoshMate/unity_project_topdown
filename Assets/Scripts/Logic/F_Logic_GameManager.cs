@@ -7,6 +7,7 @@ public class F_Logic_GameManager : MonoBehaviour
     public F_Logic_Globals globalsObject;
     public F_Logic_Camera cameraObject;
     public F_Logic_GUI guiObject;
+    public F_Logic_Controls controlsObject;
     public F_PlayerController playerObject;
 
 

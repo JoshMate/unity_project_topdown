@@ -10,6 +10,7 @@ public class F_Logic_Cursor : MonoBehaviour
     public F_PlayerController playerController;
     public F_GUI_CharacterScreen_Manager characterScreenManager;
     public Camera playerCamera;
+    public F_Logic_Controls controls;
     public SpriteRenderer cursorRendererPointer;
     public SpriteRenderer cursorRendererItem;
     public Transform cursorTransformPointer;
@@ -63,7 +64,7 @@ public class F_Logic_Cursor : MonoBehaviour
             // 2. Create fake pointer data at the mouse position
             PointerEventData pointerData = new PointerEventData(EventSystem.current)
             {
-                position = Input.mousePosition
+                position = controls.GetMouseScreenPosition()
             };
 
             // 3. Raycast to find what we hit
@@ -84,7 +85,6 @@ public class F_Logic_Cursor : MonoBehaviour
                     // Optional: Check if the slot actually has an item in it before checking the name
                     if (hoveredSlot.slotItemObj != null)
                     {
-                        Vector2 mousePos = Input.mousePosition;
                         cursorText.transform.position = mousePosition + new Vector2(0.5f, -1.2f);
                         cursorHoveredObject = hitObject;
                         cursorText.text = hoveredSlot.slotItemObj.itemName;
@@ -106,7 +106,6 @@ public class F_Logic_Cursor : MonoBehaviour
         if (hit.collider != null)
         {
             cursorHoveredObject = hit.collider.gameObject;
-            Vector2 mousePos = Input.mousePosition;
             cursorText.transform.position = mousePosition + new Vector2(0.5f, -1.2f);
 
             if (cursorHoveredObject != null && cursorHoveredObject.GetComponent<F_Item>() != null)
@@ -128,12 +127,12 @@ public class F_Logic_Cursor : MonoBehaviour
     void processInputs()
     {
         // Handle Cursor Pos
-        mousePosition = playerCamera.ScreenToWorldPoint(Input.mousePosition);
+        mousePosition = playerCamera.ScreenToWorldPoint(controls.GetMouseScreenPosition());
 
         cursorTransformPointer.position = mousePosition;
 
         //Left Click Controls
-        if (Input.GetMouseButtonDown(0))
+        if (controls.IsPrimaryActionPressed())
         {
             if (characterScreenManager.isMenuOpen == true)
             {
