@@ -19,6 +19,12 @@ public class F_PlayerController : MonoBehaviour
     private Vector2 moveDirection;
     private Vector2 mousePosition;
 
+    // Persist the player before the initialization scene loads gameplay.
+    void Awake()
+    {
+        DontDestroyOnLoad(gameObject);
+    }
+
     // Start is called before the first frame update
     void Start()
     {

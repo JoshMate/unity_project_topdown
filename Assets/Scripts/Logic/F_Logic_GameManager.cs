@@ -11,8 +11,8 @@ public class F_Logic_GameManager : MonoBehaviour
 
 
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    // Awake runs before the initialization scene requests its transition to gameplay.
+    void Awake()
     {
         DontDestroyOnLoad(gameObject);
     }

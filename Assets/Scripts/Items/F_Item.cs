@@ -11,8 +11,10 @@ public class F_Item : MonoBehaviour
     public string itemDescription = "<Item Description>";
     public enumItemType itemType = enumItemType.MiscJunk;
     public enumItemRarity itemRarity = enumItemRarity.Rarity00Junk;
-    public float itemWeight = 0.0f;
+    public float itemWeight = 1.0f;
     public int itemValue = 1;
+    public int itemCount = 1;
+    public int itemCountMax = 1;
 
     [Header("Item Flags")]
     public bool isInInventorySlot = false;

@@ -53,6 +53,8 @@ MonoBehaviour:
   itemRarity: 0
   itemWeight: 0.1
   itemValue: 15
+  itemCount: 1
+  itemCountMax: 90
   isInInventorySlot: 0
 --- !u!212 &3257486541222685028
 SpriteRenderer:
