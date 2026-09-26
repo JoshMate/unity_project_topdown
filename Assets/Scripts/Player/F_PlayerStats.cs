@@ -1,13 +1,17 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using UnityEngine;
 
 public class F_PlayerStats : MonoBehaviour
 {
+    private const float DefaultMaxCarryWeight = 100f;
+
     [Header("Object Refs")]
     public F_GUI_HUD_Manager hudManager;
     public F_GUI_CharacterScreen_Manager characterScreenManager;
+    private F_PlayerInventory playerInventory;
 
     [Header("Health Stats")]
     public float health;
@@ -27,17 +31,17 @@ public class F_PlayerStats : MonoBehaviour
     public float thirst; 
     public float thirstMax; 
     public float thirstDrainRateDelay;
-    public float toxic; 
+    public float toxic;
     public float toxicMax;
-    public float weight;
-    public float weightMax;
 
 
     [Header("Movement Stats")]
     public float speedMove;
     public float speedSprint;
 
-      [Header("Inventory Stats")]
+    [Header("Inventory Stats")]
+    public float weight;
+    public float weightMax = DefaultMaxCarryWeight;
 
     [Header("Private Checks")]
     public bool isSprinting = false;
@@ -49,6 +53,17 @@ public class F_PlayerStats : MonoBehaviour
     private float lastThirstDrainTime = 0f;
 
 
+    private void Awake()
+    {
+        playerInventory = GetComponent<F_PlayerInventory>();
+        if (weightMax <= 0f)
+        {
+            weightMax = DefaultMaxCarryWeight;
+        }
+
+        UpdateInventoryWeight();
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -57,6 +72,7 @@ public class F_PlayerStats : MonoBehaviour
 
     void Update()
     {
+        UpdateInventoryWeight();
         HUDUpdate();
         FoodHungerUpdate();
         StaminaUpdate();
@@ -76,6 +92,14 @@ public class F_PlayerStats : MonoBehaviour
     {
         lastStaminaUseTime = Time.time;
         isSprinting = false;
+    }
+
+    private void UpdateInventoryWeight()
+    {
+        if (playerInventory != null)
+        {
+            weight = playerInventory.CalculateCurrentWeight();
+        }
     }
 
     // Update HUD
@@ -106,10 +130,10 @@ public class F_PlayerStats : MonoBehaviour
         hudManager.toxicBar.barSlider.value = toxic;
         hudManager.toxicBar.barSlider.maxValue = toxicMax;
 
-        hudManager.weightBar.barText.text = Math.Ceiling(weight).ToString();
-        hudManager.weightBar.barTextMax.text = Math.Ceiling(weightMax).ToString();
-        hudManager.weightBar.barSlider.value = weight;
+        hudManager.weightBar.barText.text = weight.ToString("0.##", CultureInfo.InvariantCulture);
+        hudManager.weightBar.barTextMax.text = weightMax.ToString("0.##", CultureInfo.InvariantCulture);
         hudManager.weightBar.barSlider.maxValue = weightMax;
+        hudManager.weightBar.barSlider.value = weight;
     }
 
     // Handle Stamina Regeneration

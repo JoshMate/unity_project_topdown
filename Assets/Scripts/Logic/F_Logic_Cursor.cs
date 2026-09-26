@@ -48,6 +48,7 @@ public class F_Logic_Cursor : MonoBehaviour
         CursorItemDisplay();
         processInputs();
         RayCastCursorToGetHoveredElement();
+        ProcessInteractInput();
         CursorDropHeldItemWhenMenuClosed();
     }
 
@@ -137,37 +138,56 @@ public class F_Logic_Cursor : MonoBehaviour
 
         cursorTransformPointer.position = mousePosition;
 
-        //Left Click Controls
-        if (controls.IsPrimaryActionPressed())
+        // Left Click Controls
+        if (controls.IsPrimaryActionPressed() && characterScreenManager.isMenuOpen)
         {
-            if (characterScreenManager.isMenuOpen == true)
+            // Drop held cursor item on the floor at mouse position when no GUI element is in the way.
+            if (cursorHeldItemObj != null && !EventSystem.current.IsPointerOverGameObject())
             {
+                CursorDropItemAtLocation();
+            }
 
-                // Drop Held Cursor Item on the floor at mouse position (Only if no GUI element is in the way)
-                if (cursorHeldItemObj != null && !EventSystem.current.IsPointerOverGameObject())
+            if (cursorHoveredObject != null)
+            {
+                F_Item hoveredItem = cursorHoveredObject.GetComponent<F_Item>();
+                if (hoveredItem != null)
                 {
-                    CursorDropItemAtLocation();
-                }
-
-                if (cursorHoveredObject != null)
-                {
-                    // Pick Item up off the floor (If no inventory slot found)
-                    if (cursorHoveredObject.GetComponent<F_Item>() != null)
+                    float distanceToPlayer = Vector2.Distance(hoveredItem.transform.position, playerController.transform.position);
+                    if (distanceToPlayer <= cursorPlaceMaxDistance)
                     {
-                        // Check if the item is within pikcup range first
-                        float distanceBetweenCuroseObjectAndPlayer = Vector2.Distance (cursorHoveredObject.transform.position, playerController.transform.position);
-                        if (distanceBetweenCuroseObjectAndPlayer <= cursorPlaceMaxDistance)
-                        {
-                            cursorHeldItemObj = cursorHoveredObject.GetComponent<F_Item>();
-                            cursorHeldItemObj.MoveItemToInventory();
-                        }
-                        
+                        cursorHeldItemObj = hoveredItem;
+                        cursorHeldItemObj.MoveItemToInventory();
                     }
                 }
-
             }
         }
     }
+
+    private void ProcessInteractInput()
+    {
+        if (!characterScreenManager.isMenuOpen || !controls.IsInteractPressed() || cursorHoveredObject == null)
+        {
+            return;
+        }
+
+        F_Item hoveredItem = cursorHoveredObject.GetComponent<F_Item>();
+        if (hoveredItem == null)
+        {
+            return;
+        }
+
+        float distanceToPlayer = Vector2.Distance(hoveredItem.transform.position, playerController.transform.position);
+        if (distanceToPlayer > cursorPlaceMaxDistance)
+        {
+            return;
+        }
+
+        if (F_Utility_Helper_Inventory.AddItemToInventory(hoveredItem, playerController.playerInventory))
+        {
+            cursorHoveredObject = null;
+        }
+    }
+
 
     void CursorTypeSelection()
     {

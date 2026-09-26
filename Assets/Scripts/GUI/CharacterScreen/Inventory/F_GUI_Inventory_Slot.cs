@@ -17,6 +17,13 @@ public class F_GUI_Inventory_Slot : MonoBehaviour, IPointerClickHandler, IPointe
     public UnityEngine.UI.Image slotDrawBorderObj;
     public UnityEngine.UI.Image slotDrawItemObj;
     public TMP_Text slotItemCountText;
+    private TMP_Text slotQuickKeyText;
+
+    [SerializeField] private int quickSlotIndex = -1;
+
+    private const int FirstQuickSlotIndex = 1;
+    private const int LastQuickSlotIndex = 5;
+    private F_Logic_Controls controlsObj;
     
     
 
@@ -59,22 +66,11 @@ public class F_GUI_Inventory_Slot : MonoBehaviour, IPointerClickHandler, IPointe
     private bool TryMergeHeldItemStack()
     {
         F_Item heldItem = cursorObj.cursorHeldItemObj;
-
-        if (slotItemObj == null || heldItem == null || slotItemObj == heldItem ||
-            slotItemObj.itemType != heldItem.itemType || slotItemObj.itemName != heldItem.itemName)
+        int transferredCount = F_Utility_Helper_Inventory.MergeItemStacks(heldItem, slotItemObj);
+        if (transferredCount <= 0)
         {
             return false;
         }
-
-        int availableStackSpace = slotItemObj.itemCountMax - slotItemObj.itemCount;
-        if (availableStackSpace <= 0 || heldItem.itemCount <= 0)
-        {
-            return false;
-        }
-
-        int transferredCount = Mathf.Min(availableStackSpace, heldItem.itemCount);
-        slotItemObj.itemCount += transferredCount;
-        heldItem.itemCount -= transferredCount;
 
         if (heldItem.itemCount == 0)
         {
@@ -103,10 +99,47 @@ public class F_GUI_Inventory_Slot : MonoBehaviour, IPointerClickHandler, IPointe
 
 
 
-    // Start is called before the first frame update
-    void Start()
+    private void Awake()
     {
-        
+        if (quickSlotIndex >= FirstQuickSlotIndex && quickSlotIndex <= LastQuickSlotIndex)
+        {
+            CreateQuickSlotKeyHint();
+        }
+    }
+
+    private void CreateQuickSlotKeyHint()
+    {
+        GameObject keyHintObject = new GameObject(
+            "Slot_QuickKey",
+            typeof(RectTransform),
+            typeof(CanvasRenderer),
+            typeof(TextMeshProUGUI));
+        keyHintObject.transform.SetParent(transform, false);
+        keyHintObject.transform.SetAsLastSibling();
+
+        RectTransform keyHintRect = keyHintObject.GetComponent<RectTransform>();
+        keyHintRect.anchorMin = Vector2.zero;
+        keyHintRect.anchorMax = Vector2.zero;
+        keyHintRect.anchoredPosition = new Vector2(4f, 4f);
+        keyHintRect.sizeDelta = new Vector2(28f, 22f);
+        keyHintRect.pivot = Vector2.zero;
+
+        slotQuickKeyText = keyHintObject.GetComponent<TMP_Text>();
+        slotQuickKeyText.text = string.Empty;
+        slotQuickKeyText.alignment = TextAlignmentOptions.BottomLeft;
+        slotQuickKeyText.raycastTarget = false;
+        slotQuickKeyText.enableAutoSizing = true;
+        slotQuickKeyText.fontSizeMin = 8f;
+
+        if (slotItemCountText != null)
+        {
+            slotQuickKeyText.font = slotItemCountText.font;
+            slotQuickKeyText.fontSharedMaterial = slotItemCountText.fontSharedMaterial;
+            slotQuickKeyText.color = slotItemCountText.color;
+            slotQuickKeyText.fontStyle = slotItemCountText.fontStyle;
+            slotQuickKeyText.fontSize = slotItemCountText.fontSize;
+            slotQuickKeyText.fontSizeMax = slotItemCountText.fontSize;
+        }
     }
 
     void DrawSlotIcon() {
@@ -129,6 +162,41 @@ public class F_GUI_Inventory_Slot : MonoBehaviour, IPointerClickHandler, IPointe
 
     }
 
+    private void UpdateQuickSlotKeyHint()
+    {
+        if (slotQuickKeyText == null)
+        {
+            return;
+        }
+
+        bool isQuickSlot = quickSlotIndex >= FirstQuickSlotIndex && quickSlotIndex <= LastQuickSlotIndex;
+        if (slotQuickKeyText.gameObject.activeSelf != isQuickSlot)
+        {
+            slotQuickKeyText.gameObject.SetActive(isQuickSlot);
+        }
+
+        if (!isQuickSlot)
+        {
+            return;
+        }
+
+        if (controlsObj == null)
+        {
+            F_Logic_GameManager gameManager = FindFirstObjectByType<F_Logic_GameManager>();
+            if (gameManager != null)
+            {
+                controlsObj = gameManager.controlsObject;
+            }
+        }
+
+        string keyHint = controlsObj == null ? string.Empty : controlsObj.GetQuickSlotKeyDisplayName(quickSlotIndex);
+        if (slotQuickKeyText.text != keyHint)
+        {
+            slotQuickKeyText.text = keyHint;
+        }
+    }
+
+
     // Update is called once per frame
     void Update()
     {
@@ -144,6 +212,8 @@ public class F_GUI_Inventory_Slot : MonoBehaviour, IPointerClickHandler, IPointe
 
         // Draw the Icon in the Slot
         DrawSlotIcon();
+
+        UpdateQuickSlotKeyHint();
 
         // Show a count only while the slot contains an item.
         if (slotItemCountText != null)

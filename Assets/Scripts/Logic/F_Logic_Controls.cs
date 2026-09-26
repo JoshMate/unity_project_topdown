@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class F_Logic_Controls : MonoBehaviour
@@ -23,6 +24,9 @@ public class F_Logic_Controls : MonoBehaviour
     private const int DefaultPrimaryActionMouseButton = 0;
     private const int DefaultSecondaryActionMouseButton = 1;
     private const int DefaultTertiaryActionMouseButton = 2;
+    private const string AlphaKeyCodePrefix = "Alpha";
+    private const string KeypadKeyCodePrefix = "Keypad";
+    private const string KeypadDisplayPrefix = "Num";
 
     [Header("Movement Bindings")]
     public KeyCode moveUpKey = DefaultMoveUpKey;
@@ -144,6 +148,67 @@ public class F_Logic_Controls : MonoBehaviour
     {
         return Input.GetKeyDown(quickSlot5Key);
     }
+
+    /// <summary>Returns the configured quick-slot binding as concise display text.</summary>
+    /// <param name="oneBasedQuickSlotIndex">The quick-slot number, from 1 through 5.</param>
+    public string GetQuickSlotKeyDisplayName(int oneBasedQuickSlotIndex)
+    {
+        KeyCode keyCode;
+        switch (oneBasedQuickSlotIndex)
+        {
+            case 1:
+                keyCode = quickSlot1Key;
+                break;
+            case 2:
+                keyCode = quickSlot2Key;
+                break;
+            case 3:
+                keyCode = quickSlot3Key;
+                break;
+            case 4:
+                keyCode = quickSlot4Key;
+                break;
+            case 5:
+                keyCode = quickSlot5Key;
+                break;
+            default:
+                return string.Empty;
+        }
+
+        return FormatKeyCodeDisplayName(keyCode);
+    }
+
+    private static string FormatKeyCodeDisplayName(KeyCode keyCode)
+    {
+        switch (keyCode)
+        {
+            case KeyCode.None:
+                return string.Empty;
+            case KeyCode.LeftControl:
+            case KeyCode.RightControl:
+                return "Ctrl";
+            case KeyCode.LeftShift:
+            case KeyCode.RightShift:
+                return "Shift";
+            case KeyCode.LeftAlt:
+            case KeyCode.RightAlt:
+                return "Alt";
+        }
+
+        string keyName = keyCode.ToString();
+        if (keyName.StartsWith(AlphaKeyCodePrefix, StringComparison.Ordinal))
+        {
+            return keyName.Substring(AlphaKeyCodePrefix.Length);
+        }
+
+        if (keyName.StartsWith(KeypadKeyCodePrefix, StringComparison.Ordinal))
+        {
+            return KeypadDisplayPrefix + keyName.Substring(KeypadKeyCodePrefix.Length);
+        }
+
+        return keyName;
+    }
+
 
     /// <summary>Returns whether the configured primary action mouse button was pressed this frame.</summary>
     public bool IsPrimaryActionPressed()
