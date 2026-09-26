@@ -16,6 +16,7 @@ public class F_Logic_Cursor : MonoBehaviour
     public Transform cursorTransformPointer;
     public Transform cursorTransformItem;
     public TMP_Text  cursorText;
+    public F_GUI_ItemTooltip itemTooltip;
 
     [Header("Art")]
     public Sprite cursorSpritePointer;
@@ -58,70 +59,75 @@ public class F_Logic_Cursor : MonoBehaviour
 
     void RayCastCursorToGetHoveredElement()
     {
-        // Check if the mouse is over a UI element (Then Don't look for Game Objects to hover over)
-        if (EventSystem.current.IsPointerOverGameObject()) {
+        F_Item hoveredItem = null;
+        Vector2 pointerScreenPosition = controls.GetMouseScreenPosition();
 
-            // 2. Create fake pointer data at the mouse position
+        if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
+        {
             PointerEventData pointerData = new PointerEventData(EventSystem.current)
             {
-                position = controls.GetMouseScreenPosition()
+                position = pointerScreenPosition
             };
 
-            // 3. Raycast to find what we hit
             List<RaycastResult> raycastResults = new List<RaycastResult>();
             EventSystem.current.RaycastAll(pointerData, raycastResults);
 
-            // 4. Check if we hit any UI elements
-            if (raycastResults.Count > 0)
+            for (int resultIndex = 0; resultIndex < raycastResults.Count; resultIndex++)
             {
-                GameObject hitObject = raycastResults[0].gameObject;
-
-                // 5. Try to find the F_GUI_Inventory_Slot component on the hit object
-                F_GUI_Inventory_Slot hoveredSlot = hitObject.GetComponentInParent<F_GUI_Inventory_Slot>();
-
-                // 6. If it's not null, we are successfully hovering over an inventory slot!
-                if (hoveredSlot != null)
+                F_GUI_Inventory_Slot hoveredSlot = raycastResults[resultIndex].gameObject.GetComponentInParent<F_GUI_Inventory_Slot>();
+                if (hoveredSlot == null)
                 {
-                    // Optional: Check if the slot actually has an item in it before checking the name
-                    if (hoveredSlot.slotItemObj != null)
-                    {
-                        cursorText.transform.position = mousePosition + new Vector2(0.5f, -1.2f);
-                        cursorHoveredObject = hitObject;
-                        cursorText.text = hoveredSlot.slotItemObj.itemName;
-                    }
+                    continue;
                 }
-                else
-                {
-                    cursorHoveredObject = null;
-                    cursorText.text = "";
-                }
+
+                hoveredItem = hoveredSlot.slotItemObj;
+                break;
             }
-            return; 
-        }
-        
-        // Ray Cast to hit game objects in the world
-        // Perform a 2D raycast at the mouse position
-        RaycastHit2D hit = Physics2D.Raycast(mousePosition, Vector2.zero);
 
+            cursorHoveredObject = null;
+            cursorText.text = string.Empty;
+            UpdateItemTooltip(hoveredItem, pointerScreenPosition);
+            return;
+        }
+
+        RaycastHit2D hit = Physics2D.Raycast(mousePosition, Vector2.zero);
         if (hit.collider != null)
         {
-            cursorHoveredObject = hit.collider.gameObject;
-            cursorText.transform.position = mousePosition + new Vector2(0.5f, -1.2f);
-
-            if (cursorHoveredObject != null && cursorHoveredObject.GetComponent<F_Item>() != null)
-            {
-                cursorText.text = cursorHoveredObject.GetComponent<F_Item>().itemName;
-            }
-
-            
-
+            hoveredItem = hit.collider.GetComponentInParent<F_Item>();
+            cursorHoveredObject = hoveredItem != null ? hoveredItem.gameObject : hit.collider.gameObject;
         }
         else
         {
             cursorHoveredObject = null;
-            cursorText.text = "";
         }
-        
+
+        if (characterScreenManager.isMenuOpen)
+        {
+            cursorText.text = string.Empty;
+        }
+        else if (hoveredItem != null)
+        {
+            cursorText.transform.position = mousePosition + new Vector2(0.5f, -1.2f);
+            cursorText.text = hoveredItem.itemName;
+        }
+        else
+        {
+            cursorText.text = string.Empty;
+        }
+
+        UpdateItemTooltip(hoveredItem, pointerScreenPosition);
+    }
+
+    private void UpdateItemTooltip(F_Item hoveredItem, Vector2 pointerScreenPosition)
+    {
+        if (characterScreenManager.isMenuOpen && hoveredItem != null)
+        {
+            itemTooltip.Show(hoveredItem, pointerScreenPosition);
+        }
+        else
+        {
+            itemTooltip.Hide();
+        }
     }
 
     void processInputs()
