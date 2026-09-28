@@ -87,15 +87,15 @@ public class F_GUI_HUD_Bar : MonoBehaviour
         switch (weightClass)
         {
             case enumWeightClass.FreeWeight:
-                return "Free";
+                return "Weightless";
             case enumWeightClass.LightWeight:
-                return "Light";
+                return "Light Weight";
             case enumWeightClass.MediumWeight:
-                return "Medium";
+                return "Medium Weight";
             case enumWeightClass.HeavyWeight:
-                return "Heavy";
+                return "Heavy Weight";
             case enumWeightClass.TooMuchWeight:
-                return "Over";
+                return "Over Weight";
             default:
                 return string.Empty;
         }
