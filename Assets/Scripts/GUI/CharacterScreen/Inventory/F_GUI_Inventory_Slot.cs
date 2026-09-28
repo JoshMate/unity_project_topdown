@@ -35,9 +35,15 @@ public class F_GUI_Inventory_Slot : MonoBehaviour, IPointerClickHandler, IPointe
     public bool isSlotLocked;
     public bool isSlotHovered;
 
-    /// <summary>Handles cursor item movement, stack merging, and compatible slot swaps.</summary>
+    /// <summary>Handles cursor item movement, stack merging, compatible slot swaps, and the right-click context menu.</summary>
     public void OnPointerClick(PointerEventData eventData)
     {
+        if (eventData.button == PointerEventData.InputButton.Right)
+        {
+            ShowItemContextMenu(eventData);
+            return;
+        }
+
         if (cursorObj.cursorHeldItemObj != null)
         {
             if (!F_Utility_Helper_Inventory.CheckIfItemTypeMatchesSlotType(this, cursorObj.cursorHeldItemObj))
@@ -53,6 +59,20 @@ public class F_GUI_Inventory_Slot : MonoBehaviour, IPointerClickHandler, IPointe
         {
             (cursorObj.cursorHeldItemObj, slotItemObj) = (slotItemObj, cursorObj.cursorHeldItemObj);
         }
+    }
+
+    /// <summary>Opens the shared item context menu with the actions exposed by this slot's item.</summary>
+    private void ShowItemContextMenu(PointerEventData eventData)
+    {
+        if (slotItemObj == null || cursorObj == null || cursorObj.itemContextMenu == null)
+        {
+            return;
+        }
+
+        F_PlayerInventory playerInventory = cursorObj.playerController != null
+            ? cursorObj.playerController.playerInventory
+            : null;
+        cursorObj.itemContextMenu.Show(slotItemObj, eventData.position, playerInventory);
     }
 
     private bool TryMergeHeldItemStack()

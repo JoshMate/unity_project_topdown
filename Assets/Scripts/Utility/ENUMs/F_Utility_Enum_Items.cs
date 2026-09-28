@@ -53,3 +53,9 @@ public enum enumInventorySlotHotkeyGroup
     QuickSlot,
     WeaponSlot
 }
+
+/// <summary>Actions selectable from an inventory item's right-click context menu.</summary>
+public enum enumItemContextAction
+{
+    Drop
+}

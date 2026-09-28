@@ -11,7 +11,9 @@ public class F_GUI_ItemTooltip : MonoBehaviour
     private const float BorderThickness = 2f;
     private const float IconSize = 56f;
     private const float SectionSpacing = 10f;
-    private const float CursorGap = 18f;
+    // Must clear the custom cursor sprite's on-screen radius (~45px at the reference resolution) so the
+    // tooltip never overlaps the cursor, which always renders on top of other Layer_Cursor UI.
+    private const float CursorGap = 52f;
     private const float ScreenEdgePadding = 12f;
     private const float MinimumDetailFontSize = 11f;
     private const float MinimumDescriptionFontSize = 11f;

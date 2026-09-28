@@ -168,6 +168,16 @@ public class F_Item : MonoBehaviour
         };
     }
 
+    /// <summary>Returns the right-click context menu actions available for this item, in display order.</summary>
+    /// <remarks>Override in item subclasses to add type-specific actions on top of the shared defaults.</remarks>
+    public virtual List<enumItemContextAction> GetContextMenuActions()
+    {
+        return new List<enumItemContextAction>
+        {
+            enumItemContextAction.Drop
+        };
+    }
+
     /// <summary>Updates the item's inventory state and hides it while it is stored.</summary>
     internal void SetInventoryStoredState(bool isStored)
     {

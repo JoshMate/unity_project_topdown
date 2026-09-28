@@ -17,6 +17,7 @@ public class F_Logic_Cursor : MonoBehaviour
     public Transform cursorTransformItem;
     public TMP_Text  cursorText;
     public F_GUI_ItemTooltip itemTooltip;
+    public F_GUI_ItemContextMenu itemContextMenu;
 
     [Header("Art")]
     public Sprite cursorSpritePointer;
@@ -62,6 +63,7 @@ public class F_Logic_Cursor : MonoBehaviour
     {
         F_Item hoveredItem = null;
         Vector2 pointerScreenPosition = controls.GetMouseScreenPosition();
+        itemContextMenu?.CloseIfPointerMovedAway(pointerScreenPosition);
 
         if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
         {
@@ -121,6 +123,12 @@ public class F_Logic_Cursor : MonoBehaviour
 
     private void UpdateItemTooltip(F_Item hoveredItem, Vector2 pointerScreenPosition)
     {
+        if (itemContextMenu != null && itemContextMenu.IsOpen)
+        {
+            itemTooltip.Hide();
+            return;
+        }
+
         if (characterScreenManager.isMenuOpen && hoveredItem != null)
         {
             itemTooltip.Show(hoveredItem, pointerScreenPosition);
@@ -206,6 +214,7 @@ public class F_Logic_Cursor : MonoBehaviour
         if (characterScreenManager.isMenuOpen == false)
         {
             CursorDropItemAtLocation();
+            itemContextMenu?.Hide();
         }
     }
 
