@@ -51,7 +51,7 @@ MonoBehaviour:
   itemDescription: A basic long ranged rifle used for hunting.
   itemType: 10
   itemRarity: 1
-  itemWeight: 3
+  itemWeight: 5
   itemValue: 300
   itemCount: 1
   itemCountMax: 1

@@ -7,8 +7,6 @@ using UnityEngine;
 public class F_PlayerStats : MonoBehaviour
 {
     [Header("Constants Private")]
-    private const float defaultMaxCarryWeight = 100f;
-
     // Weight class thresholds, expressed as a fraction of weightMax.
     private const float weightThresholdLightWeight = 0.25f;
     private const float weightThresholdMediumWeight = 0.50f;
@@ -47,7 +45,7 @@ public class F_PlayerStats : MonoBehaviour
 
     [Header("Inventory Stats")]
     public float weight;
-    public float weightMax = defaultMaxCarryWeight;
+    public float weightMax = 50f;
     // Carry-weight classification, driven by weight as a percentage of weightMax. Used for future gameplay effects on the player.
     public enumWeightClass weightClass;
 

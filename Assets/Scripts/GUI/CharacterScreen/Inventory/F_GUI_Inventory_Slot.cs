@@ -216,7 +216,9 @@ public class F_GUI_Inventory_Slot : MonoBehaviour, IPointerClickHandler, IPointe
 
         if (slotItemCountText != null)
         {
-            slotItemCountText.text = slotItemObj == null ? string.Empty : slotItemObj.itemCount.ToString();
+            slotItemCountText.text = slotItemObj == null || slotItemObj.itemCount == 1
+                ? string.Empty
+                : slotItemObj.itemCount.ToString();
         }
     }
 }

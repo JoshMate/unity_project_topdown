@@ -172,8 +172,6 @@ MonoBehaviour:
   sneakKey: 99
   interactKey: 101
   reloadKey: 114
-  quickSlotKeys: 7100000074000000660000006700000076000000
-  weaponSlotKeys: 31000000320000003300000034000000
   inventoryToggleKey: 9
   primaryActionMouseButton: 0
   secondaryActionMouseButton: 1
@@ -181,6 +179,8 @@ MonoBehaviour:
   buttonModifierControl: 306
   buttonModifierShift: 304
   buttonModifierAlt: 308
+  quickSlotKeys: 7100000074000000660000006700000076000000
+  weaponSlotKeys: 31000000320000003300000034000000
 --- !u!1 &13182140
 GameObject:
   m_ObjectHideFlags: 0
@@ -3933,7 +3933,7 @@ MonoBehaviour:
   speedMove: 3
   speedSprint: 6
   weight: 0
-  weightMax: 0
+  weightMax: 50
   weightClass: 0
   isSprinting: 0
 --- !u!114 &412122234
