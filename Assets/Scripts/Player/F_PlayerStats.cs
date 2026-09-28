@@ -8,6 +8,12 @@ public class F_PlayerStats : MonoBehaviour
 {
     private const float DefaultMaxCarryWeight = 100f;
 
+    // Weight class thresholds, expressed as a fraction of weightMax.
+    private const float WeightThresholdLightWeight = 0.25f;
+    private const float WeightThresholdMediumWeight = 0.50f;
+    private const float WeightThresholdHeavyWeight = 0.75f;
+    private const float WeightThresholdTooMuchWeight = 1.00f;
+
     [Header("Object Refs")]
     public F_GUI_HUD_Manager hudManager;
     public F_GUI_CharacterScreen_Manager characterScreenManager;
@@ -42,6 +48,8 @@ public class F_PlayerStats : MonoBehaviour
     [Header("Inventory Stats")]
     public float weight;
     public float weightMax = DefaultMaxCarryWeight;
+    // Carry-weight classification, driven by weight as a percentage of weightMax. Used for future gameplay effects on the player.
+    public enumWeightClass weightClass;
 
     [Header("Private Checks")]
     public bool isSprinting = false;
@@ -73,6 +81,7 @@ public class F_PlayerStats : MonoBehaviour
     void Update()
     {
         UpdateInventoryWeight();
+        UpdateWeightClass();
         HUDUpdate();
         FoodHungerUpdate();
         StaminaUpdate();
@@ -99,6 +108,33 @@ public class F_PlayerStats : MonoBehaviour
         if (playerInventory != null)
         {
             weight = playerInventory.CalculateCurrentWeight();
+        }
+    }
+
+    // Recalculates weightClass from the current weight-to-weightMax ratio.
+    private void UpdateWeightClass()
+    {
+        float weightPercent = weightMax > 0f ? weight / weightMax : 0f;
+
+        if (weightPercent >= WeightThresholdTooMuchWeight)
+        {
+            weightClass = enumWeightClass.TooMuchWeight;
+        }
+        else if (weightPercent >= WeightThresholdHeavyWeight)
+        {
+            weightClass = enumWeightClass.HeavyWeight;
+        }
+        else if (weightPercent >= WeightThresholdMediumWeight)
+        {
+            weightClass = enumWeightClass.MediumWeight;
+        }
+        else if (weightPercent >= WeightThresholdLightWeight)
+        {
+            weightClass = enumWeightClass.LightWeight;
+        }
+        else
+        {
+            weightClass = enumWeightClass.FreeWeight;
         }
     }
 
@@ -134,6 +170,7 @@ public class F_PlayerStats : MonoBehaviour
         hudManager.weightBar.barTextMax.text = weightMax.ToString("0.##", CultureInfo.InvariantCulture);
         hudManager.weightBar.barSlider.maxValue = weightMax;
         hudManager.weightBar.barSlider.value = weight;
+        hudManager.weightBar.SetWeightClass(weightClass);
     }
 
     // Handle Stamina Regeneration
