@@ -34,10 +34,36 @@ public class F_PlayerInventory : MonoBehaviour
     private readonly HashSet<F_GUI_Inventory_Slot> visitedWeightSlots = new HashSet<F_GUI_Inventory_Slot>();
     private readonly HashSet<F_Item> visitedWeightItems = new HashSet<F_Item>();
     private F_PlayerController playerController;
+    private F_PlayerStats playerStats;
 
     private void Awake()
     {
         playerController = GetComponent<F_PlayerController>();
+        playerStats = GetComponent<F_PlayerStats>();
+        if (playerStats != null)
+        {
+            ApplyInventorySlotAvailability(playerStats.inventorySlotsAvailable);
+        }
+    }
+
+    /// <summary>Applies the current player-stat slot capacity to the inventory slot UI.</summary>
+    /// <param name="availableSlotCount">The number of inventory slots that should be usable.</param>
+    public void ApplyInventorySlotAvailability(int availableSlotCount)
+    {
+        if (invSlotInventory == null)
+        {
+            return;
+        }
+
+        int boundedAvailableSlotCount = Mathf.Clamp(availableSlotCount, 0, invSlotInventory.Count);
+        for (int slotIndex = 0; slotIndex < invSlotInventory.Count; slotIndex++)
+        {
+            F_GUI_Inventory_Slot slot = invSlotInventory[slotIndex];
+            if (slot != null)
+            {
+                slot.SetSlotLocked(slotIndex >= boundedAvailableSlotCount);
+            }
+        }
     }
 
     /// <summary>Returns the weapon slot at a one-based index, or null when the index is invalid.</summary>
@@ -71,9 +97,9 @@ public class F_PlayerInventory : MonoBehaviour
         totalWeight += GetSlotWeight(invSlotAccessory02);
         totalWeight += GetSlotWeight(invSlotAccessory03);
         totalWeight += GetSlotWeight(invSlotAccessory04);
-        totalWeight += GetSlotsWeight(invSlotWeapons);
-        totalWeight += GetSlotsWeight(invSlotQuickSlots);
-        totalWeight += GetSlotsWeight(invSlotInventory);
+        totalWeight += GetSlotsWeight(invSlotWeapons, true);
+        totalWeight += GetSlotsWeight(invSlotQuickSlots, true);
+        totalWeight += GetSlotsWeight(invSlotInventory, false);
 
         if (playerController != null && playerController.playerCursor != null)
         {
@@ -83,7 +109,7 @@ public class F_PlayerInventory : MonoBehaviour
         return totalWeight;
     }
 
-    private float GetSlotsWeight(List<F_GUI_Inventory_Slot> slots)
+    private float GetSlotsWeight(List<F_GUI_Inventory_Slot> slots, bool includeLockedSlots)
     {
         if (slots == null)
         {
@@ -93,7 +119,11 @@ public class F_PlayerInventory : MonoBehaviour
         float totalWeight = 0f;
         for (int slotIndex = 0; slotIndex < slots.Count; slotIndex++)
         {
-            totalWeight += GetSlotWeight(slots[slotIndex]);
+            F_GUI_Inventory_Slot slot = slots[slotIndex];
+            if (slot != null && (includeLockedSlots || !slot.isSlotLocked))
+            {
+                totalWeight += GetSlotWeight(slot);
+            }
         }
 
         return totalWeight;

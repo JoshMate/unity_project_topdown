@@ -33,6 +33,7 @@ public class F_GUI_Inventory_Slot : MonoBehaviour, IPointerClickHandler, IPointe
 
     [Header("Privates")]
     private TMP_Text slotHotkeyText;
+    private CanvasGroup slotCanvasGroup;
     [SerializeField] private enumInventorySlotHotkeyGroup slotHotkeyGroup;
     [SerializeField] private int slotHotkeyIndex = -1;
     private F_Logic_Controls controlsObj;
@@ -40,6 +41,11 @@ public class F_GUI_Inventory_Slot : MonoBehaviour, IPointerClickHandler, IPointe
     /// <summary>Handles cursor item movement, stack merging, compatible slot swaps, and the right-click context menu.</summary>
     public void OnPointerClick(PointerEventData eventData)
     {
+        if (isSlotLocked || cursorObj == null)
+        {
+            return;
+        }
+
         if (eventData.button == PointerEventData.InputButton.Right)
         {
             ShowItemContextMenu(eventData);
@@ -101,13 +107,43 @@ public class F_GUI_Inventory_Slot : MonoBehaviour, IPointerClickHandler, IPointe
     /// <summary>Marks this slot as hovered by the pointer.</summary>
     public void OnPointerEnter(PointerEventData eventData)
     {
-        isSlotHovered = true;
+        if (!isSlotLocked)
+        {
+            isSlotHovered = true;
+        }
     }
 
     /// <summary>Clears the hover state when the pointer leaves this slot.</summary>
     public void OnPointerExit(PointerEventData eventData)
     {
         isSlotHovered = false;
+    }
+
+    /// <summary>Sets whether this slot is locked and immediately updates its input and border state.</summary>
+    /// <param name="locked">True to prevent interaction with the slot.</param>
+    public void SetSlotLocked(bool locked)
+    {
+        isSlotLocked = locked;
+        ApplySlotLockState();
+    }
+
+    private void ApplySlotLockState()
+    {
+        if (isSlotLocked)
+        {
+            isSlotHovered = false;
+        }
+
+        if (slotCanvasGroup != null)
+        {
+            slotCanvasGroup.interactable = !isSlotLocked;
+            slotCanvasGroup.blocksRaycasts = !isSlotLocked;
+        }
+
+        if (slotDrawBorderObj != null)
+        {
+            slotDrawBorderObj.enabled = !isSlotLocked;
+        }
     }
 
     private void OnDisable()
@@ -117,6 +153,14 @@ public class F_GUI_Inventory_Slot : MonoBehaviour, IPointerClickHandler, IPointe
 
     private void Awake()
     {
+        slotCanvasGroup = GetComponent<CanvasGroup>();
+        if (slotCanvasGroup == null)
+        {
+            slotCanvasGroup = gameObject.AddComponent<CanvasGroup>();
+        }
+
+        ApplySlotLockState();
+
         if (HasHotkeyBinding())
         {
             CreateSlotHotkeyHint();
@@ -165,9 +209,9 @@ public class F_GUI_Inventory_Slot : MonoBehaviour, IPointerClickHandler, IPointe
 
     private void DrawSlotIcon()
     {
-        Sprite slotIconToDraw = slotItemObj != null
-            ? slotItemObj.itemSprite
-            : isSlotLocked ? slotIconLocked : slotIconPlaceHolder;
+        Sprite slotIconToDraw = isSlotLocked
+            ? slotIconLocked
+            : slotItemObj != null ? slotItemObj.itemSprite : slotIconPlaceHolder;
 
         if (slotIconToDraw == null || slotDrawItemObj == null)
         {
@@ -195,7 +239,7 @@ public class F_GUI_Inventory_Slot : MonoBehaviour, IPointerClickHandler, IPointe
             }
         }
 
-        string keyHint = controlsObj == null
+        string keyHint = isSlotLocked || controlsObj == null
             ? string.Empty
             : controlsObj.GetSlotKeyDisplayName(slotHotkeyGroup, slotHotkeyIndex);
         if (slotHotkeyText.text != keyHint)
@@ -206,7 +250,8 @@ public class F_GUI_Inventory_Slot : MonoBehaviour, IPointerClickHandler, IPointe
 
     private void Update()
     {
-        if (slotDrawBorderObj != null)
+        ApplySlotLockState();
+        if (slotDrawBorderObj != null && !isSlotLocked)
         {
             slotDrawBorderObj.color = isSlotHovered ? Color.white : Color.gray;
         }
@@ -216,7 +261,7 @@ public class F_GUI_Inventory_Slot : MonoBehaviour, IPointerClickHandler, IPointe
 
         if (slotItemCountText != null)
         {
-            slotItemCountText.text = slotItemObj == null || slotItemObj.itemCount == 1
+            slotItemCountText.text = isSlotLocked || slotItemObj == null || slotItemObj.itemCount == 1
                 ? string.Empty
                 : slotItemObj.itemCount.ToString();
         }

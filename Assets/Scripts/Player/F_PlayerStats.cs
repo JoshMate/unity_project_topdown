@@ -7,6 +7,8 @@ using UnityEngine;
 public class F_PlayerStats : MonoBehaviour
 {
     [Header("Constants Private")]
+    private const int defaultInventorySlotsAvailable = 9;
+    private const float defaultMaxCarryWeight = 50f;
     // Weight class thresholds, expressed as a fraction of weightMax.
     private const float weightThresholdLightWeight = 0.25f;
     private const float weightThresholdMediumWeight = 0.50f;
@@ -45,9 +47,11 @@ public class F_PlayerStats : MonoBehaviour
 
     [Header("Inventory Stats")]
     public float weight;
-    public float weightMax = 50f;
+    public float weightMax = defaultMaxCarryWeight;
     // Carry-weight classification, driven by weight as a percentage of weightMax. Used for future gameplay effects on the player.
     public enumWeightClass weightClass;
+    public int inventorySlotsAvailable = defaultInventorySlotsAvailable;
+    public int inventorySlotsMax;
 
     [Header("Status Flags")]
     public bool isSprinting = false;
@@ -65,12 +69,53 @@ public class F_PlayerStats : MonoBehaviour
     private void Awake()
     {
         playerInventory = GetComponent<F_PlayerInventory>();
+        RefreshInventorySlotStats();
         if (weightMax <= 0f)
         {
             weightMax = defaultMaxCarryWeight;
         }
 
         UpdateInventoryWeight();
+    }
+
+    /// <summary>Sets the number of inventory slots the player can currently use.</summary>
+    /// <param name="availableSlotCount">The requested number of unlocked inventory slots.</param>
+    public void SetInventorySlotsAvailable(int availableSlotCount)
+    {
+        inventorySlotsAvailable = availableSlotCount;
+        RefreshInventorySlotStats();
+    }
+
+    /// <summary>Unlocks additional inventory slots without exceeding the configured maximum.</summary>
+    /// <param name="slotsToUnlock">The number of additional slots to unlock.</param>
+    public void UnlockInventorySlots(int slotsToUnlock)
+    {
+        if (slotsToUnlock <= 0)
+        {
+            return;
+        }
+
+        RefreshInventorySlotStats();
+        int remainingSlots = inventorySlotsMax - inventorySlotsAvailable;
+        inventorySlotsAvailable += slotsToUnlock >= remainingSlots ? remainingSlots : slotsToUnlock;
+        RefreshInventorySlotStats();
+    }
+
+    private void RefreshInventorySlotStats()
+    {
+        if (playerInventory == null)
+        {
+            playerInventory = GetComponent<F_PlayerInventory>();
+        }
+
+        inventorySlotsMax = playerInventory != null && playerInventory.invSlotInventory != null
+            ? playerInventory.invSlotInventory.Count
+            : 0;
+        inventorySlotsAvailable = Mathf.Clamp(inventorySlotsAvailable, 0, inventorySlotsMax);
+        if (playerInventory != null)
+        {
+            playerInventory.ApplyInventorySlotAvailability(inventorySlotsAvailable);
+        }
     }
 
     // Start is called before the first frame update

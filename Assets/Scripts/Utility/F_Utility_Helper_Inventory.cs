@@ -9,7 +9,7 @@ public static class F_Utility_Helper_Inventory
     /// <returns>True when the slot accepts the item's type.</returns>
     public static bool CheckIfItemTypeMatchesSlotType(F_GUI_Inventory_Slot slotToCheck, F_Item itemToCheck)
     {
-        if (slotToCheck == null || itemToCheck == null)
+        if (slotToCheck == null || itemToCheck == null || slotToCheck.isSlotLocked)
         {
             return false;
         }
@@ -159,7 +159,8 @@ public static class F_Utility_Helper_Inventory
         List<F_GUI_Inventory_Slot> allSlots = GetAllSlots(playerInventory);
         for (int slotIndex = 0; slotIndex < allSlots.Count; slotIndex++)
         {
-            if (allSlots[slotIndex] != null && allSlots[slotIndex].slotItemObj == itemToMove)
+            F_GUI_Inventory_Slot slot = allSlots[slotIndex];
+            if (slot != null && !slot.isSlotLocked && slot.slotItemObj == itemToMove)
             {
                 return true;
             }
