@@ -406,25 +406,24 @@ public static class F_Utility_Helper_Inventory
         AddSlot(slots, playerInventory.invSlotAccessory02);
         AddSlot(slots, playerInventory.invSlotAccessory03);
         AddSlot(slots, playerInventory.invSlotAccessory04);
-        AddSlot(slots, playerInventory.invSlotWeaponPrimary01);
-        AddSlot(slots, playerInventory.invSlotWeaponPrimary02);
-        AddSlot(slots, playerInventory.invSlotWeaponSecondary01);
-        AddSlot(slots, playerInventory.invSlotWeaponMelee01);
-        AddSlot(slots, playerInventory.invSlotQuick01);
-        AddSlot(slots, playerInventory.invSlotQuick02);
-        AddSlot(slots, playerInventory.invSlotQuick03);
-        AddSlot(slots, playerInventory.invSlotQuick04);
-        AddSlot(slots, playerInventory.invSlotQuick05);
-
-        if (playerInventory.invSlotInventory != null)
-        {
-            for (int slotIndex = 0; slotIndex < playerInventory.invSlotInventory.Count; slotIndex++)
-            {
-                AddSlot(slots, playerInventory.invSlotInventory[slotIndex]);
-            }
-        }
+        AddSlots(slots, playerInventory.invSlotWeapons);
+        AddSlots(slots, playerInventory.invSlotQuickSlots);
+        AddSlots(slots, playerInventory.invSlotInventory);
 
         return slots;
+    }
+
+    private static void AddSlots(List<F_GUI_Inventory_Slot> slots, List<F_GUI_Inventory_Slot> slotsToAdd)
+    {
+        if (slotsToAdd == null)
+        {
+            return;
+        }
+
+        for (int slotIndex = 0; slotIndex < slotsToAdd.Count; slotIndex++)
+        {
+            AddSlot(slots, slotsToAdd[slotIndex]);
+        }
     }
 
     private static void AddSlot(List<F_GUI_Inventory_Slot> slots, F_GUI_Inventory_Slot slot)

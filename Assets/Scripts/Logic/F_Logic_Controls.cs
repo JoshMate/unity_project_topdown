@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class F_Logic_Controls : MonoBehaviour
@@ -16,11 +17,7 @@ public class F_Logic_Controls : MonoBehaviour
     private const KeyCode DefaultDodgeKey = KeyCode.LeftControl;
     private const KeyCode DefaultInteractKey = KeyCode.E;
     private const KeyCode DefaultReloadKey = KeyCode.R;
-    private const KeyCode DefaultQuickSlot1Key = KeyCode.Q;
-    private const KeyCode DefaultQuickSlot2Key = KeyCode.T;
-    private const KeyCode DefaultQuickSlot3Key = KeyCode.F;
-    private const KeyCode DefaultQuickSlot4Key = KeyCode.G;
-    private const KeyCode DefaultQuickSlot5Key = KeyCode.V;
+    private const int OneBasedIndexOffset = 1;
     private const int DefaultPrimaryActionMouseButton = 0;
     private const int DefaultSecondaryActionMouseButton = 1;
     private const int DefaultTertiaryActionMouseButton = 2;
@@ -35,16 +32,19 @@ public class F_Logic_Controls : MonoBehaviour
     public KeyCode moveRightKey = DefaultMoveRightKey;
     public KeyCode sprintKey = DefaultSprintKey;
     public KeyCode dodgeKey = DefaultDodgeKey;
-     public KeyCode sneakKey = DefaultSneakKey;
-    
+    public KeyCode sneakKey = DefaultSneakKey;
+
     [Header("Usage Bindings")]
     public KeyCode interactKey = DefaultInteractKey;
     public KeyCode reloadKey = DefaultReloadKey;
-    public KeyCode quickSlot1Key = DefaultQuickSlot1Key;
-    public KeyCode quickSlot2Key = DefaultQuickSlot2Key;
-    public KeyCode quickSlot3Key = DefaultQuickSlot3Key;
-    public KeyCode quickSlot4Key = DefaultQuickSlot4Key;
-    public KeyCode quickSlot5Key = DefaultQuickSlot5Key;
+    [SerializeField] private List<KeyCode> quickSlotKeys = new List<KeyCode>
+    {
+        KeyCode.Q, KeyCode.T, KeyCode.F, KeyCode.G, KeyCode.V
+    };
+    [SerializeField] private List<KeyCode> weaponSlotKeys = new List<KeyCode>
+    {
+        KeyCode.Alpha1, KeyCode.Alpha2, KeyCode.Alpha3, KeyCode.Alpha4
+    };
 
     [Header("Interface Bindings")]
     public KeyCode inventoryToggleKey = DefaultInventoryToggleKey;
@@ -119,63 +119,38 @@ public class F_Logic_Controls : MonoBehaviour
         return Input.GetKeyDown(reloadKey);
     }
 
-    /// <summary>Returns whether quick-slot one was selected this frame.</summary>
-    public bool IsQuickSlot1Pressed()
+    /// <summary>Returns whether the configured key for an indexed slot was pressed this frame.</summary>
+    /// <param name="slotGroup">The slot collection whose binding should be checked.</param>
+    /// <param name="oneBasedSlotIndex">The one-based index within that collection.</param>
+    public bool IsSlotKeyPressed(enumInventorySlotHotkeyGroup slotGroup, int oneBasedSlotIndex)
     {
-        return Input.GetKeyDown(quickSlot1Key);
+        KeyCode keyCode = GetSlotKey(slotGroup, oneBasedSlotIndex);
+        return keyCode != KeyCode.None && Input.GetKeyDown(keyCode);
     }
 
-    /// <summary>Returns whether quick-slot two was selected this frame.</summary>
-    public bool IsQuickSlot2Pressed()
+    /// <summary>Returns the configured key for an indexed slot as concise display text.</summary>
+    /// <param name="slotGroup">The slot collection whose binding should be displayed.</param>
+    /// <param name="oneBasedSlotIndex">The one-based index within that collection.</param>
+    public string GetSlotKeyDisplayName(enumInventorySlotHotkeyGroup slotGroup, int oneBasedSlotIndex)
     {
-        return Input.GetKeyDown(quickSlot2Key);
+        return FormatKeyCodeDisplayName(GetSlotKey(slotGroup, oneBasedSlotIndex));
     }
 
-    /// <summary>Returns whether quick-slot three was selected this frame.</summary>
-    public bool IsQuickSlot3Pressed()
+    private KeyCode GetSlotKey(enumInventorySlotHotkeyGroup slotGroup, int oneBasedSlotIndex)
     {
-        return Input.GetKeyDown(quickSlot3Key);
-    }
+        List<KeyCode> keys = slotGroup == enumInventorySlotHotkeyGroup.QuickSlot
+            ? quickSlotKeys
+            : slotGroup == enumInventorySlotHotkeyGroup.WeaponSlot
+                ? weaponSlotKeys
+                : null;
 
-    /// <summary>Returns whether quick-slot four was selected this frame.</summary>
-    public bool IsQuickSlot4Pressed()
-    {
-        return Input.GetKeyDown(quickSlot4Key);
-    }
-
-    /// <summary>Returns whether quick-slot five was selected this frame.</summary>
-    public bool IsQuickSlot5Pressed()
-    {
-        return Input.GetKeyDown(quickSlot5Key);
-    }
-
-    /// <summary>Returns the configured quick-slot binding as concise display text.</summary>
-    /// <param name="oneBasedQuickSlotIndex">The quick-slot number, from 1 through 5.</param>
-    public string GetQuickSlotKeyDisplayName(int oneBasedQuickSlotIndex)
-    {
-        KeyCode keyCode;
-        switch (oneBasedQuickSlotIndex)
+        int keyIndex = oneBasedSlotIndex - OneBasedIndexOffset;
+        if (keys == null || keyIndex < 0 || keyIndex >= keys.Count)
         {
-            case 1:
-                keyCode = quickSlot1Key;
-                break;
-            case 2:
-                keyCode = quickSlot2Key;
-                break;
-            case 3:
-                keyCode = quickSlot3Key;
-                break;
-            case 4:
-                keyCode = quickSlot4Key;
-                break;
-            case 5:
-                keyCode = quickSlot5Key;
-                break;
-            default:
-                return string.Empty;
+            return KeyCode.None;
         }
 
-        return FormatKeyCodeDisplayName(keyCode);
+        return keys[keyIndex];
     }
 
     private static string FormatKeyCodeDisplayName(KeyCode keyCode)
@@ -208,7 +183,6 @@ public class F_Logic_Controls : MonoBehaviour
 
         return keyName;
     }
-
 
     /// <summary>Returns whether the configured primary action mouse button was pressed this frame.</summary>
     public bool IsPrimaryActionPressed()

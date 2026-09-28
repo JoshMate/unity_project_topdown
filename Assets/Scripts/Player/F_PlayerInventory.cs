@@ -3,10 +3,9 @@ using UnityEngine;
 
 public class F_PlayerInventory : MonoBehaviour
 {
-    
+    private const int OneBasedIndexOffset = 1;
 
     [Header("Object Refs")]
-
     [Header("Inventory Slot - Gear")]
     public F_GUI_Inventory_Slot invSlotClothingHead;
     public F_GUI_Inventory_Slot invSlotClothingTorso;
@@ -20,23 +19,15 @@ public class F_PlayerInventory : MonoBehaviour
     public F_GUI_Inventory_Slot invSlotAccessory02;
     public F_GUI_Inventory_Slot invSlotAccessory03;
     public F_GUI_Inventory_Slot invSlotAccessory04;
-    
+
     [Header("Inventory Slot - Weapons")]
-    public F_GUI_Inventory_Slot invSlotWeaponPrimary01;
-    public F_GUI_Inventory_Slot invSlotWeaponPrimary02;
-    public F_GUI_Inventory_Slot invSlotWeaponSecondary01;
-    public F_GUI_Inventory_Slot invSlotWeaponMelee01;
+    public List<F_GUI_Inventory_Slot> invSlotWeapons = new List<F_GUI_Inventory_Slot>();
 
     [Header("Inventory Slot - Quick Slots")]
-    public F_GUI_Inventory_Slot invSlotQuick01;
-    public F_GUI_Inventory_Slot invSlotQuick02;
-    public F_GUI_Inventory_Slot invSlotQuick03;
-    public F_GUI_Inventory_Slot invSlotQuick04;
-    public F_GUI_Inventory_Slot invSlotQuick05;
+    public List<F_GUI_Inventory_Slot> invSlotQuickSlots = new List<F_GUI_Inventory_Slot>();
 
     [Header("Inventory Slot - Inventory")]
-
-    public List<F_GUI_Inventory_Slot> invSlotInventory;
+    public List<F_GUI_Inventory_Slot> invSlotInventory = new List<F_GUI_Inventory_Slot>();
 
     private readonly HashSet<F_GUI_Inventory_Slot> visitedWeightSlots = new HashSet<F_GUI_Inventory_Slot>();
     private readonly HashSet<F_Item> visitedWeightItems = new HashSet<F_Item>();
@@ -45,6 +36,19 @@ public class F_PlayerInventory : MonoBehaviour
     private void Awake()
     {
         playerController = GetComponent<F_PlayerController>();
+    }
+
+    /// <summary>Returns the weapon slot at a one-based index, or null when the index is invalid.</summary>
+    /// <param name="oneBasedSlotIndex">The one-based weapon slot index.</param>
+    public F_GUI_Inventory_Slot GetWeaponSlot(int oneBasedSlotIndex)
+    {
+        int slotIndex = oneBasedSlotIndex - OneBasedIndexOffset;
+        if (invSlotWeapons == null || slotIndex < 0 || slotIndex >= invSlotWeapons.Count)
+        {
+            return null;
+        }
+
+        return invSlotWeapons[slotIndex];
     }
 
     /// <summary>Calculates the total weight of items held in every inventory and equipment slot.</summary>
@@ -65,27 +69,29 @@ public class F_PlayerInventory : MonoBehaviour
         totalWeight += GetSlotWeight(invSlotAccessory02);
         totalWeight += GetSlotWeight(invSlotAccessory03);
         totalWeight += GetSlotWeight(invSlotAccessory04);
-        totalWeight += GetSlotWeight(invSlotWeaponPrimary01);
-        totalWeight += GetSlotWeight(invSlotWeaponPrimary02);
-        totalWeight += GetSlotWeight(invSlotWeaponSecondary01);
-        totalWeight += GetSlotWeight(invSlotWeaponMelee01);
-        totalWeight += GetSlotWeight(invSlotQuick01);
-        totalWeight += GetSlotWeight(invSlotQuick02);
-        totalWeight += GetSlotWeight(invSlotQuick03);
-        totalWeight += GetSlotWeight(invSlotQuick04);
-        totalWeight += GetSlotWeight(invSlotQuick05);
-
-        if (invSlotInventory != null)
-        {
-            for (int slotIndex = 0; slotIndex < invSlotInventory.Count; slotIndex++)
-            {
-                totalWeight += GetSlotWeight(invSlotInventory[slotIndex]);
-            }
-        }
+        totalWeight += GetSlotsWeight(invSlotWeapons);
+        totalWeight += GetSlotsWeight(invSlotQuickSlots);
+        totalWeight += GetSlotsWeight(invSlotInventory);
 
         if (playerController != null && playerController.playerCursor != null)
         {
             totalWeight += GetItemWeight(playerController.playerCursor.cursorHeldItemObj);
+        }
+
+        return totalWeight;
+    }
+
+    private float GetSlotsWeight(List<F_GUI_Inventory_Slot> slots)
+    {
+        if (slots == null)
+        {
+            return 0f;
+        }
+
+        float totalWeight = 0f;
+        for (int slotIndex = 0; slotIndex < slots.Count; slotIndex++)
+        {
+            totalWeight += GetSlotWeight(slots[slotIndex]);
         }
 
         return totalWeight;
@@ -109,18 +115,5 @@ public class F_PlayerInventory : MonoBehaviour
         }
 
         return Mathf.Max(0f, item.itemWeight) * Mathf.Max(0, item.itemCount);
-    }
-
-
-
-    void Start()
-    {
-        
-    }
-
-
-    void Update()
-    {
-        
     }
 }

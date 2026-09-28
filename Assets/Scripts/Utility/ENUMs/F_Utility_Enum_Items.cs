@@ -18,8 +18,7 @@ public enum enumItemType
     GearGloves,
     GearBoots,
     GearAccesory,
-    GearBackpack,
-    
+    GearBackpack
 }
 
 public enum enumItemRarity
@@ -45,6 +44,12 @@ public enum enumSlotType
     GearGloves,
     GearBoots,
     GearAccesory,
-    GearBackpack,
-    
+    GearBackpack
+}
+
+public enum enumInventorySlotHotkeyGroup
+{
+    None,
+    QuickSlot,
+    WeaponSlot
 }

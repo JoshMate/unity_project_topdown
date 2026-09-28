@@ -1,31 +1,28 @@
-using System.Collections;
-using System.Collections.Generic;
-using Microsoft.Unity.VisualStudio.Editor;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class F_GUI_Inventory_Slot : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
+    private const int FirstHotkeySlotIndex = 1;
+    private const float HotkeyLabelOffset = 4f;
+    private const float HotkeyLabelWidth = 28f;
+    private const float HotkeyLabelHeight = 22f;
+    private const float MinimumHotkeyFontSize = 8f;
 
     [Header("Object Refs")]
-
     public F_Item slotItemObj;
     public F_Logic_Cursor cursorObj;
-    public UnityEngine.UI.Image slotDrawBackGroundObj;
-    public UnityEngine.UI.Image slotDrawBorderObj;
-    public UnityEngine.UI.Image slotDrawItemObj;
+    public Image slotDrawBackGroundObj;
+    public Image slotDrawBorderObj;
+    public Image slotDrawItemObj;
     public TMP_Text slotItemCountText;
-    private TMP_Text slotQuickKeyText;
+    private TMP_Text slotHotkeyText;
 
-    [SerializeField] private int quickSlotIndex = -1;
-
-    private const int FirstQuickSlotIndex = 1;
-    private const int LastQuickSlotIndex = 5;
+    [SerializeField] private enumInventorySlotHotkeyGroup slotHotkeyGroup;
+    [SerializeField] private int slotHotkeyIndex = -1;
     private F_Logic_Controls controlsObj;
-    
-    
 
     [Header("Art")]
     public Sprite slotIconLocked;
@@ -33,32 +30,27 @@ public class F_GUI_Inventory_Slot : MonoBehaviour, IPointerClickHandler, IPointe
 
     [Header("Stats")]
     public enumSlotType slotType;
-    
 
     [Header("InventorySlotFlags")]
     public bool isSlotLocked;
     public bool isSlotHovered;
 
+    /// <summary>Handles cursor item movement, stack merging, and compatible slot swaps.</summary>
     public void OnPointerClick(PointerEventData eventData)
     {
-
-        // Check if the Cursor is holding something first
         if (cursorObj.cursorHeldItemObj != null)
         {
-            // First check if the cursor item type matches the slot type
-            if (F_Utility_Helper_Inventory.CheckIfItemTypeMatchesSlotType(this,cursorObj.cursorHeldItemObj) == false)
+            if (!F_Utility_Helper_Inventory.CheckIfItemTypeMatchesSlotType(this, cursorObj.cursorHeldItemObj))
             {
                 Debug.Log("The held item type does not fit in that slot!");
             }
-            else if (TryMergeHeldItemStack() == false)
+            else if (!TryMergeHeldItemStack())
             {
-                // Swap when the items cannot be merged or the slot stack is full.
                 (cursorObj.cursorHeldItemObj, slotItemObj) = (slotItemObj, cursorObj.cursorHeldItemObj);
             }
         }
         else
         {
-            // Swap the item held between the cursor and the inventory slot (Using a posh Tuple)
             (cursorObj.cursorHeldItemObj, slotItemObj) = (slotItemObj, cursorObj.cursorHeldItemObj);
         }
     }
@@ -84,36 +76,40 @@ public class F_GUI_Inventory_Slot : MonoBehaviour, IPointerClickHandler, IPointe
         return true;
     }
 
-   public void OnPointerEnter(PointerEventData eventData)
-   {
+    /// <summary>Marks this slot as hovered by the pointer.</summary>
+    public void OnPointerEnter(PointerEventData eventData)
+    {
         isSlotHovered = true;
-   }
+    }
 
-   public void OnPointerExit(PointerEventData eventData)
-   {
-        isSlotHovered = false;
-   }
-
-    // Disable the slot highlight on closing the menu. Fixes the bug with persistent highlights.
-    void OnDisable()
+    /// <summary>Clears the hover state when the pointer leaves this slot.</summary>
+    public void OnPointerExit(PointerEventData eventData)
     {
         isSlotHovered = false;
     }
 
-
+    private void OnDisable()
+    {
+        isSlotHovered = false;
+    }
 
     private void Awake()
     {
-        if (quickSlotIndex >= FirstQuickSlotIndex && quickSlotIndex <= LastQuickSlotIndex)
+        if (HasHotkeyBinding())
         {
-            CreateQuickSlotKeyHint();
+            CreateSlotHotkeyHint();
         }
     }
 
-    private void CreateQuickSlotKeyHint()
+    private bool HasHotkeyBinding()
+    {
+        return slotHotkeyGroup != enumInventorySlotHotkeyGroup.None && slotHotkeyIndex >= FirstHotkeySlotIndex;
+    }
+
+    private void CreateSlotHotkeyHint()
     {
         GameObject keyHintObject = new GameObject(
-            "Slot_QuickKey",
+            "Slot_KeyHint",
             typeof(RectTransform),
             typeof(CanvasRenderer),
             typeof(TextMeshProUGUI));
@@ -123,64 +119,47 @@ public class F_GUI_Inventory_Slot : MonoBehaviour, IPointerClickHandler, IPointe
         RectTransform keyHintRect = keyHintObject.GetComponent<RectTransform>();
         keyHintRect.anchorMin = Vector2.zero;
         keyHintRect.anchorMax = Vector2.zero;
-        keyHintRect.anchoredPosition = new Vector2(4f, 4f);
-        keyHintRect.sizeDelta = new Vector2(28f, 22f);
+        keyHintRect.anchoredPosition = new Vector2(HotkeyLabelOffset, HotkeyLabelOffset);
+        keyHintRect.sizeDelta = new Vector2(HotkeyLabelWidth, HotkeyLabelHeight);
         keyHintRect.pivot = Vector2.zero;
 
-        slotQuickKeyText = keyHintObject.GetComponent<TMP_Text>();
-        slotQuickKeyText.text = string.Empty;
-        slotQuickKeyText.alignment = TextAlignmentOptions.BottomLeft;
-        slotQuickKeyText.raycastTarget = false;
-        slotQuickKeyText.enableAutoSizing = true;
-        slotQuickKeyText.fontSizeMin = 8f;
+        slotHotkeyText = keyHintObject.GetComponent<TMP_Text>();
+        slotHotkeyText.text = string.Empty;
+        slotHotkeyText.alignment = TextAlignmentOptions.BottomLeft;
+        slotHotkeyText.raycastTarget = false;
+        slotHotkeyText.enableAutoSizing = true;
+        slotHotkeyText.fontSizeMin = MinimumHotkeyFontSize;
 
         if (slotItemCountText != null)
         {
-            slotQuickKeyText.font = slotItemCountText.font;
-            slotQuickKeyText.fontSharedMaterial = slotItemCountText.fontSharedMaterial;
-            slotQuickKeyText.color = slotItemCountText.color;
-            slotQuickKeyText.fontStyle = slotItemCountText.fontStyle;
-            slotQuickKeyText.fontSize = slotItemCountText.fontSize;
-            slotQuickKeyText.fontSizeMax = slotItemCountText.fontSize;
+            slotHotkeyText.font = slotItemCountText.font;
+            slotHotkeyText.fontSharedMaterial = slotItemCountText.fontSharedMaterial;
+            slotHotkeyText.color = slotItemCountText.color;
+            slotHotkeyText.fontStyle = slotItemCountText.fontStyle;
+            slotHotkeyText.fontSize = slotItemCountText.fontSize;
+            slotHotkeyText.fontSizeMax = slotItemCountText.fontSize;
         }
     }
 
-    void DrawSlotIcon() {
-
-        Sprite slotIconToDraw = slotIconPlaceHolder;
-
-        if (isSlotLocked == true) slotIconToDraw = slotIconLocked;
-        if (slotItemObj != null) slotIconToDraw = slotItemObj.itemSprite;
-        
-        
-        
-        if (slotIconToDraw == null)
-        {
-            return;
-        }
-        else
-        {
-            slotDrawItemObj.sprite = slotIconToDraw;
-            slotDrawItemObj.preserveAspect = true;
-            slotDrawItemObj.rectTransform.localScale = Vector3.one;
-        }
-
-    }
-
-    private void UpdateQuickSlotKeyHint()
+    private void DrawSlotIcon()
     {
-        if (slotQuickKeyText == null)
+        Sprite slotIconToDraw = slotItemObj != null
+            ? slotItemObj.itemSprite
+            : isSlotLocked ? slotIconLocked : slotIconPlaceHolder;
+
+        if (slotIconToDraw == null || slotDrawItemObj == null)
         {
             return;
         }
 
-        bool isQuickSlot = quickSlotIndex >= FirstQuickSlotIndex && quickSlotIndex <= LastQuickSlotIndex;
-        if (slotQuickKeyText.gameObject.activeSelf != isQuickSlot)
-        {
-            slotQuickKeyText.gameObject.SetActive(isQuickSlot);
-        }
+        slotDrawItemObj.sprite = slotIconToDraw;
+        slotDrawItemObj.preserveAspect = true;
+        slotDrawItemObj.rectTransform.localScale = Vector3.one;
+    }
 
-        if (!isQuickSlot)
+    private void UpdateSlotHotkeyHint()
+    {
+        if (slotHotkeyText == null)
         {
             return;
         }
@@ -194,37 +173,28 @@ public class F_GUI_Inventory_Slot : MonoBehaviour, IPointerClickHandler, IPointe
             }
         }
 
-        string keyHint = controlsObj == null ? string.Empty : controlsObj.GetQuickSlotKeyDisplayName(quickSlotIndex);
-        if (slotQuickKeyText.text != keyHint)
+        string keyHint = controlsObj == null
+            ? string.Empty
+            : controlsObj.GetSlotKeyDisplayName(slotHotkeyGroup, slotHotkeyIndex);
+        if (slotHotkeyText.text != keyHint)
         {
-            slotQuickKeyText.text = keyHint;
+            slotHotkeyText.text = keyHint;
         }
     }
 
-
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        // Update Border Colour For Hover
-        if (isSlotHovered == true) 
+        if (slotDrawBorderObj != null)
         {
-            slotDrawBorderObj.color = Color.white;
-        }
-        if (isSlotHovered == false) 
-        {
-            slotDrawBorderObj.color = Color.gray;
+            slotDrawBorderObj.color = isSlotHovered ? Color.white : Color.gray;
         }
 
-        // Draw the Icon in the Slot
         DrawSlotIcon();
+        UpdateSlotHotkeyHint();
 
-        UpdateQuickSlotKeyHint();
-
-        // Show a count only while the slot contains an item.
         if (slotItemCountText != null)
         {
             slotItemCountText.text = slotItemObj == null ? string.Empty : slotItemObj.itemCount.ToString();
         }
-        
     }
 }

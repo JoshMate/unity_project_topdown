@@ -1,9 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class F_PlayerController : MonoBehaviour
 {
+    private const int OneBasedIndexOffset = 1;
 
     [Header("Object Refs")]
     public Camera playerCamera;
@@ -14,89 +13,97 @@ public class F_PlayerController : MonoBehaviour
     public F_PlayerInventory playerInventory;
     public F_Logic_Cursor playerCursor;
     public F_Logic_Controls controls;
-    
-    [Header("Privates")]
-    
+
     private Vector2 moveDirection;
     private Vector2 mousePosition;
 
-    // Persist the player before the initialization scene loads gameplay.
-    void Awake()
+    private void Awake()
     {
         DontDestroyOnLoad(gameObject);
     }
 
-    // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
-        playerCamera.GetComponent<F_Logic_Camera>().playerObject = this.transform;
+        playerCamera.GetComponent<F_Logic_Camera>().playerObject = transform;
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
         ProcessInputs();
     }
 
-    void FixedUpdate()
+    private void FixedUpdate()
     {
         Move();
     }
 
-    void ProcessInputs()
+    private void ProcessInputs()
     {
-        // Menu Controls
         if (controls.IsInventoryTogglePressed())
         {
             characterScreenManager.ToggleInventoryScreen();
         }
 
-
-        // Movement Controls
         moveDirection = controls.GetMovementInput();
-
         mousePosition = playerCamera.ScreenToWorldPoint(controls.GetMouseScreenPosition());
 
-        // Sprint Controls
         if (controls.IsSprintPressed())
         {
             playerStats.SprintStart();
         }
-        // Sprint Controls
+
         if (controls.IsSprintReleased())
         {
             playerStats.SprintEnd();
         }
 
-        //Left Click Controls
-        if (characterScreenManager.isMenuOpen == false)
+        if (characterScreenManager.isMenuOpen)
         {
-            // Fire Weapon if Menu is Closed
-            if (controls.IsPrimaryActionPressed())
-            {
-                playerHeldWeapon.FireWeapon();
-            }
+            return;
         }
-        // The duplicate mouse-click fire handler was removed.
+
+        ProcessWeaponSlotSelectionInputs();
+        if (controls.IsPrimaryActionPressed() && playerHeldWeapon.CanFireCurrentWeapon)
+        {
+            playerHeldWeapon.FireWeapon();
+        }
     }
 
-    void Move()
+    private void ProcessWeaponSlotSelectionInputs()
     {
-        // Look at cursor location
+        if (playerInventory == null || playerInventory.invSlotWeapons == null)
+        {
+            return;
+        }
+
+        for (int slotIndex = 0; slotIndex < playerInventory.invSlotWeapons.Count; slotIndex++)
+        {
+            int oneBasedSlotIndex = slotIndex + OneBasedIndexOffset;
+            if (!controls.IsSlotKeyPressed(enumInventorySlotHotkeyGroup.WeaponSlot, oneBasedSlotIndex))
+            {
+                continue;
+            }
+
+            F_GUI_Inventory_Slot weaponSlot = playerInventory.GetWeaponSlot(oneBasedSlotIndex);
+            if (weaponSlot != null)
+            {
+                playerHeldWeapon.SelectWeaponSlot(weaponSlot);
+            }
+        }
+    }
+
+    private void Move()
+    {
         Vector2 aimDirection = mousePosition - rb.position;
-        float aimAngle = Mathf.Atan2(aimDirection.y,aimDirection.x) * Mathf.Rad2Deg;
+        float aimAngle = Mathf.Atan2(aimDirection.y, aimDirection.x) * Mathf.Rad2Deg;
         rb.rotation = aimAngle;
 
         float finalSpeed = playerStats.speedMove;
-
-        // Handle Sprinting
-        if (playerStats.isSprinting == true && playerStats.stamina > 0)
+        if (playerStats.isSprinting && playerStats.stamina > 0)
         {
             finalSpeed = playerStats.speedSprint;
         }
 
-
-        // Movement
         rb.linearVelocity = new Vector2(moveDirection.x, moveDirection.y) * finalSpeed;
     }
 }
