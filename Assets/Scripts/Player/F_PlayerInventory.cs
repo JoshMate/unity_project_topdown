@@ -3,7 +3,8 @@ using UnityEngine;
 
 public class F_PlayerInventory : MonoBehaviour
 {
-    private const int OneBasedIndexOffset = 1;
+    [Header("Constants Private")]
+    private const int oneBasedIndexOffset = 1;
 
     [Header("Object Refs")]
     [Header("Inventory Slot - Gear")]
@@ -29,6 +30,7 @@ public class F_PlayerInventory : MonoBehaviour
     [Header("Inventory Slot - Inventory")]
     public List<F_GUI_Inventory_Slot> invSlotInventory = new List<F_GUI_Inventory_Slot>();
 
+    [Header("Privates")]
     private readonly HashSet<F_GUI_Inventory_Slot> visitedWeightSlots = new HashSet<F_GUI_Inventory_Slot>();
     private readonly HashSet<F_Item> visitedWeightItems = new HashSet<F_Item>();
     private F_PlayerController playerController;
@@ -42,7 +44,7 @@ public class F_PlayerInventory : MonoBehaviour
     /// <param name="oneBasedSlotIndex">The one-based weapon slot index.</param>
     public F_GUI_Inventory_Slot GetWeaponSlot(int oneBasedSlotIndex)
     {
-        int slotIndex = oneBasedSlotIndex - OneBasedIndexOffset;
+        int slotIndex = oneBasedSlotIndex - oneBasedIndexOffset;
         if (invSlotWeapons == null || slotIndex < 0 || slotIndex >= invSlotWeapons.Count)
         {
             return null;

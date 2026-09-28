@@ -6,17 +6,18 @@ using UnityEngine.UI;
 
 public class F_GUI_ItemTooltip : MonoBehaviour
 {
-    private const float TooltipWidth = 360f;
-    private const float ContentPadding = 14f;
-    private const float BorderThickness = 2f;
-    private const float IconSize = 56f;
-    private const float SectionSpacing = 10f;
+    [Header("Constants Private")]
+    private const float tooltipWidth = 360f;
+    private const float contentPadding = 14f;
+    private const float borderThickness = 2f;
+    private const float iconSize = 56f;
+    private const float sectionSpacing = 10f;
     // Must clear the custom cursor sprite's on-screen radius (~45px at the reference resolution) so the
     // tooltip never overlaps the cursor, which always renders on top of other Layer_Cursor UI.
-    private const float CursorGap = 52f;
-    private const float ScreenEdgePadding = 12f;
-    private const float MinimumDetailFontSize = 11f;
-    private const float MinimumDescriptionFontSize = 11f;
+    private const float cursorGap = 52f;
+    private const float screenEdgePadding = 12f;
+    private const float minimumDetailFontSize = 11f;
+    private const float minimumDescriptionFontSize = 11f;
 
     [Header("Tooltip References")]
     public Canvas tooltipCanvas;
@@ -30,10 +31,11 @@ public class F_GUI_ItemTooltip : MonoBehaviour
     public RectTransform itemDetailsRect;
     public RectTransform separatorRect;
 
+    [Header("Privates")]
     private F_Item displayedItem;
     private float defaultDescriptionFontSize;
     private float defaultDetailsFontSize;
-    private float currentTooltipWidth = TooltipWidth;
+    private float currentTooltipWidth = tooltipWidth;
 
     private void Awake()
     {
@@ -138,48 +140,48 @@ public class F_GUI_ItemTooltip : MonoBehaviour
     private void LayoutTooltipContent()
     {
         RectTransform canvasRect = tooltipCanvas.GetComponent<RectTransform>();
-        currentTooltipWidth = Mathf.Max(1f, Mathf.Min(TooltipWidth, canvasRect.rect.width - ScreenEdgePadding * 2f));
+        currentTooltipWidth = Mathf.Max(1f, Mathf.Min(tooltipWidth, canvasRect.rect.width - screenEdgePadding * 2f));
         itemDescriptionText.fontSize = defaultDescriptionFontSize;
         itemDetailsText.fontSize = defaultDetailsFontSize;
-        float contentWidth = Mathf.Max(1f, currentTooltipWidth - ContentPadding * 2f);
-        float descriptionTop = ContentPadding + IconSize + SectionSpacing;
-        itemDescriptionRect.anchoredPosition = new Vector2(ContentPadding, -descriptionTop);
+        float contentWidth = Mathf.Max(1f, currentTooltipWidth - contentPadding * 2f);
+        float descriptionTop = contentPadding + iconSize + sectionSpacing;
+        itemDescriptionRect.anchoredPosition = new Vector2(contentPadding, -descriptionTop);
         itemDescriptionRect.sizeDelta = new Vector2(contentWidth, 0f);
         itemDescriptionText.ForceMeshUpdate();
         float descriptionHeight = GetPreferredHeight(itemDescriptionText, contentWidth);
         itemDescriptionRect.sizeDelta = new Vector2(contentWidth, descriptionHeight);
 
-        float detailsTop = descriptionTop + descriptionHeight + SectionSpacing;
-        separatorRect.anchoredPosition = new Vector2(ContentPadding, -detailsTop);
-        separatorRect.sizeDelta = new Vector2(contentWidth, BorderThickness);
+        float detailsTop = descriptionTop + descriptionHeight + sectionSpacing;
+        separatorRect.anchoredPosition = new Vector2(contentPadding, -detailsTop);
+        separatorRect.sizeDelta = new Vector2(contentWidth, borderThickness);
 
-        float detailTextTop = detailsTop + SectionSpacing;
-        itemDetailsRect.anchoredPosition = new Vector2(ContentPadding, -detailTextTop);
+        float detailTextTop = detailsTop + sectionSpacing;
+        itemDetailsRect.anchoredPosition = new Vector2(contentPadding, -detailTextTop);
         itemDetailsRect.sizeDelta = new Vector2(contentWidth, 0f);
         itemDetailsText.ForceMeshUpdate();
         float detailsHeight = GetPreferredHeight(itemDetailsText, contentWidth);
         itemDetailsRect.sizeDelta = new Vector2(contentWidth, detailsHeight);
 
-        float tooltipHeight = detailTextTop + detailsHeight + ContentPadding;
-        float maximumHeight = Mathf.Max(1f, canvasRect.rect.height - ScreenEdgePadding * 2f);
+        float tooltipHeight = detailTextTop + detailsHeight + contentPadding;
+        float maximumHeight = Mathf.Max(1f, canvasRect.rect.height - screenEdgePadding * 2f);
         if (tooltipHeight > maximumHeight)
         {
             float heightScale = maximumHeight / tooltipHeight;
-            itemDescriptionText.fontSize = Mathf.Max(MinimumDescriptionFontSize, itemDescriptionText.fontSize * heightScale);
-            itemDetailsText.fontSize = Mathf.Max(MinimumDetailFontSize, itemDetailsText.fontSize * heightScale);
+            itemDescriptionText.fontSize = Mathf.Max(minimumDescriptionFontSize, itemDescriptionText.fontSize * heightScale);
+            itemDetailsText.fontSize = Mathf.Max(minimumDetailFontSize, itemDetailsText.fontSize * heightScale);
 
             itemDescriptionText.ForceMeshUpdate();
             descriptionHeight = GetPreferredHeight(itemDescriptionText, contentWidth);
             itemDescriptionRect.sizeDelta = new Vector2(contentWidth, descriptionHeight);
 
-            detailsTop = descriptionTop + descriptionHeight + SectionSpacing;
-            separatorRect.anchoredPosition = new Vector2(ContentPadding, -detailsTop);
-            detailTextTop = detailsTop + SectionSpacing;
-            itemDetailsRect.anchoredPosition = new Vector2(ContentPadding, -detailTextTop);
+            detailsTop = descriptionTop + descriptionHeight + sectionSpacing;
+            separatorRect.anchoredPosition = new Vector2(contentPadding, -detailsTop);
+            detailTextTop = detailsTop + sectionSpacing;
+            itemDetailsRect.anchoredPosition = new Vector2(contentPadding, -detailTextTop);
             itemDetailsText.ForceMeshUpdate();
             detailsHeight = GetPreferredHeight(itemDetailsText, contentWidth);
             itemDetailsRect.sizeDelta = new Vector2(contentWidth, detailsHeight);
-            tooltipHeight = detailTextTop + detailsHeight + ContentPadding;
+            tooltipHeight = detailTextTop + detailsHeight + contentPadding;
         }
 
         tooltipRect.sizeDelta = new Vector2(currentTooltipWidth, tooltipHeight);
@@ -198,9 +200,9 @@ public class F_GUI_ItemTooltip : MonoBehaviour
     private void PositionBesidePointer(Vector2 pointerScreenPosition)
     {
         RectTransform canvasRect = tooltipCanvas.GetComponent<RectTransform>();
-        float availableWidth = canvasRect.rect.width - ScreenEdgePadding * 2f;
-        float maximumHeight = canvasRect.rect.height - ScreenEdgePadding * 2f;
-        if (Mathf.Abs(currentTooltipWidth - Mathf.Min(TooltipWidth, availableWidth)) > 0.5f || tooltipRect.rect.height > maximumHeight)
+        float availableWidth = canvasRect.rect.width - screenEdgePadding * 2f;
+        float maximumHeight = canvasRect.rect.height - screenEdgePadding * 2f;
+        if (Mathf.Abs(currentTooltipWidth - Mathf.Min(tooltipWidth, availableWidth)) > 0.5f || tooltipRect.rect.height > maximumHeight)
         {
             LayoutTooltipContent();
         }
@@ -215,15 +217,15 @@ public class F_GUI_ItemTooltip : MonoBehaviour
         float pointerX = pointerLocalPosition.x - canvasBounds.xMin;
         float pointerFromTop = canvasBounds.yMax - pointerLocalPosition.y;
         float tooltipHeight = tooltipRect.rect.height;
-        float tooltipX = pointerX + CursorGap;
+        float tooltipX = pointerX + cursorGap;
 
-        if (tooltipX + currentTooltipWidth > canvasBounds.width - ScreenEdgePadding)
+        if (tooltipX + currentTooltipWidth > canvasBounds.width - screenEdgePadding)
         {
-            tooltipX = pointerX - CursorGap - currentTooltipWidth;
+            tooltipX = pointerX - cursorGap - currentTooltipWidth;
         }
 
-        tooltipX = Mathf.Clamp(tooltipX, ScreenEdgePadding, canvasBounds.width - currentTooltipWidth - ScreenEdgePadding);
-        float tooltipTop = Mathf.Clamp(pointerFromTop - CursorGap, ScreenEdgePadding, canvasBounds.height - tooltipHeight - ScreenEdgePadding);
+        tooltipX = Mathf.Clamp(tooltipX, screenEdgePadding, canvasBounds.width - currentTooltipWidth - screenEdgePadding);
+        float tooltipTop = Mathf.Clamp(pointerFromTop - cursorGap, screenEdgePadding, canvasBounds.height - tooltipHeight - screenEdgePadding);
         tooltipRect.anchoredPosition = new Vector2(tooltipX, -tooltipTop);
     }
 }

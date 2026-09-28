@@ -6,18 +6,18 @@ using UnityEngine;
 
 public class F_PlayerStats : MonoBehaviour
 {
-    private const float DefaultMaxCarryWeight = 100f;
+    [Header("Constants Private")]
+    private const float defaultMaxCarryWeight = 100f;
 
     // Weight class thresholds, expressed as a fraction of weightMax.
-    private const float WeightThresholdLightWeight = 0.25f;
-    private const float WeightThresholdMediumWeight = 0.50f;
-    private const float WeightThresholdHeavyWeight = 0.75f;
-    private const float WeightThresholdTooMuchWeight = 1.00f;
+    private const float weightThresholdLightWeight = 0.25f;
+    private const float weightThresholdMediumWeight = 0.50f;
+    private const float weightThresholdHeavyWeight = 0.75f;
+    private const float weightThresholdTooMuchWeight = 1.00f;
 
     [Header("Object Refs")]
     public F_GUI_HUD_Manager hudManager;
     public F_GUI_CharacterScreen_Manager characterScreenManager;
-    private F_PlayerInventory playerInventory;
 
     [Header("Health Stats")]
     public float health;
@@ -47,12 +47,15 @@ public class F_PlayerStats : MonoBehaviour
 
     [Header("Inventory Stats")]
     public float weight;
-    public float weightMax = DefaultMaxCarryWeight;
+    public float weightMax = defaultMaxCarryWeight;
     // Carry-weight classification, driven by weight as a percentage of weightMax. Used for future gameplay effects on the player.
     public enumWeightClass weightClass;
 
-    [Header("Private Checks")]
+    [Header("Status Flags")]
     public bool isSprinting = false;
+
+    [Header("Privates")]
+    private F_PlayerInventory playerInventory;
     private float lastStaminaUseTime = 0f;
     private float lastStaminaRegenTime = 0f;
     private float staminaRegenStartDelay = 2f;
@@ -66,7 +69,7 @@ public class F_PlayerStats : MonoBehaviour
         playerInventory = GetComponent<F_PlayerInventory>();
         if (weightMax <= 0f)
         {
-            weightMax = DefaultMaxCarryWeight;
+            weightMax = defaultMaxCarryWeight;
         }
 
         UpdateInventoryWeight();
@@ -116,19 +119,19 @@ public class F_PlayerStats : MonoBehaviour
     {
         float weightPercent = weightMax > 0f ? weight / weightMax : 0f;
 
-        if (weightPercent >= WeightThresholdTooMuchWeight)
+        if (weightPercent >= weightThresholdTooMuchWeight)
         {
             weightClass = enumWeightClass.TooMuchWeight;
         }
-        else if (weightPercent >= WeightThresholdHeavyWeight)
+        else if (weightPercent >= weightThresholdHeavyWeight)
         {
             weightClass = enumWeightClass.HeavyWeight;
         }
-        else if (weightPercent >= WeightThresholdMediumWeight)
+        else if (weightPercent >= weightThresholdMediumWeight)
         {
             weightClass = enumWeightClass.MediumWeight;
         }
-        else if (weightPercent >= WeightThresholdLightWeight)
+        else if (weightPercent >= weightThresholdLightWeight)
         {
             weightClass = enumWeightClass.LightWeight;
         }

@@ -2,11 +2,12 @@ using UnityEngine;
 
 public class F_Logic_Audio : MonoBehaviour
 {
-    private const float DefaultSpatialFalloffDistance = 20f;
-    private const float MinimumSpatialAudioDistance = 0.01f;
+    [Header("Constants Private")]
+    private const float defaultSpatialFalloffDistance = 20f;
+    private const float minimumSpatialAudioDistance = 0.01f;
 
-    [SerializeField] private float spatialFalloffDistance = DefaultSpatialFalloffDistance;
-
+    [Header("Privates")]
+    [SerializeField] private float spatialFalloffDistance = defaultSpatialFalloffDistance;
     private static F_Logic_Audio instance;
     private F_Logic_GameManager gameManager;
 
@@ -107,10 +108,10 @@ public class F_Logic_Audio : MonoBehaviour
 
             audioSource.spatialBlend = 1f;
             audioSource.rolloffMode = AudioRolloffMode.Linear;
-            audioSource.minDistance = MinimumSpatialAudioDistance;
+            audioSource.minDistance = minimumSpatialAudioDistance;
             audioSource.maxDistance = Mathf.Max(
                 spatialFalloffDistance,
-                MinimumSpatialAudioDistance * 2f);
+                minimumSpatialAudioDistance * 2f);
             audioSource.dopplerLevel = 0f;
         }
         else

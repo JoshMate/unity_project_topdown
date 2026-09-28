@@ -5,12 +5,12 @@ using UnityEngine;
 public class F_Logic_Globals : MonoBehaviour
 {
 
-    [Header("Tag Names")]
+    [Header("Constants Public")]
 
+    // Tag Names
     public const string tagEnt = "Tag_Ent";
 
-    [Header("Layers")]
-
+    // Layers
     public const string layerDebugAlwaysTop = "Layer_DebugAlwaysTop";
     public const string layerLogic = "Layer_Logic";
     public const string layerGui = "Layer_Gui";
@@ -35,7 +35,7 @@ public class F_Logic_Globals : MonoBehaviour
     public const string layerFloor = "Layer_Floor";
     public const string layerBackground = "Layer_Background";
 
-    [Header("Strings")]
+    // Strings
     public const string stringGameName = "Project Top Down";
 
     void Start()

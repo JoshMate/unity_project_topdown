@@ -5,11 +5,12 @@ using UnityEngine.UI;
 
 public class F_GUI_Inventory_Slot : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
-    private const int FirstHotkeySlotIndex = 1;
-    private const float HotkeyLabelOffset = 4f;
-    private const float HotkeyLabelWidth = 28f;
-    private const float HotkeyLabelHeight = 22f;
-    private const float MinimumHotkeyFontSize = 8f;
+    [Header("Constants Private")]
+    private const int firstHotkeySlotIndex = 1;
+    private const float hotkeyLabelOffset = 4f;
+    private const float hotkeyLabelWidth = 28f;
+    private const float hotkeyLabelHeight = 22f;
+    private const float minimumHotkeyFontSize = 8f;
 
     [Header("Object Refs")]
     public F_Item slotItemObj;
@@ -18,11 +19,6 @@ public class F_GUI_Inventory_Slot : MonoBehaviour, IPointerClickHandler, IPointe
     public Image slotDrawBorderObj;
     public Image slotDrawItemObj;
     public TMP_Text slotItemCountText;
-    private TMP_Text slotHotkeyText;
-
-    [SerializeField] private enumInventorySlotHotkeyGroup slotHotkeyGroup;
-    [SerializeField] private int slotHotkeyIndex = -1;
-    private F_Logic_Controls controlsObj;
 
     [Header("Art")]
     public Sprite slotIconLocked;
@@ -34,6 +30,12 @@ public class F_GUI_Inventory_Slot : MonoBehaviour, IPointerClickHandler, IPointe
     [Header("InventorySlotFlags")]
     public bool isSlotLocked;
     public bool isSlotHovered;
+
+    [Header("Privates")]
+    private TMP_Text slotHotkeyText;
+    [SerializeField] private enumInventorySlotHotkeyGroup slotHotkeyGroup;
+    [SerializeField] private int slotHotkeyIndex = -1;
+    private F_Logic_Controls controlsObj;
 
     /// <summary>Handles cursor item movement, stack merging, compatible slot swaps, and the right-click context menu.</summary>
     public void OnPointerClick(PointerEventData eventData)
@@ -123,7 +125,7 @@ public class F_GUI_Inventory_Slot : MonoBehaviour, IPointerClickHandler, IPointe
 
     private bool HasHotkeyBinding()
     {
-        return slotHotkeyGroup != enumInventorySlotHotkeyGroup.None && slotHotkeyIndex >= FirstHotkeySlotIndex;
+        return slotHotkeyGroup != enumInventorySlotHotkeyGroup.None && slotHotkeyIndex >= firstHotkeySlotIndex;
     }
 
     private void CreateSlotHotkeyHint()
@@ -139,8 +141,8 @@ public class F_GUI_Inventory_Slot : MonoBehaviour, IPointerClickHandler, IPointe
         RectTransform keyHintRect = keyHintObject.GetComponent<RectTransform>();
         keyHintRect.anchorMin = Vector2.zero;
         keyHintRect.anchorMax = Vector2.zero;
-        keyHintRect.anchoredPosition = new Vector2(HotkeyLabelOffset, HotkeyLabelOffset);
-        keyHintRect.sizeDelta = new Vector2(HotkeyLabelWidth, HotkeyLabelHeight);
+        keyHintRect.anchoredPosition = new Vector2(hotkeyLabelOffset, hotkeyLabelOffset);
+        keyHintRect.sizeDelta = new Vector2(hotkeyLabelWidth, hotkeyLabelHeight);
         keyHintRect.pivot = Vector2.zero;
 
         slotHotkeyText = keyHintObject.GetComponent<TMP_Text>();
@@ -148,7 +150,7 @@ public class F_GUI_Inventory_Slot : MonoBehaviour, IPointerClickHandler, IPointe
         slotHotkeyText.alignment = TextAlignmentOptions.BottomLeft;
         slotHotkeyText.raycastTarget = false;
         slotHotkeyText.enableAutoSizing = true;
-        slotHotkeyText.fontSizeMin = MinimumHotkeyFontSize;
+        slotHotkeyText.fontSizeMin = minimumHotkeyFontSize;
 
         if (slotItemCountText != null)
         {

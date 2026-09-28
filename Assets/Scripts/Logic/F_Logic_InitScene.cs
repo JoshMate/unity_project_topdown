@@ -3,9 +3,11 @@ using UnityEngine.SceneManagement;
 
 public class F_Logic_InitScene : MonoBehaviour
 {
-    private const string InitialGameplaySceneName = "Scene_TestRoom";
-    private const string PlayerSpawnPointName = "PlayerSpawnPoint";
+    [Header("Constants Private")]
+    private const string initialGameplaySceneName = "Scene_TestRoom";
+    private const string playerSpawnPointName = "PlayerSpawnPoint";
 
+    [Header("Privates")]
     private F_Logic_GameManager gameManager;
 
     private void Awake()
@@ -22,9 +24,9 @@ public class F_Logic_InitScene : MonoBehaviour
 
     private void Start()
     {
-        if (gameManager != null && !SceneManager.GetSceneByName(InitialGameplaySceneName).isLoaded)
+        if (gameManager != null && !SceneManager.GetSceneByName(initialGameplaySceneName).isLoaded)
         {
-            SceneManager.LoadScene(InitialGameplaySceneName, LoadSceneMode.Single);
+            SceneManager.LoadScene(initialGameplaySceneName, LoadSceneMode.Single);
         }
     }
 
@@ -35,7 +37,7 @@ public class F_Logic_InitScene : MonoBehaviour
 
     private void PlacePlayerAtSpawnPoint(Scene loadedScene, LoadSceneMode loadMode)
     {
-        if (loadedScene.name != InitialGameplaySceneName)
+        if (loadedScene.name != initialGameplaySceneName)
         {
             return;
         }
@@ -46,10 +48,10 @@ public class F_Logic_InitScene : MonoBehaviour
             return;
         }
 
-        GameObject spawnPoint = GameObject.Find(PlayerSpawnPointName);
+        GameObject spawnPoint = GameObject.Find(playerSpawnPointName);
         if (spawnPoint == null)
         {
-            Debug.LogError($"The gameplay scene is missing a {PlayerSpawnPointName} GameObject.");
+            Debug.LogError($"The gameplay scene is missing a {playerSpawnPointName} GameObject.");
             return;
         }
 

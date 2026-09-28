@@ -2,7 +2,8 @@ using UnityEngine;
 
 public class F_PlayerController : MonoBehaviour
 {
-    private const int OneBasedIndexOffset = 1;
+    [Header("Constants Private")]
+    private const int oneBasedIndexOffset = 1;
 
     [Header("Object Refs")]
     public Camera playerCamera;
@@ -14,6 +15,7 @@ public class F_PlayerController : MonoBehaviour
     public F_Logic_Cursor playerCursor;
     public F_Logic_Controls controls;
 
+    [Header("Privates")]
     private Vector2 moveDirection;
     private Vector2 mousePosition;
 
@@ -78,7 +80,7 @@ public class F_PlayerController : MonoBehaviour
 
         for (int slotIndex = 0; slotIndex < playerInventory.invSlotWeapons.Count; slotIndex++)
         {
-            int oneBasedSlotIndex = slotIndex + OneBasedIndexOffset;
+            int oneBasedSlotIndex = slotIndex + oneBasedIndexOffset;
             if (!controls.IsSlotKeyPressed(enumInventorySlotHotkeyGroup.WeaponSlot, oneBasedSlotIndex))
             {
                 continue;

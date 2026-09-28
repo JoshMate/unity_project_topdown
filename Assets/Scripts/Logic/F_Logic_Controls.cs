@@ -4,39 +4,55 @@ using UnityEngine;
 
 public class F_Logic_Controls : MonoBehaviour
 {
-    private const KeyCode DefaultInventoryToggleKey = KeyCode.Tab;
-    private const KeyCode DefaultSprintKey = KeyCode.LeftShift;
-    private const KeyCode DefaultMoveUpKey = KeyCode.W;
-    private const KeyCode DefaultMoveDownKey = KeyCode.S;
-    private const KeyCode DefaultMoveLeftKey = KeyCode.A;
-    private const KeyCode DefaultMoveRightKey = KeyCode.D;
-    private const KeyCode DefaultControlModifierKey = KeyCode.LeftControl;
-    private const KeyCode DefaultShiftModifierKey = KeyCode.LeftShift;
-    private const KeyCode DefaultAltModifierKey = KeyCode.LeftAlt;
-    private const KeyCode DefaultSneakKey = KeyCode.C;
-    private const KeyCode DefaultDodgeKey = KeyCode.LeftControl;
-    private const KeyCode DefaultInteractKey = KeyCode.E;
-    private const KeyCode DefaultReloadKey = KeyCode.R;
-    private const int OneBasedIndexOffset = 1;
-    private const int DefaultPrimaryActionMouseButton = 0;
-    private const int DefaultSecondaryActionMouseButton = 1;
-    private const int DefaultTertiaryActionMouseButton = 2;
-    private const string AlphaKeyCodePrefix = "Alpha";
-    private const string KeypadKeyCodePrefix = "Keypad";
-    private const string KeypadDisplayPrefix = "Num";
+    [Header("Constants Private")]
+    private const KeyCode defaultInventoryToggleKey = KeyCode.Tab;
+    private const KeyCode defaultSprintKey = KeyCode.LeftShift;
+    private const KeyCode defaultMoveUpKey = KeyCode.W;
+    private const KeyCode defaultMoveDownKey = KeyCode.S;
+    private const KeyCode defaultMoveLeftKey = KeyCode.A;
+    private const KeyCode defaultMoveRightKey = KeyCode.D;
+    private const KeyCode defaultControlModifierKey = KeyCode.LeftControl;
+    private const KeyCode defaultShiftModifierKey = KeyCode.LeftShift;
+    private const KeyCode defaultAltModifierKey = KeyCode.LeftAlt;
+    private const KeyCode defaultSneakKey = KeyCode.C;
+    private const KeyCode defaultDodgeKey = KeyCode.LeftControl;
+    private const KeyCode defaultInteractKey = KeyCode.E;
+    private const KeyCode defaultReloadKey = KeyCode.R;
+    private const int oneBasedIndexOffset = 1;
+    private const int defaultPrimaryActionMouseButton = 0;
+    private const int defaultSecondaryActionMouseButton = 1;
+    private const int defaultTertiaryActionMouseButton = 2;
+    private const string alphaKeyCodePrefix = "Alpha";
+    private const string keypadKeyCodePrefix = "Keypad";
+    private const string keypadDisplayPrefix = "Num";
 
     [Header("Movement Bindings")]
-    public KeyCode moveUpKey = DefaultMoveUpKey;
-    public KeyCode moveDownKey = DefaultMoveDownKey;
-    public KeyCode moveLeftKey = DefaultMoveLeftKey;
-    public KeyCode moveRightKey = DefaultMoveRightKey;
-    public KeyCode sprintKey = DefaultSprintKey;
-    public KeyCode dodgeKey = DefaultDodgeKey;
-    public KeyCode sneakKey = DefaultSneakKey;
+    public KeyCode moveUpKey = defaultMoveUpKey;
+    public KeyCode moveDownKey = defaultMoveDownKey;
+    public KeyCode moveLeftKey = defaultMoveLeftKey;
+    public KeyCode moveRightKey = defaultMoveRightKey;
+    public KeyCode sprintKey = defaultSprintKey;
+    public KeyCode dodgeKey = defaultDodgeKey;
+    public KeyCode sneakKey = defaultSneakKey;
 
     [Header("Usage Bindings")]
-    public KeyCode interactKey = DefaultInteractKey;
-    public KeyCode reloadKey = DefaultReloadKey;
+    public KeyCode interactKey = defaultInteractKey;
+    public KeyCode reloadKey = defaultReloadKey;
+
+    [Header("Interface Bindings")]
+    public KeyCode inventoryToggleKey = defaultInventoryToggleKey;
+
+    [Header("Mouse Bindings")]
+    public int primaryActionMouseButton = defaultPrimaryActionMouseButton;
+    public int secondaryActionMouseButton = defaultSecondaryActionMouseButton;
+    public int tertiaryActionMouseButton = defaultTertiaryActionMouseButton;
+
+    [Header("Button Modifiers")]
+    public KeyCode buttonModifierControl = defaultControlModifierKey;
+    public KeyCode buttonModifierShift = defaultShiftModifierKey;
+    public KeyCode buttonModifierAlt = defaultAltModifierKey;
+
+    [Header("Privates")]
     [SerializeField] private List<KeyCode> quickSlotKeys = new List<KeyCode>
     {
         KeyCode.Q, KeyCode.T, KeyCode.F, KeyCode.G, KeyCode.V
@@ -45,19 +61,6 @@ public class F_Logic_Controls : MonoBehaviour
     {
         KeyCode.Alpha1, KeyCode.Alpha2, KeyCode.Alpha3, KeyCode.Alpha4
     };
-
-    [Header("Interface Bindings")]
-    public KeyCode inventoryToggleKey = DefaultInventoryToggleKey;
-
-    [Header("Mouse Bindings")]
-    public int primaryActionMouseButton = DefaultPrimaryActionMouseButton;
-    public int secondaryActionMouseButton = DefaultSecondaryActionMouseButton;
-    public int tertiaryActionMouseButton = DefaultTertiaryActionMouseButton;
-
-    [Header("Button Modifiers")]
-    public KeyCode buttonModifierControl = DefaultControlModifierKey;
-    public KeyCode buttonModifierShift = DefaultShiftModifierKey;
-    public KeyCode buttonModifierAlt = DefaultAltModifierKey;
 
     /// <summary>Returns whether the inventory toggle key was pressed this frame.</summary>
     public bool IsInventoryTogglePressed()
@@ -144,7 +147,7 @@ public class F_Logic_Controls : MonoBehaviour
                 ? weaponSlotKeys
                 : null;
 
-        int keyIndex = oneBasedSlotIndex - OneBasedIndexOffset;
+        int keyIndex = oneBasedSlotIndex - oneBasedIndexOffset;
         if (keys == null || keyIndex < 0 || keyIndex >= keys.Count)
         {
             return KeyCode.None;
@@ -171,14 +174,14 @@ public class F_Logic_Controls : MonoBehaviour
         }
 
         string keyName = keyCode.ToString();
-        if (keyName.StartsWith(AlphaKeyCodePrefix, StringComparison.Ordinal))
+        if (keyName.StartsWith(alphaKeyCodePrefix, StringComparison.Ordinal))
         {
-            return keyName.Substring(AlphaKeyCodePrefix.Length);
+            return keyName.Substring(alphaKeyCodePrefix.Length);
         }
 
-        if (keyName.StartsWith(KeypadKeyCodePrefix, StringComparison.Ordinal))
+        if (keyName.StartsWith(keypadKeyCodePrefix, StringComparison.Ordinal))
         {
-            return KeypadDisplayPrefix + keyName.Substring(KeypadKeyCodePrefix.Length);
+            return keypadDisplayPrefix + keyName.Substring(keypadKeyCodePrefix.Length);
         }
 
         return keyName;

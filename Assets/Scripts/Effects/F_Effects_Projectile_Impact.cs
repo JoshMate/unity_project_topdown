@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class F_Effects_Projectile_Impact : MonoBehaviour
 {
+    [Header("Art")]
     public Color bloodColour;
 
+    [Header("Privates")]
     private ParticleSystem ps;
 
     // Automatically destroy the particle system once it has done its emission

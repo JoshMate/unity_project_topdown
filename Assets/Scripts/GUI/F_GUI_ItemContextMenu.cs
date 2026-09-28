@@ -9,32 +9,33 @@ using UnityEngine.UI;
 /// <see cref="F_Utility_Helper_ContextMenu"/> so the executed behavior stays centralized and reusable.</remarks>
 public class F_GUI_ItemContextMenu : MonoBehaviour
 {
-    private const float MenuWidth = 320f;
-    private const float BorderThickness = 2f;
-    private const float ContentPadding = 8f;
-    private const float HeaderHeight = 22f;
-    private const float HeaderFontSize = 15f;
-    private const float HeaderSeparatorSpacing = 6f;
-    private const float SeparatorThickness = 2f;
-    private const float OptionHeight = 28f;
-    private const float OptionSpacing = 2f;
-    private const float OptionFontSize = 15f;
+    [Header("Constants Private")]
+    private const float menuWidth = 320f;
+    private const float borderThickness = 2f;
+    private const float contentPadding = 8f;
+    private const float headerHeight = 22f;
+    private const float headerFontSize = 15f;
+    private const float headerSeparatorSpacing = 6f;
+    private const float separatorThickness = 2f;
+    private const float optionHeight = 28f;
+    private const float optionSpacing = 2f;
+    private const float optionFontSize = 15f;
     // Only needs to clear the cursor's visible pointer glyph (~24px at the reference resolution), not the
     // sprite's full transparent bounds, so the menu can stay close to the cursor for easy clicking.
-    private const float CursorGap = 26f;
-    private const float ScreenEdgePadding = 12f;
-    private const float AutoCloseDistance = 400f;
+    private const float cursorGap = 26f;
+    private const float screenEdgePadding = 12f;
+    private const float autoCloseDistance = 400f;
     // Space occupied by the item name header and its divider before the option list begins.
-    private const float HeaderBlockHeight = ContentPadding + HeaderHeight + HeaderSeparatorSpacing + SeparatorThickness + HeaderSeparatorSpacing;
+    private const float headerBlockHeight = contentPadding + headerHeight + headerSeparatorSpacing + separatorThickness + headerSeparatorSpacing;
 
-    private static readonly Color PanelBorderColor = new Color(0.94f, 0.94f, 0.94f, 1f);
-    private static readonly Color PanelFillColor = new Color(0.105f, 0.105f, 0.105f, 1f);
-    private static readonly Color HeaderTextColor = new Color(0.94f, 0.94f, 0.94f, 1f);
-    private static readonly Color HeaderSeparatorColor = new Color(0.62f, 0.62f, 0.62f, 1f);
-    private static readonly Color OptionBackgroundColor = new Color(0.16f, 0.16f, 0.16f, 1f);
-    private static readonly Color OptionHighlightedColor = new Color(1.6f, 1.6f, 1.6f, 1f);
-    private static readonly Color OptionPressedColor = new Color(1.3f, 1.3f, 1.3f, 1f);
-    private static readonly Color OptionTextColor = new Color(0.94f, 0.94f, 0.94f, 1f);
+    private static readonly Color panelBorderColor = new Color(0.94f, 0.94f, 0.94f, 1f);
+    private static readonly Color panelFillColor = new Color(0.105f, 0.105f, 0.105f, 1f);
+    private static readonly Color headerTextColor = new Color(0.94f, 0.94f, 0.94f, 1f);
+    private static readonly Color headerSeparatorColor = new Color(0.62f, 0.62f, 0.62f, 1f);
+    private static readonly Color optionBackgroundColor = new Color(0.16f, 0.16f, 0.16f, 1f);
+    private static readonly Color optionHighlightedColor = new Color(1.6f, 1.6f, 1.6f, 1f);
+    private static readonly Color optionPressedColor = new Color(1.3f, 1.3f, 1.3f, 1f);
+    private static readonly Color optionTextColor = new Color(0.94f, 0.94f, 0.94f, 1f);
 
     [Header("Context Menu References")]
     public Canvas contextMenuCanvas;
@@ -42,11 +43,11 @@ public class F_GUI_ItemContextMenu : MonoBehaviour
     public CanvasGroup contextMenuCanvasGroup;
     public Image panelBorderImage;
 
+    [Header("Privates")]
     private RectTransform fillRect;
     private TMP_Text headerLabel;
     private RectTransform optionsContainerRect;
     private GameObject backdropObj;
-
     private F_Item displayedItem;
     private F_PlayerInventory ownerInventory;
     private Vector2 openPointerScreenPosition;
@@ -76,7 +77,7 @@ public class F_GUI_ItemContextMenu : MonoBehaviour
             panelBorderImage = gameObject.AddComponent<Image>();
         }
 
-        panelBorderImage.color = PanelBorderColor;
+        panelBorderImage.color = panelBorderColor;
         panelBorderImage.raycastTarget = false;
 
         if (contextMenuCanvasGroup == null)
@@ -160,7 +161,7 @@ public class F_GUI_ItemContextMenu : MonoBehaviour
             return;
         }
 
-        if (Vector2.Distance(currentPointerScreenPosition, openPointerScreenPosition) > AutoCloseDistance)
+        if (Vector2.Distance(currentPointerScreenPosition, openPointerScreenPosition) > autoCloseDistance)
         {
             Hide();
         }
@@ -189,11 +190,11 @@ public class F_GUI_ItemContextMenu : MonoBehaviour
         fillRect = fillObj.GetComponent<RectTransform>();
         fillRect.anchorMin = Vector2.zero;
         fillRect.anchorMax = Vector2.one;
-        fillRect.offsetMin = new Vector2(BorderThickness, BorderThickness);
-        fillRect.offsetMax = new Vector2(-BorderThickness, -BorderThickness);
+        fillRect.offsetMin = new Vector2(borderThickness, borderThickness);
+        fillRect.offsetMax = new Vector2(-borderThickness, -borderThickness);
 
         Image fillImage = fillObj.GetComponent<Image>();
-        fillImage.color = PanelFillColor;
+        fillImage.color = panelFillColor;
         fillImage.raycastTarget = false;
 
         GameObject headerObj = new GameObject(
@@ -207,14 +208,14 @@ public class F_GUI_ItemContextMenu : MonoBehaviour
         headerRect.anchorMin = new Vector2(0f, 1f);
         headerRect.anchorMax = new Vector2(1f, 1f);
         headerRect.pivot = new Vector2(0.5f, 1f);
-        headerRect.offsetMin = new Vector2(ContentPadding, headerRect.offsetMin.y);
-        headerRect.offsetMax = new Vector2(-ContentPadding, headerRect.offsetMax.y);
-        headerRect.anchoredPosition = new Vector2(0f, -ContentPadding);
-        headerRect.sizeDelta = new Vector2(headerRect.sizeDelta.x, HeaderHeight);
+        headerRect.offsetMin = new Vector2(contentPadding, headerRect.offsetMin.y);
+        headerRect.offsetMax = new Vector2(-contentPadding, headerRect.offsetMax.y);
+        headerRect.anchoredPosition = new Vector2(0f, -contentPadding);
+        headerRect.sizeDelta = new Vector2(headerRect.sizeDelta.x, headerHeight);
 
         headerLabel = headerObj.GetComponent<TMP_Text>();
-        headerLabel.color = HeaderTextColor;
-        headerLabel.fontSize = HeaderFontSize;
+        headerLabel.color = headerTextColor;
+        headerLabel.fontSize = headerFontSize;
         headerLabel.fontStyle = FontStyles.Bold;
         headerLabel.alignment = TextAlignmentOptions.MidlineLeft;
         headerLabel.raycastTarget = false;
@@ -232,13 +233,13 @@ public class F_GUI_ItemContextMenu : MonoBehaviour
         separatorRect.anchorMin = new Vector2(0f, 1f);
         separatorRect.anchorMax = new Vector2(1f, 1f);
         separatorRect.pivot = new Vector2(0.5f, 1f);
-        separatorRect.offsetMin = new Vector2(ContentPadding, separatorRect.offsetMin.y);
-        separatorRect.offsetMax = new Vector2(-ContentPadding, separatorRect.offsetMax.y);
-        separatorRect.anchoredPosition = new Vector2(0f, -(ContentPadding + HeaderHeight + HeaderSeparatorSpacing));
-        separatorRect.sizeDelta = new Vector2(separatorRect.sizeDelta.x, SeparatorThickness);
+        separatorRect.offsetMin = new Vector2(contentPadding, separatorRect.offsetMin.y);
+        separatorRect.offsetMax = new Vector2(-contentPadding, separatorRect.offsetMax.y);
+        separatorRect.anchoredPosition = new Vector2(0f, -(contentPadding + headerHeight + headerSeparatorSpacing));
+        separatorRect.sizeDelta = new Vector2(separatorRect.sizeDelta.x, separatorThickness);
 
         Image separatorImage = separatorObj.GetComponent<Image>();
-        separatorImage.color = HeaderSeparatorColor;
+        separatorImage.color = headerSeparatorColor;
         separatorImage.raycastTarget = false;
 
         GameObject containerObj = new GameObject("ContextMenu_OptionsContainer", typeof(RectTransform));
@@ -248,9 +249,9 @@ public class F_GUI_ItemContextMenu : MonoBehaviour
         optionsContainerRect.anchorMin = new Vector2(0f, 1f);
         optionsContainerRect.anchorMax = new Vector2(1f, 1f);
         optionsContainerRect.pivot = new Vector2(0.5f, 1f);
-        optionsContainerRect.offsetMin = new Vector2(ContentPadding, optionsContainerRect.offsetMin.y);
-        optionsContainerRect.offsetMax = new Vector2(-ContentPadding, optionsContainerRect.offsetMax.y);
-        optionsContainerRect.anchoredPosition = new Vector2(0f, -HeaderBlockHeight);
+        optionsContainerRect.offsetMin = new Vector2(contentPadding, optionsContainerRect.offsetMin.y);
+        optionsContainerRect.offsetMax = new Vector2(-contentPadding, optionsContainerRect.offsetMax.y);
+        optionsContainerRect.anchoredPosition = new Vector2(0f, -headerBlockHeight);
     }
 
     private void EnsureBackdrop()
@@ -331,11 +332,11 @@ public class F_GUI_ItemContextMenu : MonoBehaviour
             CreateOptionButton(actions[optionIndex], optionIndex);
         }
 
-        float contentHeight = HeaderBlockHeight +
-            actions.Count * OptionHeight +
-            Mathf.Max(0, actions.Count - 1) * OptionSpacing +
-            ContentPadding;
-        contextMenuRect.sizeDelta = new Vector2(MenuWidth, contentHeight);
+        float contentHeight = headerBlockHeight +
+            actions.Count * optionHeight +
+            Mathf.Max(0, actions.Count - 1) * optionSpacing +
+            contentPadding;
+        contextMenuRect.sizeDelta = new Vector2(menuWidth, contentHeight);
     }
 
     private void CreateOptionButton(enumItemContextAction action, int optionIndex)
@@ -352,19 +353,19 @@ public class F_GUI_ItemContextMenu : MonoBehaviour
         optionRect.anchorMin = new Vector2(0f, 1f);
         optionRect.anchorMax = new Vector2(1f, 1f);
         optionRect.pivot = new Vector2(0.5f, 1f);
-        float optionTop = optionIndex * (OptionHeight + OptionSpacing);
+        float optionTop = optionIndex * (optionHeight + optionSpacing);
         optionRect.anchoredPosition = new Vector2(0f, -optionTop);
-        optionRect.sizeDelta = new Vector2(0f, OptionHeight);
+        optionRect.sizeDelta = new Vector2(0f, optionHeight);
 
         Image optionBackground = optionObj.GetComponent<Image>();
-        optionBackground.color = OptionBackgroundColor;
+        optionBackground.color = optionBackgroundColor;
 
         Button optionButton = optionObj.GetComponent<Button>();
         optionButton.targetGraphic = optionBackground;
         ColorBlock optionColors = optionButton.colors;
         optionColors.normalColor = Color.white;
-        optionColors.highlightedColor = OptionHighlightedColor;
-        optionColors.pressedColor = OptionPressedColor;
+        optionColors.highlightedColor = optionHighlightedColor;
+        optionColors.pressedColor = optionPressedColor;
         optionColors.selectedColor = Color.white;
         optionColors.fadeDuration = 0.05f;
         optionButton.colors = optionColors;
@@ -380,13 +381,13 @@ public class F_GUI_ItemContextMenu : MonoBehaviour
         RectTransform labelRect = labelObj.GetComponent<RectTransform>();
         labelRect.anchorMin = Vector2.zero;
         labelRect.anchorMax = Vector2.one;
-        labelRect.offsetMin = new Vector2(ContentPadding, 0f);
-        labelRect.offsetMax = new Vector2(-ContentPadding, 0f);
+        labelRect.offsetMin = new Vector2(contentPadding, 0f);
+        labelRect.offsetMax = new Vector2(-contentPadding, 0f);
 
         TMP_Text optionLabel = labelObj.GetComponent<TMP_Text>();
         optionLabel.text = F_Utility_Helper_ContextMenu.GetActionLabel(action);
-        optionLabel.color = OptionTextColor;
-        optionLabel.fontSize = OptionFontSize;
+        optionLabel.color = optionTextColor;
+        optionLabel.fontSize = optionFontSize;
         optionLabel.alignment = TextAlignmentOptions.MidlineLeft;
         optionLabel.raycastTarget = false;
 
@@ -415,15 +416,15 @@ public class F_GUI_ItemContextMenu : MonoBehaviour
         float pointerFromTop = canvasBounds.yMax - pointerLocalPosition.y;
         float menuWidth = contextMenuRect.rect.width;
         float menuHeight = contextMenuRect.rect.height;
-        float menuX = pointerX + CursorGap;
+        float menuX = pointerX + cursorGap;
 
-        if (menuX + menuWidth > canvasBounds.width - ScreenEdgePadding)
+        if (menuX + menuWidth > canvasBounds.width - screenEdgePadding)
         {
-            menuX = pointerX - CursorGap - menuWidth;
+            menuX = pointerX - cursorGap - menuWidth;
         }
 
-        menuX = Mathf.Clamp(menuX, ScreenEdgePadding, canvasBounds.width - menuWidth - ScreenEdgePadding);
-        float menuTop = Mathf.Clamp(pointerFromTop - CursorGap, ScreenEdgePadding, canvasBounds.height - menuHeight - ScreenEdgePadding);
+        menuX = Mathf.Clamp(menuX, screenEdgePadding, canvasBounds.width - menuWidth - screenEdgePadding);
+        float menuTop = Mathf.Clamp(pointerFromTop - cursorGap, screenEdgePadding, canvasBounds.height - menuHeight - screenEdgePadding);
         contextMenuRect.anchoredPosition = new Vector2(menuX, -menuTop);
     }
 }

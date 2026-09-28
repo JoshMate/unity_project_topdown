@@ -4,23 +4,28 @@ using UnityEngine;
 
 public class F_Effects_Projectile : MonoBehaviour
 {
+    [Header("Constants Private")]
     // Ignore near-zero vectors so stopped bullets don't produce unstable angles.
-    private const float DirectionEpsilon = 0.0001f;
+    private const float directionEpsilon = 0.0001f;
 
     // Nudge particles just outside the contact surface to avoid clipping into it.
-    private const float ImpactSurfaceOffset = 0.005f;
+    private const float impactSurfaceOffset = 0.005f;
 
+    [Header("Object Refs")]
     public Rigidbody2D rb;
     public GameObject projectileImpactObject;
+
+    [Header("Art")]
     public Color bloodColour;
 
+    [Header("Privates")]
     // Cache motion before collision response can reduce the Rigidbody velocity to zero.
     private Vector2 lastTravelDirection;
 
     void Update()
     {
         Vector2 velocity = rb.linearVelocity;
-        if (velocity.sqrMagnitude > DirectionEpsilon)
+        if (velocity.sqrMagnitude > directionEpsilon)
         {
             lastTravelDirection = velocity.normalized;
             float aimAngle = Mathf.Atan2(velocity.y, velocity.x) * Mathf.Rad2Deg;
@@ -32,13 +37,13 @@ public class F_Effects_Projectile : MonoBehaviour
     {
         // Prefer cached incoming motion; relative velocity is a fallback if the bullet has not moved yet.
         Vector2 incomingDirection = lastTravelDirection;
-        if (incomingDirection.sqrMagnitude <= DirectionEpsilon)
+        if (incomingDirection.sqrMagnitude <= directionEpsilon)
         {
             incomingDirection = other.relativeVelocity.normalized;
         }
 
         // Default to the direction opposite travel until a valid contact normal is available.
-        Vector2 outwardDirection = incomingDirection.sqrMagnitude > DirectionEpsilon
+        Vector2 outwardDirection = incomingDirection.sqrMagnitude > directionEpsilon
             ? -incomingDirection
             : Vector2.up;
         Vector2 impactPosition = transform.position;
@@ -48,18 +53,18 @@ public class F_Effects_Projectile : MonoBehaviour
             ContactPoint2D contact = other.GetContact(0);
             Vector2 surfaceNormal = contact.normal;
 
-            if (surfaceNormal.sqrMagnitude > DirectionEpsilon)
+            if (surfaceNormal.sqrMagnitude > directionEpsilon)
             {
                 surfaceNormal.Normalize();
 
                 // Contact normal orientation depends on the collision pair; flip it if it points with the bullet.
-                if (incomingDirection.sqrMagnitude > DirectionEpsilon && Vector2.Dot(surfaceNormal, incomingDirection) > 0f)
+                if (incomingDirection.sqrMagnitude > directionEpsilon && Vector2.Dot(surfaceNormal, incomingDirection) > 0f)
                 {
                     surfaceNormal = -surfaceNormal;
                 }
 
                 outwardDirection = surfaceNormal;
-                impactPosition = contact.point + outwardDirection * ImpactSurfaceOffset;
+                impactPosition = contact.point + outwardDirection * impactSurfaceOffset;
             }
         }
 

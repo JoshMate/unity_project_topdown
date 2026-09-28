@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class F_GUI_HUD_Bar : MonoBehaviour
 {
+    [Header("Object Refs")]
     public Slider barSlider;
     public TextMeshProUGUI barText;
     public TextMeshProUGUI barTextMax;

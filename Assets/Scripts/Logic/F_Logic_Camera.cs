@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class F_Logic_Camera : MonoBehaviour
 {
+   [Header("Object Refs")]
    public Camera playerCamera;
    public Transform playerObject;
 

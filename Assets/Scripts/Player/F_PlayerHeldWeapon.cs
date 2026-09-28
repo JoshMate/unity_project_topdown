@@ -14,8 +14,10 @@ public class F_PlayerHeldWeapon : MonoBehaviour
     public F_playerHeldWeaponIndividual heldWeaponMeleeBig;
     public F_playerHeldWeaponIndividual heldWeaponMeleeSmall;
 
+    [Header("Stats")]
     public float projectileSpeed;
 
+    [Header("Privates")]
     private F_GUI_Inventory_Slot selectedWeaponSlot;
     private bool hasExplicitWeaponSelection;
 

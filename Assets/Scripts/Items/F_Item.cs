@@ -19,9 +19,10 @@ public struct F_ItemTooltipDetail
 [RequireComponent(typeof(SpriteRenderer), typeof(PolygonCollider2D))]
 public class F_Item : MonoBehaviour
 {
-    private const string DefaultItemSpriteAssetPath = "Assets/Art/Logic/SP_Sprite_Default.png";
-    private const string DefaultPickupSoundAssetPath = "Assets/Sound/Interface/SD_Interface_JUSP_Dip.ogg";
-    private const string DefaultDropSoundAssetPath = "Assets/Sound/Interface/SD_Interface_JUSP_Slide.ogg";
+    [Header("Constants Private")]
+    private const string defaultItemSpriteAssetPath = "Assets/Art/Logic/SP_Sprite_Default.png";
+    private const string defaultPickupSoundAssetPath = "Assets/Sound/Interface/SD_Interface_JUSP_Dip.ogg";
+    private const string defaultDropSoundAssetPath = "Assets/Sound/Interface/SD_Interface_JUSP_Slide.ogg";
 
     [Header("Object Refs")]
     public SpriteRenderer itemSpriteRenderer;
@@ -94,17 +95,17 @@ public class F_Item : MonoBehaviour
 #if UNITY_EDITOR
         if (itemSprite == null)
         {
-            itemSprite = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>(DefaultItemSpriteAssetPath);
+            itemSprite = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>(defaultItemSpriteAssetPath);
         }
 
         if (itemSoundPickup == null)
         {
-            itemSoundPickup = UnityEditor.AssetDatabase.LoadAssetAtPath<AudioClip>(DefaultPickupSoundAssetPath);
+            itemSoundPickup = UnityEditor.AssetDatabase.LoadAssetAtPath<AudioClip>(defaultPickupSoundAssetPath);
         }
 
         if (itemSoundDrop == null)
         {
-            itemSoundDrop = UnityEditor.AssetDatabase.LoadAssetAtPath<AudioClip>(DefaultDropSoundAssetPath);
+            itemSoundDrop = UnityEditor.AssetDatabase.LoadAssetAtPath<AudioClip>(defaultDropSoundAssetPath);
         }
 #endif
     }

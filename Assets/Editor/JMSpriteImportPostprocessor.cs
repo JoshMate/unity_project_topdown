@@ -6,15 +6,17 @@ using UnityEngine;
 /// <summary>Applies the project sprite import preset to images imported beneath Assets/Art.</summary>
 public sealed class JMSpriteImportPostprocessor : AssetPostprocessor
 {
-    private const string SpriteArtFolder = "Assets/Art/";
-    private const string SpritePresetPath = "Assets/UnityDataAssets/JMSpriteImport.preset";
+    [Header("Constants Private")]
+    private const string spriteArtFolder = "Assets/Art/";
+    private const string spritePresetPath = "Assets/UnityDataAssets/JMSpriteImport.preset";
 
+    [Header("Privates")]
     private static Preset cachedSpritePreset;
     private static bool hasAttemptedPresetLoad;
 
     private void OnPreprocessTexture()
     {
-        if (!assetPath.StartsWith(SpriteArtFolder, StringComparison.Ordinal))
+        if (!assetPath.StartsWith(spriteArtFolder, StringComparison.Ordinal))
         {
             return;
         }
@@ -36,7 +38,7 @@ public sealed class JMSpriteImportPostprocessor : AssetPostprocessor
         Preset spritePreset = GetSpritePreset();
         if (spritePreset == null)
         {
-            Debug.LogError($"Could not load sprite import preset at '{SpritePresetPath}'.");
+            Debug.LogError($"Could not load sprite import preset at '{spritePresetPath}'.");
             return;
         }
 
@@ -81,7 +83,7 @@ public sealed class JMSpriteImportPostprocessor : AssetPostprocessor
     {
         if (!hasAttemptedPresetLoad)
         {
-            cachedSpritePreset = AssetDatabase.LoadAssetAtPath<Preset>(SpritePresetPath);
+            cachedSpritePreset = AssetDatabase.LoadAssetAtPath<Preset>(spritePresetPath);
             hasAttemptedPresetLoad = true;
         }
 
