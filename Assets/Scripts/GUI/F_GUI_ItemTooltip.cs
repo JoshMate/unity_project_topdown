@@ -98,10 +98,7 @@ public class F_GUI_ItemTooltip : MonoBehaviour
 
         string itemName = item.itemName ?? string.Empty;
         string itemDescription = item.itemDescription ?? string.Empty;
-        SpriteRenderer itemSpriteRenderer = item.itemSpriteRenderer != null
-            ? item.itemSpriteRenderer
-            : item.GetComponent<SpriteRenderer>();
-        Sprite itemSprite = itemSpriteRenderer != null ? itemSpriteRenderer.sprite : null;
+        Sprite itemSprite = item.itemSprite;
 
         StringBuilder detailsBuilder = new StringBuilder();
         IReadOnlyList<F_ItemTooltipDetail> details = item.GetTooltipDetails();

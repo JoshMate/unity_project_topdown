@@ -51,10 +51,13 @@ MonoBehaviour:
   itemDescription: Standard rifle ammo.
   itemType: 2
   itemRarity: 0
-  itemWeight: 0.1
+  itemWeight: 0.03
   itemValue: 15
   itemCount: 1
   itemCountMax: 90
+  itemSprite: {fileID: 21300000, guid: f5159693ba114b244a0aa70a94d7e23c, type: 3}
+  itemSoundPickup: {fileID: 8300000, guid: cacc5bc9e8fdaa1409aa6ff6823ce9c9, type: 3}
+  itemSoundDrop: {fileID: 8300000, guid: 52daba66c8f82e94494016eb6c114a6f, type: 3}
   isInInventorySlot: 0
 --- !u!212 &3257486541222685028
 SpriteRenderer:
@@ -161,19 +164,13 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: 0.171875, y: 0.40625}
-      - {x: 0.140625, y: 0.375}
-      - {x: 0.078125, y: 0.40625}
-      - {x: -0.09375, y: 0.40625}
-      - {x: -0.109375, y: 0.375}
-      - {x: -0.125, y: 0.390625}
-      - {x: -0.15625, y: 0.40625}
-      - {x: -0.21875, y: 0.40625}
-      - {x: -0.234375, y: 0.375}
-      - {x: -0.25, y: 0.3125}
-      - {x: -0.28125, y: 0.125}
-      - {x: -0.28125, y: -0.28125}
-      - {x: 0.28125, y: -0.28125}
-      - {x: 0.28125, y: 0.25}
-      - {x: 0.21875, y: 0.40625}
+    - - {x: 0.1875, y: 0.21875}
+      - {x: -0.203125, y: 0.21875}
+      - {x: -0.25, y: 0.171875}
+      - {x: -0.25, y: -0.25}
+      - {x: -0.21875, y: -0.28125}
+      - {x: 0.21875, y: -0.28125}
+      - {x: 0.25, y: -0.265625}
+      - {x: 0.25, y: 0.015625}
+      - {x: 0.234375, y: 0.1875}
   m_UseDelaunayMesh: 1

@@ -155,8 +155,7 @@ public class F_Logic_Cursor : MonoBehaviour
                     float distanceToPlayer = Vector2.Distance(hoveredItem.transform.position, playerController.transform.position);
                     if (distanceToPlayer <= cursorPlaceMaxDistance)
                     {
-                        cursorHeldItemObj = hoveredItem;
-                        cursorHeldItemObj.MoveItemToInventory();
+                        F_Utility_Helper_Inventory.MoveItemToInventory(hoveredItem, this);
                     }
                 }
             }
@@ -182,7 +181,7 @@ public class F_Logic_Cursor : MonoBehaviour
             return;
         }
 
-        if (F_Utility_Helper_Inventory.AddItemToInventory(hoveredItem, playerController.playerInventory))
+        if (F_Utility_Helper_Inventory.MoveItemToInventory(hoveredItem, playerController.playerInventory))
         {
             cursorHoveredObject = null;
         }
@@ -233,9 +232,11 @@ public class F_Logic_Cursor : MonoBehaviour
             finalDropPosition = playerPos + (directionToCursor * cursorPlaceMaxDistance);
         }
 
-        // Apply the drop
-        cursorHeldItemObj.MoveItemOutOfInventory();
-        cursorHeldItemObj.gameObject.transform.position = finalDropPosition;
+        // Apply the drop through the inventory transaction helper.
+        F_Utility_Helper_Inventory.DropItemFromInventory(
+            cursorHeldItemObj,
+            playerController != null ? playerController.playerInventory : null,
+            finalDropPosition);
         cursorHeldItemObj = null;
     }
 
@@ -243,7 +244,7 @@ public class F_Logic_Cursor : MonoBehaviour
     {
         if (cursorHeldItemObj != null)
         {
-            cursorRendererItem.sprite = cursorHeldItemObj.itemSpriteRenderer.sprite;
+            cursorRendererItem.sprite = cursorHeldItemObj.itemSprite;
         }
         if (cursorHeldItemObj == null)
         {

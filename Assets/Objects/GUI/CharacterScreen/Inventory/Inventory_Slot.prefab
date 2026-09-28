@@ -68,6 +68,7 @@ MonoBehaviour:
   slotDrawBorderObj: {fileID: 4783408293053436370}
   slotDrawItemObj: {fileID: 1759880860150990732}
   slotItemCountText: {fileID: 3568831661182381382}
+  quickSlotIndex: -1
   slotIconLocked: {fileID: 21300000, guid: 7000f5a6d56012b4198de04ba0567f85, type: 3}
   slotIconPlaceHolder: {fileID: 21300000, guid: 06104d2f981713a42b135bd1675d2c39, type: 3}
   slotType: 0
@@ -311,7 +312,7 @@ MonoBehaviour:
       m_Calls: []
   m_Sprite: {fileID: 21300000, guid: 06104d2f981713a42b135bd1675d2c39, type: 3}
   m_Type: 0
-  m_PreserveAspect: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1

@@ -74,8 +74,11 @@ public class F_GUI_Inventory_Slot : MonoBehaviour, IPointerClickHandler, IPointe
 
         if (heldItem.itemCount == 0)
         {
+            F_PlayerInventory playerInventory = cursorObj.playerController != null
+                ? cursorObj.playerController.playerInventory
+                : null;
+            F_Utility_Helper_Inventory.RemoveItemFromInventory(heldItem, playerInventory);
             cursorObj.cursorHeldItemObj = null;
-            Destroy(heldItem.gameObject);
         }
 
         return true;
@@ -147,7 +150,7 @@ public class F_GUI_Inventory_Slot : MonoBehaviour, IPointerClickHandler, IPointe
         Sprite slotIconToDraw = slotIconPlaceHolder;
 
         if (isSlotLocked == true) slotIconToDraw = slotIconLocked;
-        if (slotItemObj != null) slotIconToDraw = slotItemObj.GetComponent<SpriteRenderer>().sprite;
+        if (slotItemObj != null) slotIconToDraw = slotItemObj.itemSprite;
         
         
         
@@ -158,6 +161,8 @@ public class F_GUI_Inventory_Slot : MonoBehaviour, IPointerClickHandler, IPointe
         else
         {
             slotDrawItemObj.sprite = slotIconToDraw;
+            slotDrawItemObj.preserveAspect = true;
+            slotDrawItemObj.rectTransform.localScale = Vector3.one;
         }
 
     }
