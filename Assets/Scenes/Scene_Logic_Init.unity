@@ -3935,6 +3935,8 @@ MonoBehaviour:
   weight: 0
   weightMax: 50
   weightClass: 0
+  inventorySlotsAvailable: 9
+  inventorySlotsMax: 0
   isSprinting: 0
 --- !u!114 &412122234
 MonoBehaviour:
@@ -9661,6 +9663,7 @@ MonoBehaviour:
   thirstBar: {fileID: 303091065}
   toxicBar: {fileID: 850838953}
   weightBar: {fileID: 1527364550}
+  weaponDisplay: {fileID: 0}
 --- !u!1001 &1058168217
 PrefabInstance:
   m_ObjectHideFlags: 0

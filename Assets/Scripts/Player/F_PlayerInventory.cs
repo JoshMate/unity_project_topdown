@@ -61,7 +61,13 @@ public class F_PlayerInventory : MonoBehaviour
             F_GUI_Inventory_Slot slot = invSlotInventory[slotIndex];
             if (slot != null)
             {
-                slot.SetSlotLocked(slotIndex >= boundedAvailableSlotCount);
+                bool shouldLockSlot = slotIndex >= boundedAvailableSlotCount;
+                if (shouldLockSlot && !slot.isSlotLocked && slot.slotItemObj != null)
+                {
+                    F_Utility_Helper_Inventory.DropItemFromInventory(slot.slotItemObj, this);
+                }
+
+                slot.SetSlotLocked(shouldLockSlot);
             }
         }
     }
