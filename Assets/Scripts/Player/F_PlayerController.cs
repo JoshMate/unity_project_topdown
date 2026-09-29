@@ -65,9 +65,17 @@ public class F_PlayerController : MonoBehaviour
         }
 
         ProcessWeaponSlotSelectionInputs();
-        if (controls.IsPrimaryActionPressed() && playerHeldWeapon.CanFireCurrentWeapon)
+        bool primaryActionRequested = playerHeldWeapon.IsCurrentWeaponFullyAutomatic
+            ? controls.IsPrimaryActionHeld()
+            : controls.IsPrimaryActionPressed();
+        if (primaryActionRequested && playerHeldWeapon.CanFireCurrentWeapon)
         {
             playerHeldWeapon.FireWeapon();
+        }
+
+        if (controls.IsReloadPressed())
+        {
+            playerHeldWeapon.ReloadCurrentWeapon(playerInventory);
         }
     }
 

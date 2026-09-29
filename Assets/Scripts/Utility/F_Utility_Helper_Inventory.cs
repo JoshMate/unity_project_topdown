@@ -385,8 +385,73 @@ public static class F_Utility_Helper_Inventory
 
     private static bool AreStackCompatible(F_Item firstItem, F_Item secondItem)
     {
-        return firstItem != null && secondItem != null && firstItem != secondItem &&
+        return firstItem != secondItem && IsSameItemDefinition(firstItem, secondItem);
+    }
+
+    private static bool IsSameItemDefinition(F_Item firstItem, F_Item secondItem)
+    {
+        return firstItem != null && secondItem != null &&
                firstItem.itemType == secondItem.itemType && firstItem.itemName == secondItem.itemName;
+    }
+
+    /// <summary>Returns how many of a matching item template are currently stacked across the inventory slots.</summary>
+    /// <param name="playerInventory">The inventory to search.</param>
+    /// <param name="itemTemplate">The item definition (e.g. an ammo type) to match by type and name.</param>
+    public static int GetItemCountInInventory(F_PlayerInventory playerInventory, F_Item itemTemplate)
+    {
+        if (playerInventory == null || itemTemplate == null || playerInventory.invSlotInventory == null)
+        {
+            return 0;
+        }
+
+        int totalCount = 0;
+        List<F_GUI_Inventory_Slot> inventorySlots = playerInventory.invSlotInventory;
+        for (int slotIndex = 0; slotIndex < inventorySlots.Count; slotIndex++)
+        {
+            F_GUI_Inventory_Slot slot = inventorySlots[slotIndex];
+            if (slot != null && slot.slotItemObj != null && IsSameItemDefinition(slot.slotItemObj, itemTemplate))
+            {
+                totalCount += slot.slotItemObj.itemCount;
+            }
+        }
+
+        return totalCount;
+    }
+
+    /// <summary>Permanently removes up to the requested amount of a matching item template from the inventory, destroying emptied stacks.</summary>
+    /// <param name="playerInventory">The inventory to consume from.</param>
+    /// <param name="itemTemplate">The item definition (e.g. an ammo type) to match by type and name.</param>
+    /// <param name="amountToConsume">The requested amount to remove.</param>
+    /// <returns>The number of items actually consumed.</returns>
+    public static int ConsumeItemFromInventory(F_PlayerInventory playerInventory, F_Item itemTemplate, int amountToConsume)
+    {
+        if (playerInventory == null || itemTemplate == null || playerInventory.invSlotInventory == null || amountToConsume <= 0)
+        {
+            return 0;
+        }
+
+        int remainingToConsume = amountToConsume;
+        List<F_GUI_Inventory_Slot> inventorySlots = playerInventory.invSlotInventory;
+        for (int slotIndex = 0; slotIndex < inventorySlots.Count && remainingToConsume > 0; slotIndex++)
+        {
+            F_GUI_Inventory_Slot slot = inventorySlots[slotIndex];
+            F_Item stackItem = slot != null ? slot.slotItemObj : null;
+            if (stackItem == null || !IsSameItemDefinition(stackItem, itemTemplate))
+            {
+                continue;
+            }
+
+            int consumedFromStack = Mathf.Min(remainingToConsume, stackItem.itemCount);
+            stackItem.itemCount -= consumedFromStack;
+            remainingToConsume -= consumedFromStack;
+
+            if (stackItem.itemCount <= 0)
+            {
+                RemoveItemFromInventory(stackItem, playerInventory);
+            }
+        }
+
+        return amountToConsume - remainingToConsume;
     }
 
     private static List<F_GUI_Inventory_Slot> GetAllSlots(F_PlayerInventory playerInventory)

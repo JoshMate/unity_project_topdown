@@ -21,6 +21,53 @@ public class F_Effects_Projectile : MonoBehaviour
     [Header("Privates")]
     // Cache motion before collision response can reduce the Rigidbody velocity to zero.
     private Vector2 lastTravelDirection;
+    private Vector3 spawnPositionWorld;
+    private float projectileDamage;
+    private enumDamageType projectileDamageType = enumDamageType.Typeless;
+    private float projectileRange;
+    private float projectileRangeDamageFalloffMinPercent;
+    private bool projectileUsesReverseRangeFalloff;
+    private bool hasCombatData;
+
+    // Damage computed for the most recent impact, available for a future health/damage-receiver system to consume.
+    private float lastImpactDamage;
+    private enumDamageType lastImpactDamageType;
+
+    /// <summary>The range-falloff-adjusted damage computed at the moment of the most recent impact.</summary>
+    public float LastImpactDamage => lastImpactDamage;
+
+    /// <summary>The damage type captured from the weapon when this projectile was fired.</summary>
+    public enumDamageType LastImpactDamageType => lastImpactDamageType;
+
+    /// <summary>Copies the required combat values so this projectile has no dependency on the weapon's lifetime.</summary>
+    /// <param name="damage">Base damage for this projectile.</param>
+    /// <param name="damageType">Damage category for the projectile.</param>
+    /// <param name="range">Maximum travel distance; non-positive values are unlimited.</param>
+    /// <param name="rangeDamageFalloffMinPercent">Damage multiplier at the end of range.</param>
+    /// <param name="usesReverseRangeFalloff">Whether damage grows rather than falls across the range.</param>
+    public void ConfigureCombatData(
+        float damage,
+        enumDamageType damageType,
+        float range,
+        float rangeDamageFalloffMinPercent,
+        bool usesReverseRangeFalloff)
+    {
+        projectileDamage = damage;
+        projectileDamageType = damageType;
+        projectileRange = range;
+        projectileRangeDamageFalloffMinPercent = rangeDamageFalloffMinPercent;
+        projectileUsesReverseRangeFalloff = usesReverseRangeFalloff;
+        spawnPositionWorld = transform.position;
+        hasCombatData = true;
+    }
+
+    void Start()
+    {
+        if (!hasCombatData)
+        {
+            spawnPositionWorld = transform.position;
+        }
+    }
 
     void Update()
     {
@@ -31,10 +78,19 @@ public class F_Effects_Projectile : MonoBehaviour
             float aimAngle = Mathf.Atan2(velocity.y, velocity.x) * Mathf.Rad2Deg;
             rb.rotation = aimAngle;
         }
+
+        if (projectileRange > 0f && Vector3.Distance(transform.position, spawnPositionWorld) >= projectileRange)
+        {
+            Destroy(gameObject);
+        }
     }
 
     void OnCollisionEnter2D(Collision2D other)
     {
+        float distanceTraveled = Vector3.Distance(transform.position, spawnPositionWorld);
+        lastImpactDamage = hasCombatData ? GetDamageAtDistance(distanceTraveled) : 0f;
+        lastImpactDamageType = hasCombatData ? projectileDamageType : enumDamageType.Typeless;
+
         // Prefer cached incoming motion; relative velocity is a fallback if the bullet has not moved yet.
         Vector2 incomingDirection = lastTravelDirection;
         if (incomingDirection.sqrMagnitude <= directionEpsilon)
@@ -70,6 +126,17 @@ public class F_Effects_Projectile : MonoBehaviour
 
         CreateProjectileImpact(other, impactPosition, outwardDirection);
         Destroy(gameObject);
+    }
+
+    private float GetDamageAtDistance(float distanceTraveled)
+    {
+        float rangeFraction = projectileRange > 0f ? Mathf.Clamp01(distanceTraveled / projectileRange) : 1f;
+        float minimumDamageMultiplier = Mathf.Clamp01(projectileRangeDamageFalloffMinPercent);
+        float damageMultiplier = projectileUsesReverseRangeFalloff
+            ? Mathf.Lerp(minimumDamageMultiplier, 1f, rangeFraction)
+            : Mathf.Lerp(1f, minimumDamageMultiplier, rangeFraction);
+
+        return projectileDamage * damageMultiplier;
     }
 
     void CreateProjectileImpact(Collision2D other, Vector2 impactPosition, Vector2 outwardDirection)

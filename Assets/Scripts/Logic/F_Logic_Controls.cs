@@ -193,6 +193,12 @@ public class F_Logic_Controls : MonoBehaviour
         return Input.GetMouseButtonDown(primaryActionMouseButton);
     }
 
+    /// <summary>Returns whether the configured primary action mouse button is currently held.</summary>
+    public bool IsPrimaryActionHeld()
+    {
+        return Input.GetMouseButton(primaryActionMouseButton);
+    }
+
     /// <summary>Returns whether the configured secondary action mouse button was pressed this frame.</summary>
     public bool IsSecondaryActionPressed()
     {

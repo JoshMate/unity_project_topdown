@@ -9,9 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8554735874023991418}
-  - component: {fileID: 4020092144798230732}
   - component: {fileID: 3257486541222685028}
   - component: {fileID: 8140732514401708236}
+  - component: {fileID: 7146244672435563995}
   m_Layer: 0
   m_Name: OB_Item_Weapon_SmallArm_Glock
   m_TagString: Untagged
@@ -34,31 +34,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4020092144798230732
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5194119782603112733}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4a797ea3657a3004cb3f07f5471fb05d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  itemSpriteRenderer: {fileID: 3257486541222685028}
-  itemName: Hunting Rifle
-  itemDescription: A basic long ranged rifle used for hunting.
-  itemType: 10
-  itemRarity: 1
-  itemWeight: 5
-  itemValue: 300
-  itemCount: 1
-  itemCountMax: 1
-  itemSprite: {fileID: 21300000, guid: 10a59948f9a223a4ab0f3e2bb1c3a144, type: 3}
-  itemSoundPickup: {fileID: 8300000, guid: cacc5bc9e8fdaa1409aa6ff6823ce9c9, type: 3}
-  itemSoundDrop: {fileID: 8300000, guid: 52daba66c8f82e94494016eb6c114a6f, type: 3}
-  isInInventorySlot: 0
 --- !u!212 &3257486541222685028
 SpriteRenderer:
   serializedVersion: 2
@@ -108,7 +83,7 @@ SpriteRenderer:
   m_SortingLayer: 10
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: 10a59948f9a223a4ab0f3e2bb1c3a144, type: 3}
+  m_Sprite: {fileID: 4271609836247489768, guid: e7a68358ea10b04488655010b0450ffd, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -156,7 +131,7 @@ PolygonCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
+    oldSize: {x: 0.421875, y: 0.6875}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -164,13 +139,58 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: 0.46875, y: 0.46875}
-      - {x: 0.328125, y: 0.46875}
-      - {x: -0.40625, y: -0.3125}
-      - {x: -0.40625, y: -0.40625}
-      - {x: -0.328125, y: -0.5}
-      - {x: -0.234375, y: -0.5}
-      - {x: -0.015625, y: -0.390625}
-      - {x: 0.484375, y: 0.328125}
-      - {x: 0.484375, y: 0.4375}
+    - - {x: 0.0703125, y: 0.34375}
+      - {x: -0.2109375, y: 0.0625}
+      - {x: -0.2109375, y: -0.09375}
+      - {x: 0.0703125, y: -0.34375}
+      - {x: 0.1796875, y: -0.34375}
+      - {x: 0.2109375, y: -0.3125}
+      - {x: 0.2109375, y: 0.34375}
   m_UseDelaunayMesh: 1
+--- !u!114 &7146244672435563995
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5194119782603112733}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7515dbe8df5cf5443b6ec43bc7c661c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::F_Item_Weapon
+  itemSpriteRenderer: {fileID: 3257486541222685028}
+  itemName: Glock
+  itemDescription: A reliable one-handed sidearm.
+  itemType: 9
+  itemRarity: 1
+  itemWeight: 1.5
+  itemValue: 150
+  itemCount: 1
+  itemCountMax: 1
+  itemSprite: {fileID: 4271609836247489768, guid: e7a68358ea10b04488655010b0450ffd, type: 3}
+  itemSoundPickup: {fileID: 8300000, guid: cacc5bc9e8fdaa1409aa6ff6823ce9c9, type: 3}
+  itemSoundDrop: {fileID: 8300000, guid: 52daba66c8f82e94494016eb6c114a6f, type: 3}
+  isInInventorySlot: 0
+  weaponProjectileSprite: {fileID: 21300000, guid: 803d441fac3a9174e87b8c8f7b1883eb, type: 3}
+  weaponFireSound: {fileID: 8300000, guid: 6ea3fbc0cd3fa81418a5e9d9317c3665, type: 3}
+  weaponDamage: 8
+  weaponDamageType: 1
+  weaponFireRateDelay: 0.2
+  weaponRange: 8
+  weaponRangeDamageFallOffMin: 0.3
+  weaponIsFullyAutomatic: 1
+  weaponIsRangeReverseFallOff: 0
+  weaponSpreadStart: 0.01
+  weaponSpreadMax: 0.08
+  weaponSpreadRecoilImpulse: 0.015
+  weaponSpreadRecoilRecoveryAmount: 0.01
+  weaponSpreadRecoilRecoveryDelay: 0.05
+  weaponIsReverseRecoilImpulse: 0
+  weaponUsesAmmo: 1
+  weaponAmmoType: {fileID: 4020092144798230732, guid: 7e226b366eb06a347897a1f7ee111c2d, type: 3}
+  weaponAmmoCapacity: 12
+  weaponAmmoTakenPerShot: 1
+  weaponReloadDelay: 2
+  weaponShotLoudness: 10
+  weaponIsReloadOneBulletPerReload: 0

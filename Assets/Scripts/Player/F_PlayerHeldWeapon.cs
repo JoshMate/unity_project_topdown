@@ -37,8 +37,25 @@ public class F_PlayerHeldWeapon : MonoBehaviour
             }
 
             enumItemType selectedItemType = selectedWeaponSlot.slotItemObj.itemType;
-            return selectedItemType == enumItemType.WeaponGunOneHanded ||
-                   selectedItemType == enumItemType.WeaponGunTwoHanded;
+            bool isFirearm = selectedItemType == enumItemType.WeaponGunOneHanded ||
+                              selectedItemType == enumItemType.WeaponGunTwoHanded;
+            if (!isFirearm)
+            {
+                return false;
+            }
+
+            F_Item_Weapon weaponItem = GetSelectedWeaponItem();
+            return weaponItem != null && weaponItem.CanFireWeapon();
+        }
+    }
+
+    /// <summary>Whether the selected weapon should keep firing while the primary action remains held.</summary>
+    public bool IsCurrentWeaponFullyAutomatic
+    {
+        get
+        {
+            F_Item_Weapon weaponItem = GetSelectedWeaponItem();
+            return weaponItem != null && weaponItem.weaponIsFullyAutomatic;
         }
     }
 
@@ -61,32 +78,66 @@ public class F_PlayerHeldWeapon : MonoBehaviour
         UpdateHeldWeaponSprite();
     }
 
-    /// <summary>Fires the selected firearm when the current slot contains a gun.</summary>
+    /// <summary>Fires the selected firearm's weapon item, spawning a projectile shaped by its damage, range, and accuracy stats.</summary>
     public void FireWeapon()
     {
-        if (!CanFireCurrentWeapon || projectileObject == null || heldWeaponCurrentlySelected == null ||
+        F_Item_Weapon weaponItem = GetSelectedWeaponItem();
+        if (weaponItem == null || projectileObject == null || heldWeaponCurrentlySelected == null ||
             heldWeaponCurrentlySelected.firePosition == null)
         {
             return;
         }
 
-        GameObject projectile = Instantiate(
-            projectileObject,
-            heldWeaponCurrentlySelected.firePosition.position,
-            heldWeaponCurrentlySelected.firePosition.rotation);
+        Transform firePosition = heldWeaponCurrentlySelected.firePosition;
+        if (!weaponItem.TryFireShot(firePosition.position))
+        {
+            return;
+        }
+
+        Vector2 spreadAimDirection = weaponItem.ApplyAccuracySpreadToDirection(firePosition.right);
+        float spreadAimAngleDegrees = Mathf.Atan2(spreadAimDirection.y, spreadAimDirection.x) * Mathf.Rad2Deg;
+        Quaternion projectileRotation = Quaternion.Euler(0f, 0f, spreadAimAngleDegrees);
+
+        GameObject projectile = Instantiate(projectileObject, firePosition.position, projectileRotation);
         Rigidbody2D projectileBody = projectile.GetComponent<Rigidbody2D>();
         if (projectileBody != null)
         {
-            projectileBody.AddForce(
-                heldWeaponCurrentlySelected.firePosition.right * projectileSpeed,
-                ForceMode2D.Impulse);
+            projectileBody.AddForce(spreadAimDirection * projectileSpeed, ForceMode2D.Impulse);
+        }
+
+        SpriteRenderer projectileSpriteRenderer = projectile.GetComponent<SpriteRenderer>();
+        if (projectileSpriteRenderer != null && weaponItem.weaponProjectileSprite != null)
+        {
+            projectileSpriteRenderer.sprite = weaponItem.weaponProjectileSprite;
         }
 
         F_Effects_Projectile projectileEffects = projectile.GetComponent<F_Effects_Projectile>();
         if (projectileEffects != null)
         {
             projectileEffects.projectileImpactObject = projectileImpactObject;
+            projectileEffects.ConfigureCombatData(
+                weaponItem.weaponDamage,
+                weaponItem.weaponDamageType,
+                weaponItem.weaponRange,
+                weaponItem.weaponRangeDamageFallOffMin,
+                weaponItem.weaponIsRangeReverseFallOff);
         }
+    }
+
+    /// <summary>Starts a reload cycle on the currently selected weapon item, if any.</summary>
+    /// <param name="playerInventory">The inventory the reload should draw ammo from.</param>
+    public void ReloadCurrentWeapon(F_PlayerInventory playerInventory)
+    {
+        F_Item_Weapon weaponItem = GetSelectedWeaponItem();
+        if (weaponItem != null)
+        {
+            weaponItem.StartReload(playerInventory);
+        }
+    }
+
+    private F_Item_Weapon GetSelectedWeaponItem()
+    {
+        return selectedWeaponSlot != null ? selectedWeaponSlot.slotItemObj as F_Item_Weapon : null;
     }
 
     /// <summary>Refreshes the held weapon visual from the selected inventory item's type.</summary>
