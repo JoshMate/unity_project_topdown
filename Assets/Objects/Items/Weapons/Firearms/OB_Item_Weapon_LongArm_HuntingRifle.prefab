@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3257486541222685028}
   - component: {fileID: 8140732514401708236}
   m_Layer: 0
-  m_Name: OB_Item_Weapon_TwoHanded_HuntingRifle
+  m_Name: OB_Item_Weapon_LongArm_HuntingRifle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -58,9 +58,6 @@ MonoBehaviour:
   itemSprite: {fileID: 21300000, guid: 10a59948f9a223a4ab0f3e2bb1c3a144, type: 3}
   itemSoundPickup: {fileID: 8300000, guid: cacc5bc9e8fdaa1409aa6ff6823ce9c9, type: 3}
   itemSoundDrop: {fileID: 8300000, guid: 52daba66c8f82e94494016eb6c114a6f, type: 3}
-  ammoType: {fileID: 0}
-  currentMagazineAmmo: 0
-  magazineCapacity: 0
   isInInventorySlot: 0
 --- !u!212 &3257486541222685028
 SpriteRenderer:
