@@ -23,6 +23,7 @@ public class F_Logic_Cursor : MonoBehaviour
     public Sprite cursorSpritePointer;
     public Sprite cursorSpriteAim;
     public Sprite cursorSpriteReload;
+    public Sprite cursorSpriteOkay;
 
     [Header("Stats")]
     private float cursorPlaceMaxDistance = 2.5f;
@@ -223,7 +224,15 @@ public class F_Logic_Cursor : MonoBehaviour
                 ? playerController.playerHeldWeapon.SelectedWeaponItem
                 : null;
             bool isReloading = heldWeapon != null && heldWeapon.IsReloading && cursorSpriteReload != null;
-            cursorRendererPointer.sprite = isReloading ? cursorSpriteReload : cursorSpriteAim;
+            bool isFinishingReload = heldWeapon != null && heldWeapon.IsFinishingReload && cursorSpriteOkay != null;
+            if (isFinishingReload)
+            {
+                cursorRendererPointer.sprite = cursorSpriteOkay;
+            }
+            else
+            {
+                cursorRendererPointer.sprite = isReloading ? cursorSpriteReload : cursorSpriteAim;
+            }
         }
 
     }

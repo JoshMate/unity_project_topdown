@@ -120,6 +120,9 @@ public class F_Item_Weapon : F_Item
     /// <summary>Whether the weapon is currently mid-reload.</summary>
     public bool IsReloading => isReloading;
 
+    /// <summary>Whether the weapon is in the short completion delay at the end of a reload.</summary>
+    public bool IsFinishingReload => isFinishingReload;
+
     /// <summary>Progress from 0 to 1 of the current reload cycle segment (the whole reload, or a single round when loading one at a time).</summary>
     public float ReloadProgress
     {
