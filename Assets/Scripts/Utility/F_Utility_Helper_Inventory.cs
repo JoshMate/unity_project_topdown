@@ -145,6 +145,28 @@ public static class F_Utility_Helper_Inventory
         return true;
     }
 
+    /// <summary>Removes the loaded ammo from a weapon and adds it to the inventory as new ammo items.</summary>
+    /// <param name="weapon">The weapon to unload.</param>
+    /// <param name="playerInventory">The inventory that receives the ammo (overflow drops under the player).</param>
+    /// <returns>The number of rounds moved into the inventory; 0 when nothing could be unloaded.</returns>
+    public static int UnloadWeaponAmmoToInventory(F_Item_Weapon weapon, F_PlayerInventory playerInventory)
+    {
+        if (weapon == null || playerInventory == null || !weapon.CanUnloadAmmo)
+        {
+            return 0;
+        }
+
+        F_Item ammoTemplate = weapon.weaponAmmoType;
+        int unloadedAmmo = weapon.TakeLoadedAmmo();
+        if (unloadedAmmo <= 0)
+        {
+            return 0;
+        }
+
+        AddItemToInventory(ammoTemplate, unloadedAmmo, playerInventory);
+        return unloadedAmmo;
+    }
+
     /// <summary>Moves an existing floor item into the player's inventory, stacking it or dropping it under the player if no slot accepts it.</summary>
     /// <param name="itemToMove">The existing item instance to move.</param>
     /// <param name="playerInventory">The inventory that receives the item.</param>

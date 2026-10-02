@@ -385,6 +385,35 @@ public class F_Item_Weapon : F_Item
         return weaponIsReverseRecoilImpulse ? weaponSpreadMax : weaponSpreadStart;
     }
 
+    /// <summary>Whether the weapon currently holds ammo that can be removed (not possible mid-reload).</summary>
+    public bool CanUnloadAmmo => weaponUsesAmmo && weaponAmmoType != null && !isReloading && currentAmmoLoaded > 0;
+
+    /// <summary>Empties the weapon's magazine and returns how many rounds were removed.</summary>
+    /// <remarks>Only changes the weapon's own state; the caller is responsible for giving the rounds to an inventory.</remarks>
+    public int TakeLoadedAmmo()
+    {
+        if (!CanUnloadAmmo)
+        {
+            return 0;
+        }
+
+        int removedAmmo = currentAmmoLoaded;
+        currentAmmoLoaded = 0;
+        return removedAmmo;
+    }
+
+    /// <summary>Adds the Unload action for weapons that use ammo, on top of the shared item actions.</summary>
+    public override List<enumItemContextAction> GetContextMenuActions()
+    {
+        List<enumItemContextAction> actions = base.GetContextMenuActions();
+        if (weaponUsesAmmo && weaponAmmoType != null)
+        {
+            actions.Insert(0, enumItemContextAction.Unload);
+        }
+
+        return actions;
+    }
+
     /// <summary>Adds weapon-specific stats on top of the shared item tooltip details.</summary>
     public override List<F_ItemTooltipDetail> GetTooltipDetails()
     {

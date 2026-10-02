@@ -152,6 +152,18 @@ public class F_PlayerInventory : MonoBehaviour
             return 0f;
         }
 
-        return Mathf.Max(0f, item.itemWeight) * Mathf.Max(0, item.itemCount);
+        return Mathf.Max(0f, item.itemWeight) * Mathf.Max(0, item.itemCount) + GetLoadedAmmoWeight(item);
+    }
+
+    // Weapons carry the weight of the rounds currently loaded in them (rounds x the ammo type's per-item weight).
+    private static float GetLoadedAmmoWeight(F_Item item)
+    {
+        F_Item_Weapon weapon = item as F_Item_Weapon;
+        if (weapon == null || !weapon.weaponUsesAmmo || weapon.weaponAmmoType == null)
+        {
+            return 0f;
+        }
+
+        return Mathf.Max(0f, weapon.weaponAmmoType.itemWeight) * Mathf.Max(0, weapon.CurrentAmmoLoaded);
     }
 }

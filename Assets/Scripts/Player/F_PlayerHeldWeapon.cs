@@ -199,6 +199,9 @@ public class F_PlayerHeldWeapon : MonoBehaviour
         }
     }
 
+    /// <summary>The weapon item in the currently selected weapon slot, or null when no weapon is selected.</summary>
+    public F_Item_Weapon SelectedWeaponItem => GetSelectedWeaponItem();
+
     private F_Item_Weapon GetSelectedWeaponItem()
     {
         return selectedWeaponSlot != null ? selectedWeaponSlot.slotItemObj as F_Item_Weapon : null;

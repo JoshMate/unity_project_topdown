@@ -43,6 +43,9 @@ public class F_GUI_ItemContextMenu : MonoBehaviour
     public CanvasGroup contextMenuCanvasGroup;
     public Image panelBorderImage;
 
+    [Header("Context Action Sounds")]
+    public AudioClip unloadActionSound;
+
     [Header("Privates")]
     private RectTransform fillRect;
     private TMP_Text headerLabel;
@@ -394,12 +397,23 @@ public class F_GUI_ItemContextMenu : MonoBehaviour
         spawnedOptionObjs.Add(optionObj);
     }
 
+    private AudioClip GetActionSound(enumItemContextAction action)
+    {
+        switch (action)
+        {
+            case enumItemContextAction.Unload:
+                return unloadActionSound;
+            default:
+                return null;
+        }
+    }
+
     private void OnOptionClicked(enumItemContextAction action)
     {
         F_Item item = displayedItem;
         F_PlayerInventory playerInventory = ownerInventory;
         Hide();
-        F_Utility_Helper_ContextMenu.ExecuteAction(action, item, playerInventory);
+        F_Utility_Helper_ContextMenu.ExecuteAction(action, item, playerInventory, GetActionSound(action));
     }
 
     private void PositionBesidePointer(Vector2 pointerScreenPosition)

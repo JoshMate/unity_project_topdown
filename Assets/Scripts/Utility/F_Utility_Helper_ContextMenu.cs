@@ -12,6 +12,8 @@ public static class F_Utility_Helper_ContextMenu
         {
             case enumItemContextAction.Drop:
                 return "Drop";
+            case enumItemContextAction.Unload:
+                return "Unload";
             default:
                 return action.ToString();
         }
@@ -21,7 +23,8 @@ public static class F_Utility_Helper_ContextMenu
     /// <param name="action">The action selected from the context menu.</param>
     /// <param name="item">The item the action applies to.</param>
     /// <param name="playerInventory">The inventory that currently owns the item.</param>
-    public static void ExecuteAction(enumItemContextAction action, F_Item item, F_PlayerInventory playerInventory)
+    /// <param name="actionSound">Optional sound played directly when the action succeeds.</param>
+    public static void ExecuteAction(enumItemContextAction action, F_Item item, F_PlayerInventory playerInventory, AudioClip actionSound = null)
     {
         if (item == null)
         {
@@ -33,6 +36,15 @@ public static class F_Utility_Helper_ContextMenu
             case enumItemContextAction.Drop:
                 // Omitting a cursor position drops the item on the floor beneath the player.
                 F_Utility_Helper_Inventory.DropItemFromInventory(item, playerInventory);
+                break;
+            case enumItemContextAction.Unload:
+                F_Item_Weapon weapon = item as F_Item_Weapon;
+                bool wasUnloaded = F_Utility_Helper_Inventory.UnloadWeaponAmmoToInventory(weapon, playerInventory) > 0;
+                if (wasUnloaded && actionSound != null)
+                {
+                    F_Logic_Audio.PlaySound(actionSound, EnumSoundType.Direct);
+                }
+
                 break;
             default:
                 Debug.LogWarning($"F_Utility_Helper_ContextMenu: No execution defined for action '{action}'.");

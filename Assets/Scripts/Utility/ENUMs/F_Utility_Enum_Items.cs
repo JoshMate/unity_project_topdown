@@ -57,5 +57,6 @@ public enum enumInventorySlotHotkeyGroup
 /// <summary>Actions selectable from an inventory item's right-click context menu.</summary>
 public enum enumItemContextAction
 {
-    Drop
+    Drop,
+    Unload
 }
