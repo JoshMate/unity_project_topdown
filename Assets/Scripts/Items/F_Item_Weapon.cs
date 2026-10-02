@@ -107,7 +107,7 @@ public class F_Item_Weapon : F_Item
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        currentAmmoLoaded = weaponAmmoCapacity;
+        currentAmmoLoaded = 0;
         currentAccuracySpread = GetRestingAccuracySpread();
         nextSpreadRecoveryTime = Time.time + weaponSpreadRecoilRecoveryDelay;
     }

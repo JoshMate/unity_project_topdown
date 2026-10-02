@@ -40,6 +40,20 @@ public class F_Logic_Cursor : MonoBehaviour
 
         // Hide Cursor Text on start
         cursorText.text = "";
+
+        CreateWeaponCrosshair();
+    }
+
+    // Builds the weapon spread crosshair as a child of the pointer so it follows the cursor
+    private void CreateWeaponCrosshair()
+    {
+        GameObject crosshairObject = new GameObject("Cursor_WeaponCrosshair");
+        crosshairObject.transform.SetParent(cursorTransformPointer, false);
+
+        F_Logic_CursorCrosshair crosshair = crosshairObject.AddComponent<F_Logic_CursorCrosshair>();
+        crosshair.playerHeldWeapon = playerController != null ? playerController.playerHeldWeapon : null;
+        crosshair.characterScreenManager = characterScreenManager;
+        crosshair.sortingReferenceRenderer = cursorRendererPointer;
     }
 
     // Update is called once per frame
