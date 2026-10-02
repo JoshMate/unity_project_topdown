@@ -388,7 +388,7 @@ public static class F_Utility_Helper_Inventory
         }
 
         createdItem.itemCount = itemCount;
-        createdItem.isInInventorySlot = false;
+        createdItem.SetInventoryStoredState(false);
         return createdItem;
     }
 

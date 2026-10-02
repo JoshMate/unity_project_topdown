@@ -174,6 +174,10 @@ MonoBehaviour:
   weaponProjectileSprite: {fileID: 21300000, guid: 803d441fac3a9174e87b8c8f7b1883eb, type: 3}
   weaponFireSound: {fileID: 8300000, guid: 645059252851d234a96edd1b2ad3a2de, type: 3}
   weaponBoltActionSound: {fileID: 8300000, guid: 530ceec025401fa46a61a6faea533d5b, type: 3}
+  weaponReloadStartSound: {fileID: 8300000, guid: 2aa9da0ea32f7974181a3aa408abedb1, type: 3}
+  weaponReloadMiddleSound: {fileID: 8300000, guid: 70ca4ce1a35d64a4dbe221e3d99617dc, type: 3}
+  weaponReloadEndSound: {fileID: 8300000, guid: 29867624abd438240be1fb1c2dca9711, type: 3}
+  weaponReloadOneAtATimeSound: {fileID: 8300000, guid: d3085596019423c46b939dbf530adc87, type: 3}
   weaponDamage: 8
   weaponDamageType: 1
   weaponFireRateDelay: 0.6

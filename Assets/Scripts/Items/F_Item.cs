@@ -42,8 +42,11 @@ public class F_Item : MonoBehaviour
     public AudioClip itemSoundPickup;
     public AudioClip itemSoundDrop;
 
-    [Header("Item Flags")]
-    public bool isInInventorySlot = false;
+    [Header("Privates")]
+    private bool isInInventorySlot = false;
+
+    /// <summary>Whether the item is currently stored in an inventory slot (managed by the inventory code).</summary>
+    public bool IsInInventorySlot => isInInventorySlot;
 
     private void OnEnable()
     {

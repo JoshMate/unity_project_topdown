@@ -5,12 +5,22 @@ using UnityEngine;
 
 public class F_Item_Weapon : F_Item
 {
-    [Header("Object Refs")]
-
-    [Header("Weapon Art")]
+    [Header("Weapon Art Projectile")]
     public Sprite weaponProjectileSprite;
+
+    [Header("Weapon Art Shot")]
     public AudioClip weaponFireSound;
     public AudioClip weaponBoltActionSound;
+
+    [Header("Weapon Art Reload Sounds")]
+    // Played when a full reload cycle begins
+    public AudioClip weaponReloadStartSound;
+    // Played when a full reload cycle is half way complete
+    public AudioClip weaponReloadMiddleSound;
+    // Played when a full reload cycle finishes
+    public AudioClip weaponReloadEndSound;
+    // Played once per round at the end of each round's delay when reloading one bullet at a time
+    public AudioClip weaponReloadOneAtATimeSound;
 
     [Header("Weapon Damage Stats")]
     // How much damage the projectile deals when it hits a target
@@ -85,13 +95,20 @@ public class F_Item_Weapon : F_Item
     [Header("Constants Private")]
     private const float minimumSpreadRecoveryDelay = 0.01f;
     private const float minimumFireDelay = 0f;
+    private const float reloadMiddleFraction = 0.5f;
+    private const float reloadCompletionDelay = 0.3f;
+    private const float oneAtATimeFirstRoundDelayMultiplier = 2f;
 
     [Header("Privates")]
     private int currentAmmoLoaded;
     private float currentAccuracySpread;
     private float nextFireReadyTime;
+    // Time at which the current bolt action cycle finishes; reloading is blocked until then
+    private float boltActionEndTime;
     private float nextSpreadRecoveryTime;
     private bool isReloading;
+    // True during the completion delay at the end of a reload, when the reload can no longer be interrupted by firing
+    private bool isFinishingReload;
     private Coroutine reloadRoutine;
     private readonly List<Collider2D> firedProjectileColliders = new List<Collider2D>();
 
@@ -121,12 +138,31 @@ public class F_Item_Weapon : F_Item
     /// <summary>Returns whether this weapon is currently able to fire a shot.</summary>
     public bool CanFireWeapon()
     {
-        if (isReloading || Time.time < nextFireReadyTime)
+        if (isFinishingReload || Time.time < nextFireReadyTime)
         {
             return false;
         }
 
+        // An in-progress reload does not block firing as long as enough ammo is already loaded
         return !weaponUsesAmmo || currentAmmoLoaded >= weaponAmmoTakenPerShot;
+    }
+
+    /// <summary>Stops an in-progress reload without loading further ammo; rounds already loaded are kept.</summary>
+    private void InterruptReload()
+    {
+        if (!isReloading)
+        {
+            return;
+        }
+
+        if (reloadRoutine != null)
+        {
+            StopCoroutine(reloadRoutine);
+            reloadRoutine = null;
+        }
+
+        isReloading = false;
+        isFinishingReload = false;
     }
 
     /// <summary>Consumes ammo and cooldown for a single shot, applies recoil, and plays the fire sound.</summary>
@@ -139,6 +175,7 @@ public class F_Item_Weapon : F_Item
             return false;
         }
 
+        InterruptReload();
         ProcessShot(firePositionWorld);
         return true;
     }
@@ -148,11 +185,12 @@ public class F_Item_Weapon : F_Item
     /// <returns>True when the follow-up shot was successfully fired.</returns>
     public bool TryFireBurstFollowupShot(Vector3 firePositionWorld)
     {
-        if (isReloading || !TryConsumeAmmoForShot())
+        if (isFinishingReload || !TryConsumeAmmoForShot())
         {
             return false;
         }
 
+        InterruptReload();
         ProcessShot(firePositionWorld);
         return true;
     }
@@ -166,6 +204,7 @@ public class F_Item_Weapon : F_Item
             : minimumFireDelay;
         float fireRateDelay = Mathf.Max(minimumFireDelay, weaponFireRateDelay);
         nextFireReadyTime = Time.time + boltActionDelay + fireRateDelay;
+        boltActionEndTime = Time.time + boltActionDelay;
 
         if (!weaponIsBoltAction || weaponBoltActionSound == null)
         {
@@ -291,7 +330,7 @@ public class F_Item_Weapon : F_Item
     /// <param name="playerInventory">The inventory the reload should draw ammo from.</param>
     public void StartReload(F_PlayerInventory playerInventory)
     {
-        if (isReloading || !weaponUsesAmmo || currentAmmoLoaded >= weaponAmmoCapacity)
+        if (isReloading || Time.time < boltActionEndTime || !weaponUsesAmmo || currentAmmoLoaded >= weaponAmmoCapacity || !HasReserveAmmo(playerInventory))
         {
             return;
         }
@@ -304,12 +343,32 @@ public class F_Item_Weapon : F_Item
         reloadRoutine = StartCoroutine(ReloadRoutine(playerInventory));
     }
 
+    private bool HasReserveAmmo(F_PlayerInventory playerInventory)
+    {
+        return weaponAmmoType == null ||
+            F_Utility_Helper_Inventory.GetItemCountInInventory(playerInventory, weaponAmmoType) > 0;
+    }
+
+    private void PlayReloadSound(AudioClip reloadSound)
+    {
+        if (reloadSound == null)
+        {
+            return;
+        }
+
+        F_Logic_Audio.PlaySound(reloadSound, EnumSoundType.Direct);
+    }
+
     private IEnumerator ReloadRoutine(F_PlayerInventory playerInventory)
     {
         isReloading = true;
 
         if (weaponIsReloadOneBulletPerReload)
         {
+            PlayReloadSound(weaponReloadStartSound);
+
+            int roundsLoadedThisCycle = 0;
+
             while (currentAmmoLoaded < weaponAmmoCapacity)
             {
                 if (weaponAmmoType != null &&
@@ -318,7 +377,10 @@ public class F_Item_Weapon : F_Item
                     break;
                 }
 
-                yield return new WaitForSeconds(weaponReloadDelay);
+                float roundDelay = roundsLoadedThisCycle == 0
+                    ? weaponReloadDelay * oneAtATimeFirstRoundDelayMultiplier
+                    : weaponReloadDelay;
+                yield return new WaitForSeconds(roundDelay);
 
                 int consumedAmmo = weaponAmmoType != null
                     ? F_Utility_Helper_Inventory.ConsumeItemFromInventory(playerInventory, weaponAmmoType, 1)
@@ -328,12 +390,29 @@ public class F_Item_Weapon : F_Item
                     break;
                 }
 
+                PlayReloadSound(weaponReloadOneAtATimeSound);
+
                 currentAmmoLoaded += consumedAmmo;
+                roundsLoadedThisCycle++;
+            }
+
+            if (roundsLoadedThisCycle > 0)
+            {
+                PlayReloadSound(weaponReloadEndSound);
+                isFinishingReload = true;
+                yield return new WaitForSeconds(reloadCompletionDelay);
             }
         }
         else
         {
-            yield return new WaitForSeconds(weaponReloadDelay);
+            PlayReloadSound(weaponReloadStartSound);
+            yield return new WaitForSeconds(weaponReloadDelay * reloadMiddleFraction);
+            if (HasReserveAmmo(playerInventory))
+            {
+                PlayReloadSound(weaponReloadMiddleSound);
+            }
+
+            yield return new WaitForSeconds(weaponReloadDelay * (1f - reloadMiddleFraction));
 
             int neededAmmo = weaponAmmoCapacity - currentAmmoLoaded;
             int availableAmmo = weaponAmmoType != null
@@ -343,14 +422,18 @@ public class F_Item_Weapon : F_Item
 
             if (ammoToLoad > 0)
             {
+                PlayReloadSound(weaponReloadEndSound);
                 int consumedAmmo = weaponAmmoType != null
                     ? F_Utility_Helper_Inventory.ConsumeItemFromInventory(playerInventory, weaponAmmoType, ammoToLoad)
                     : ammoToLoad;
                 currentAmmoLoaded += consumedAmmo;
+                isFinishingReload = true;
+                yield return new WaitForSeconds(reloadCompletionDelay);
             }
         }
 
         isReloading = false;
+        isFinishingReload = false;
         reloadRoutine = null;
     }
 
