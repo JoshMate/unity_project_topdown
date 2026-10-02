@@ -22,6 +22,7 @@ public class F_Logic_Cursor : MonoBehaviour
     [Header("Art")]
     public Sprite cursorSpritePointer;
     public Sprite cursorSpriteAim;
+    public Sprite cursorSpriteReload;
 
     [Header("Stats")]
     private float cursorPlaceMaxDistance = 2.5f;
@@ -218,7 +219,11 @@ public class F_Logic_Cursor : MonoBehaviour
         }
         if (characterScreenManager.isMenuOpen == false)
         {
-            cursorRendererPointer.sprite = cursorSpriteAim;
+            F_Item_Weapon heldWeapon = playerController != null && playerController.playerHeldWeapon != null
+                ? playerController.playerHeldWeapon.SelectedWeaponItem
+                : null;
+            bool isReloading = heldWeapon != null && heldWeapon.IsReloading && cursorSpriteReload != null;
+            cursorRendererPointer.sprite = isReloading ? cursorSpriteReload : cursorSpriteAim;
         }
 
     }

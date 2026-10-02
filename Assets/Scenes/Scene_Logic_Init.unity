@@ -6338,6 +6338,7 @@ MonoBehaviour:
   itemContextMenu: {fileID: 1116802156}
   cursorSpritePointer: {fileID: 21300000, guid: 1cd9f277f11a4da49add9e5ebdf708de, type: 3}
   cursorSpriteAim: {fileID: 21300000, guid: fc18ac77193f2bd45aed7bd8f15f16bc, type: 3}
+  cursorSpriteReload: {fileID: 21300000, guid: a78dc02322e8c1d4dbb95101a3601ead, type: 3}
 --- !u!4 &727602944
 Transform:
   m_ObjectHideFlags: 0

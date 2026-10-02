@@ -107,6 +107,8 @@ public class F_Item_Weapon : F_Item
     private float boltActionEndTime;
     private float nextSpreadRecoveryTime;
     private bool isReloading;
+    private float reloadSegmentStartTime;
+    private float reloadSegmentDuration;
     // True during the completion delay at the end of a reload, when the reload can no longer be interrupted by firing
     private bool isFinishingReload;
     private Coroutine reloadRoutine;
@@ -117,6 +119,31 @@ public class F_Item_Weapon : F_Item
 
     /// <summary>Whether the weapon is currently mid-reload.</summary>
     public bool IsReloading => isReloading;
+
+    /// <summary>Progress from 0 to 1 of the current reload cycle segment (the whole reload, or a single round when loading one at a time).</summary>
+    public float ReloadProgress
+    {
+        get
+        {
+            if (!isReloading)
+            {
+                return 0f;
+            }
+
+            if (reloadSegmentDuration <= 0f)
+            {
+                return 1f;
+            }
+
+            return Mathf.Clamp01((Time.time - reloadSegmentStartTime) / reloadSegmentDuration);
+        }
+    }
+
+    private void BeginReloadProgressSegment(float segmentDuration)
+    {
+        reloadSegmentStartTime = Time.time;
+        reloadSegmentDuration = segmentDuration;
+    }
 
     /// <summary>The weapon's current accuracy cone half-angle, in radians.</summary>
     public float CurrentAccuracySpreadRadians => currentAccuracySpread;
@@ -380,6 +407,7 @@ public class F_Item_Weapon : F_Item
                 float roundDelay = roundsLoadedThisCycle == 0
                     ? weaponReloadDelay * oneAtATimeFirstRoundDelayMultiplier
                     : weaponReloadDelay;
+                BeginReloadProgressSegment(roundDelay);
                 yield return new WaitForSeconds(roundDelay);
 
                 int consumedAmmo = weaponAmmoType != null
@@ -400,12 +428,14 @@ public class F_Item_Weapon : F_Item
             {
                 PlayReloadSound(weaponReloadEndSound);
                 isFinishingReload = true;
+                BeginReloadProgressSegment(0f);
                 yield return new WaitForSeconds(reloadCompletionDelay);
             }
         }
         else
         {
             PlayReloadSound(weaponReloadStartSound);
+            BeginReloadProgressSegment(weaponReloadDelay);
             yield return new WaitForSeconds(weaponReloadDelay * reloadMiddleFraction);
             if (HasReserveAmmo(playerInventory))
             {
@@ -428,6 +458,7 @@ public class F_Item_Weapon : F_Item
                     : ammoToLoad;
                 currentAmmoLoaded += consumedAmmo;
                 isFinishingReload = true;
+                BeginReloadProgressSegment(0f);
                 yield return new WaitForSeconds(reloadCompletionDelay);
             }
         }
