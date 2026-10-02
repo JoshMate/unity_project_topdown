@@ -23,16 +23,25 @@ public class F_Item_Weapon : F_Item
     public float weaponRange = 10f;
     // How much the damage should be reduced to in a linear fashion (As a percent of starting damge) as the projectile travels across its range (Starting damage that grows if weaponIsRangeReverseFallOff is true)
     public float weaponRangeDamageFallOffMin = 0.30f;
+    // The how fast the projectile moves
+    public float weaponProjectileSpeed = 10f;
+    // How many projectiles the weapon fires each time it shoots (Each projectile has random spread)
+    public int weaponProjectileShotCount = 1;
+    // How many times the weapon should fire when shot
+    public int weaponProjectileBurstCount = 1;
+    // The delay between the extra burst shots (Regular fire rate delay is then put in place after the burst is finished)
+    public float weaponProjectileBurstDelay = 0.1f;
+
     
     [Header("Weapon Damage Features")]
     // Wether or not the weapon is automatic, continues to fire with the button held down or if one shot per press
     public bool weaponIsFullyAutomatic = false;
-    // Wether or not the weapon should play a follow up sound after the shot has been fired (Plays weaponBoltActionSound)
-    public bool weaponIsBoltAction = false;
-    // How long to wait in seconds before playing the bolt action sound after shooting
-    public float weaponBoltActionDelay = 1f;
     // Wether or not the weapon loses or gains damage as the projectile moves through its range
     public bool weaponIsRangeReverseFallOff = false;
+    // Wether or not the weapon should play a follow up sound after the shot has been fired (Plays weaponBoltActionSound and delays fire rate)
+    public bool weaponIsBoltAction = false;
+    // How long to wait in seconds before playing the bolt action sound after shooting, this delays the normal fire rate delay
+    public float weaponBoltActionDelay = 1f;
     
 
     [Header("Weapon Accuracy Stats")]
@@ -75,6 +84,7 @@ public class F_Item_Weapon : F_Item
 
     [Header("Constants Private")]
     private const float minimumSpreadRecoveryDelay = 0.01f;
+    private const float minimumFireDelay = 0f;
 
     [Header("Privates")]
     private int currentAmmoLoaded;
@@ -83,6 +93,7 @@ public class F_Item_Weapon : F_Item
     private float nextSpreadRecoveryTime;
     private bool isReloading;
     private Coroutine reloadRoutine;
+    private readonly List<Collider2D> firedProjectileColliders = new List<Collider2D>();
 
     /// <summary>How many rounds are currently loaded in the weapon.</summary>
     public int CurrentAmmoLoaded => currentAmmoLoaded;
@@ -118,23 +129,92 @@ public class F_Item_Weapon : F_Item
         return !weaponUsesAmmo || currentAmmoLoaded >= weaponAmmoTakenPerShot;
     }
 
-    /// <summary>Consumes ammo and cooldown for a single shot, applies recoil, and plays the fire sound directly.</summary>
+    /// <summary>Consumes ammo and cooldown for a single shot, applies recoil, and plays the fire sound.</summary>
     /// <param name="firePositionWorld">World position where the shot was fired.</param>
     /// <returns>True when the shot was successfully fired.</returns>
     public bool TryFireShot(Vector3 firePositionWorld)
     {
-        if (!CanFireWeapon())
+        if (!CanFireWeapon() || !TryConsumeAmmoForShot())
         {
             return false;
         }
 
-        if (weaponUsesAmmo)
+        ProcessShot(firePositionWorld);
+        return true;
+    }
+
+    /// <summary>Consumes ammo and processes a follow-up shot in an active burst without applying the regular fire-rate cooldown.</summary>
+    /// <param name="firePositionWorld">World position where the shot was fired.</param>
+    /// <returns>True when the follow-up shot was successfully fired.</returns>
+    public bool TryFireBurstFollowupShot(Vector3 firePositionWorld)
+    {
+        if (isReloading || !TryConsumeAmmoForShot())
         {
-            currentAmmoLoaded -= weaponAmmoTakenPerShot;
+            return false;
         }
 
-        float boltActionDelay = weaponIsBoltAction ? Mathf.Max(0f, weaponBoltActionDelay) : 0f;
-        nextFireReadyTime = Time.time + boltActionDelay + weaponFireRateDelay;
+        ProcessShot(firePositionWorld);
+        return true;
+    }
+
+    /// <summary>Completes a firing sequence, playing any configured bolt-action sound and applying cooldowns.</summary>
+    /// <param name="firePositionWorld">World position where the weapon fired.</param>
+    public void CompleteFireSequence(Vector3 firePositionWorld)
+    {
+        float boltActionDelay = weaponIsBoltAction
+            ? Mathf.Max(minimumFireDelay, weaponBoltActionDelay)
+            : minimumFireDelay;
+        float fireRateDelay = Mathf.Max(minimumFireDelay, weaponFireRateDelay);
+        nextFireReadyTime = Time.time + boltActionDelay + fireRateDelay;
+
+        if (!weaponIsBoltAction || weaponBoltActionSound == null)
+        {
+            return;
+        }
+
+        if (boltActionDelay <= minimumFireDelay)
+        {
+            PlayBoltActionSound(firePositionWorld);
+            return;
+        }
+
+        StartCoroutine(PlayBoltActionSoundRoutine(firePositionWorld, boltActionDelay));
+    }
+
+    private IEnumerator PlayBoltActionSoundRoutine(Vector3 firePositionWorld, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        PlayBoltActionSound(firePositionWorld);
+    }
+
+    private void PlayBoltActionSound(Vector3 firePositionWorld)
+    {
+        F_Logic_Audio.PlaySound(
+            weaponBoltActionSound,
+            EnumSoundType.Direct,
+            weaponShotLoudness,
+            100f,
+            firePositionWorld);
+    }
+
+    private bool TryConsumeAmmoForShot()
+    {
+        if (!weaponUsesAmmo)
+        {
+            return true;
+        }
+
+        if (currentAmmoLoaded < weaponAmmoTakenPerShot)
+        {
+            return false;
+        }
+
+        currentAmmoLoaded -= weaponAmmoTakenPerShot;
+        return true;
+    }
+
+    private void ProcessShot(Vector3 firePositionWorld)
+    {
         ApplyRecoilImpulse();
 
         if (weaponFireSound != null)
@@ -146,30 +226,43 @@ public class F_Item_Weapon : F_Item
                 100f,
                 firePositionWorld);
         }
-
-        if (weaponIsBoltAction)
-        {
-            StartCoroutine(PlayBoltActionSoundAfterDelay(firePositionWorld, boltActionDelay));
-        }
-
-        return true;
     }
 
-    private IEnumerator PlayBoltActionSoundAfterDelay(Vector3 soundPosition, float delay)
+    /// <summary>Prevents this weapon's newly fired projectile colliders from colliding with its active projectiles.</summary>
+    /// <param name="projectileColliders">The colliders belonging to a newly spawned projectile.</param>
+    public void IgnoreCollisionsWithPreviouslyFiredProjectiles(Collider2D[] projectileColliders)
     {
-        if (delay > 0f)
+        if (projectileColliders == null || projectileColliders.Length == 0)
         {
-            yield return new WaitForSeconds(delay);
+            return;
         }
 
-        if (weaponBoltActionSound != null)
+        for (int existingIndex = firedProjectileColliders.Count - 1; existingIndex >= 0; existingIndex--)
         {
-            F_Logic_Audio.PlaySound(
-                weaponBoltActionSound,
-                EnumSoundType.Direct,
-                weaponShotLoudness,
-                100f,
-                soundPosition);
+            Collider2D existingCollider = firedProjectileColliders[existingIndex];
+            if (existingCollider == null)
+            {
+                firedProjectileColliders.RemoveAt(existingIndex);
+                continue;
+            }
+
+            for (int newIndex = 0; newIndex < projectileColliders.Length; newIndex++)
+            {
+                Collider2D newCollider = projectileColliders[newIndex];
+                if (newCollider != null)
+                {
+                    Physics2D.IgnoreCollision(existingCollider, newCollider);
+                }
+            }
+        }
+
+        for (int newIndex = 0; newIndex < projectileColliders.Length; newIndex++)
+        {
+            Collider2D newCollider = projectileColliders[newIndex];
+            if (newCollider != null)
+            {
+                firedProjectileColliders.Add(newCollider);
+            }
         }
     }
 

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8140732514401708236}
   - component: {fileID: 6144074798674838647}
   m_Layer: 0
-  m_Name: OB_Item_Weapon_LongArm_HuntingRifle
+  m_Name: OB_Item_Weapon_LongArm_PumpActionShotgun
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -83,7 +83,7 @@ SpriteRenderer:
   m_SortingLayer: 10
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: 10a59948f9a223a4ab0f3e2bb1c3a144, type: 3}
+  m_Sprite: {fileID: 756734526971379473, guid: a2fcca167dccd0d42b27ad3cec16e78a, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -131,7 +131,7 @@ PolygonCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
+    oldSize: {x: 0.671875, y: 0.8125}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -139,15 +139,12 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: 0.46875, y: 0.46875}
-      - {x: 0.328125, y: 0.46875}
-      - {x: -0.40625, y: -0.3125}
-      - {x: -0.40625, y: -0.40625}
-      - {x: -0.328125, y: -0.5}
-      - {x: -0.234375, y: -0.5}
-      - {x: -0.015625, y: -0.390625}
-      - {x: 0.484375, y: 0.328125}
-      - {x: 0.484375, y: 0.4375}
+    - - {x: 0.1640625, y: 0.40625}
+      - {x: -0.3359375, y: -0.171875}
+      - {x: -0.3359375, y: -0.40625}
+      - {x: -0.0859375, y: -0.40625}
+      - {x: 0.3359375, y: 0}
+      - {x: 0.3359375, y: 0.40625}
   m_UseDelaunayMesh: 1
 --- !u!114 &6144074798674838647
 MonoBehaviour:
@@ -162,44 +159,44 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::F_Item_Weapon
   itemSpriteRenderer: {fileID: 3257486541222685028}
-  itemName: Hunting Rifle
-  itemDescription: A basic long ranged rifle used for hunting.
+  itemName: Pump Action Shotgun
+  itemDescription: A 12g Pump
   itemType: 10
   itemRarity: 1
-  itemWeight: 5
-  itemValue: 300
+  itemWeight: 4
+  itemValue: 250
   itemCount: 1
   itemCountMax: 1
-  itemSprite: {fileID: 21300000, guid: 10a59948f9a223a4ab0f3e2bb1c3a144, type: 3}
+  itemSprite: {fileID: 756734526971379473, guid: a2fcca167dccd0d42b27ad3cec16e78a, type: 3}
   itemSoundPickup: {fileID: 8300000, guid: cacc5bc9e8fdaa1409aa6ff6823ce9c9, type: 3}
   itemSoundDrop: {fileID: 8300000, guid: 52daba66c8f82e94494016eb6c114a6f, type: 3}
   isInInventorySlot: 0
   weaponProjectileSprite: {fileID: 21300000, guid: 803d441fac3a9174e87b8c8f7b1883eb, type: 3}
-  weaponFireSound: {fileID: 8300000, guid: 55d3a0d916f0ee34980cac2328957f16, type: 3}
-  weaponBoltActionSound: {fileID: 8300000, guid: dce8eb8469199054fba9b0ca0cc84437, type: 3}
-  weaponDamage: 25
+  weaponFireSound: {fileID: 8300000, guid: 645059252851d234a96edd1b2ad3a2de, type: 3}
+  weaponBoltActionSound: {fileID: 8300000, guid: 530ceec025401fa46a61a6faea533d5b, type: 3}
+  weaponDamage: 8
   weaponDamageType: 1
-  weaponFireRateDelay: 0.9
-  weaponRange: 20
+  weaponFireRateDelay: 0.6
+  weaponRange: 8
   weaponRangeDamageFallOffMin: 0.3
-  weaponProjectileSpeed: 20
-  weaponProjectileShotCount: 1
+  weaponProjectileSpeed: 10
+  weaponProjectileShotCount: 6
   weaponProjectileBurstCount: 1
   weaponProjectileBurstDelay: 0.1
   weaponIsFullyAutomatic: 0
   weaponIsRangeReverseFallOff: 0
   weaponIsBoltAction: 1
-  weaponBoltActionDelay: 0.8
-  weaponSpreadStart: 0.005
-  weaponSpreadMax: 0.05
-  weaponSpreadRecoilImpulse: 0.02
-  weaponSpreadRecoilRecoveryAmount: 0.01
+  weaponBoltActionDelay: 0.7
+  weaponSpreadStart: 0.1
+  weaponSpreadMax: 0.2
+  weaponSpreadRecoilImpulse: 0.1
+  weaponSpreadRecoilRecoveryAmount: 0.1
   weaponSpreadRecoilRecoveryDelay: 0.1
   weaponIsReverseRecoilImpulse: 0
   weaponUsesAmmo: 1
-  weaponAmmoType: {fileID: 4020092144798230732, guid: 04d01e6d74af6af40b591a757e41bd02, type: 3}
-  weaponAmmoCapacity: 5
+  weaponAmmoType: {fileID: 4020092144798230732, guid: df5f3e946acaa3f41a6f2fd47516b46d, type: 3}
+  weaponAmmoCapacity: 8
   weaponAmmoTakenPerShot: 1
-  weaponReloadDelay: 0.6
-  weaponShotLoudness: 30
+  weaponReloadDelay: 0.5
+  weaponShotLoudness: 20
   weaponIsReloadOneBulletPerReload: 1

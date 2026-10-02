@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class F_PlayerHeldWeapon : MonoBehaviour
@@ -14,18 +15,27 @@ public class F_PlayerHeldWeapon : MonoBehaviour
     public F_playerHeldWeaponIndividual heldWeaponMeleeBig;
     public F_playerHeldWeaponIndividual heldWeaponMeleeSmall;
 
-    [Header("Stats")]
-    public float projectileSpeed;
+
+    [Header("Constants Private")]
+    private const int minimumProjectilesPerShot = 1;
+    private const int minimumBurstShotCount = 1;
+    private const float minimumBurstDelay = 0f;
 
     [Header("Privates")]
     private F_GUI_Inventory_Slot selectedWeaponSlot;
     private bool hasExplicitWeaponSelection;
+    private bool isBurstFiring;
 
     /// <summary>Returns whether the selected slot currently contains a firearm that can fire.</summary>
     public bool CanFireCurrentWeapon
     {
         get
         {
+            if (isBurstFiring)
+            {
+                return false;
+            }
+
             if (!hasExplicitWeaponSelection)
             {
                 return heldWeaponCurrentlySelected != null;
@@ -78,9 +88,14 @@ public class F_PlayerHeldWeapon : MonoBehaviour
         UpdateHeldWeaponSprite();
     }
 
-    /// <summary>Fires the selected firearm's weapon item, spawning a projectile shaped by its damage, range, and accuracy stats.</summary>
+    /// <summary>Fires a burst of shots from the selected firearm, with each shot spawning the configured number of spread projectiles.</summary>
     public void FireWeapon()
     {
+        if (isBurstFiring)
+        {
+            return;
+        }
+
         F_Item_Weapon weaponItem = GetSelectedWeaponItem();
         if (weaponItem == null || projectileObject == null || heldWeaponCurrentlySelected == null ||
             heldWeaponCurrentlySelected.firePosition == null)
@@ -94,33 +109,82 @@ public class F_PlayerHeldWeapon : MonoBehaviour
             return;
         }
 
-        Vector2 spreadAimDirection = weaponItem.ApplyAccuracySpreadToDirection(firePosition.right);
-        float spreadAimAngleDegrees = Mathf.Atan2(spreadAimDirection.y, spreadAimDirection.x) * Mathf.Rad2Deg;
-        Quaternion projectileRotation = Quaternion.Euler(0f, 0f, spreadAimAngleDegrees);
+        SpawnProjectilesForShot(weaponItem, firePosition);
 
-        GameObject projectile = Instantiate(projectileObject, firePosition.position, projectileRotation);
-        Rigidbody2D projectileBody = projectile.GetComponent<Rigidbody2D>();
-        if (projectileBody != null)
+        int burstShotCount = Mathf.Max(minimumBurstShotCount, weaponItem.weaponProjectileBurstCount);
+        if (burstShotCount > minimumBurstShotCount)
         {
-            projectileBody.AddForce(spreadAimDirection * projectileSpeed, ForceMode2D.Impulse);
+            isBurstFiring = true;
+            StartCoroutine(FireBurstRoutine(weaponItem, firePosition, burstShotCount));
+        }
+        else
+        {
+            weaponItem.CompleteFireSequence(firePosition.position);
+        }
+    }
+
+    private IEnumerator FireBurstRoutine(F_Item_Weapon weaponItem, Transform firePosition, int burstShotCount)
+    {
+        for (int burstShotIndex = minimumBurstShotCount; burstShotIndex < burstShotCount; burstShotIndex++)
+        {
+            float burstDelay = Mathf.Max(minimumBurstDelay, weaponItem.weaponProjectileBurstDelay);
+            if (burstDelay > minimumBurstDelay)
+            {
+                yield return new WaitForSeconds(burstDelay);
+            }
+
+            if (weaponItem == null || firePosition == null ||
+                !weaponItem.TryFireBurstFollowupShot(firePosition.position))
+            {
+                break;
+            }
+
+            SpawnProjectilesForShot(weaponItem, firePosition);
         }
 
-        SpriteRenderer projectileSpriteRenderer = projectile.GetComponent<SpriteRenderer>();
-        if (projectileSpriteRenderer != null && weaponItem.weaponProjectileSprite != null)
+        if (weaponItem != null)
         {
-            projectileSpriteRenderer.sprite = weaponItem.weaponProjectileSprite;
+            weaponItem.CompleteFireSequence(firePosition != null ? firePosition.position : transform.position);
         }
 
-        F_Effects_Projectile projectileEffects = projectile.GetComponent<F_Effects_Projectile>();
-        if (projectileEffects != null)
+        isBurstFiring = false;
+    }
+
+    private void SpawnProjectilesForShot(F_Item_Weapon weaponItem, Transform firePosition)
+    {
+        int projectileShotCount = Mathf.Max(minimumProjectilesPerShot, weaponItem.weaponProjectileShotCount);
+        for (int projectileIndex = 0; projectileIndex < projectileShotCount; projectileIndex++)
         {
-            projectileEffects.projectileImpactObject = projectileImpactObject;
-            projectileEffects.ConfigureCombatData(
-                weaponItem.weaponDamage,
-                weaponItem.weaponDamageType,
-                weaponItem.weaponRange,
-                weaponItem.weaponRangeDamageFallOffMin,
-                weaponItem.weaponIsRangeReverseFallOff);
+            Vector2 spreadAimDirection = weaponItem.ApplyAccuracySpreadToDirection(firePosition.right);
+            float spreadAimAngleDegrees = Mathf.Atan2(spreadAimDirection.y, spreadAimDirection.x) * Mathf.Rad2Deg;
+            Quaternion projectileRotation = Quaternion.Euler(0f, 0f, spreadAimAngleDegrees);
+
+            GameObject projectile = Instantiate(projectileObject, firePosition.position, projectileRotation);
+            weaponItem.IgnoreCollisionsWithPreviouslyFiredProjectiles(projectile.GetComponentsInChildren<Collider2D>());
+
+            Rigidbody2D projectileBody = projectile.GetComponent<Rigidbody2D>();
+            if (projectileBody != null)
+            {
+                projectileBody.AddForce(spreadAimDirection * weaponItem.weaponProjectileSpeed, ForceMode2D.Impulse);
+            }
+
+            SpriteRenderer projectileSpriteRenderer = projectile.GetComponent<SpriteRenderer>();
+            if (projectileSpriteRenderer != null && weaponItem.weaponProjectileSprite != null)
+            {
+                projectileSpriteRenderer.sprite = weaponItem.weaponProjectileSprite;
+            }
+
+            F_Effects_Projectile projectileEffects = projectile.GetComponent<F_Effects_Projectile>();
+            if (projectileEffects != null)
+            {
+                projectileEffects.projectileImpactObject = projectileImpactObject;
+                projectileEffects.ConfigureCombatData(
+                    weaponItem.weaponDamage,
+                    weaponItem.weaponDamageType,
+                    weaponItem.weaponRange,
+                    weaponItem.weaponRangeDamageFallOffMin,
+                    weaponItem.weaponIsRangeReverseFallOff);
+            }
         }
     }
 
