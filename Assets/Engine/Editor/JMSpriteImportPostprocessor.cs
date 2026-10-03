@@ -8,7 +8,7 @@ public sealed class JMSpriteImportPostprocessor : AssetPostprocessor
 {
     [Header("Constants Private")]
     private const string spriteArtFolder = "Assets/Art/";
-    private const string spritePresetPath = "Assets/UnityDataAssets/JMSpriteImport.preset";
+    private const string spritePresetPath = "Assets/Engine/Editor/JMSpriteImport.preset";
 
     [Header("Privates")]
     private static Preset cachedSpritePreset;

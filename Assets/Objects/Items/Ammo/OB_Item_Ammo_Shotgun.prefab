@@ -47,8 +47,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemSpriteRenderer: {fileID: 3257486541222685028}
-  itemName: 'Ammo: Pistol'
-  itemDescription: Standard rifle ammo.
+  itemName: 'Ammo: Shotgun'
+  itemDescription: Standard shotgun ammo.
   itemType: 2
   itemRarity: 0
   itemWeight: 0.02
@@ -58,7 +58,6 @@ MonoBehaviour:
   itemSprite: {fileID: -8992469094741731674, guid: 160afa291f4b10e4fb57545d27fda0e3, type: 3}
   itemSoundPickup: {fileID: 8300000, guid: cacc5bc9e8fdaa1409aa6ff6823ce9c9, type: 3}
   itemSoundDrop: {fileID: 8300000, guid: 52daba66c8f82e94494016eb6c114a6f, type: 3}
-  isInInventorySlot: 0
 --- !u!212 &3257486541222685028
 SpriteRenderer:
   serializedVersion: 2

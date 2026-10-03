@@ -48,7 +48,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemSpriteRenderer: {fileID: 3257486541222685028}
   itemName: 'Ammo: Pistol'
-  itemDescription: Standard rifle ammo.
+  itemDescription: Standard pistol ammo.
   itemType: 2
   itemRarity: 0
   itemWeight: 0.01

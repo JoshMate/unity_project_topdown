@@ -170,7 +170,6 @@ MonoBehaviour:
   itemSprite: {fileID: 756734526971379473, guid: a2fcca167dccd0d42b27ad3cec16e78a, type: 3}
   itemSoundPickup: {fileID: 8300000, guid: cacc5bc9e8fdaa1409aa6ff6823ce9c9, type: 3}
   itemSoundDrop: {fileID: 8300000, guid: 52daba66c8f82e94494016eb6c114a6f, type: 3}
-  isInInventorySlot: 0
   weaponProjectileSprite: {fileID: 21300000, guid: 803d441fac3a9174e87b8c8f7b1883eb, type: 3}
   weaponFireSound: {fileID: 8300000, guid: 645059252851d234a96edd1b2ad3a2de, type: 3}
   weaponBoltActionSound: {fileID: 8300000, guid: 530ceec025401fa46a61a6faea533d5b, type: 3}
