@@ -243,7 +243,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4020092144798230732, guid: 04d01e6d74af6af40b591a757e41bd02, type: 3}
       propertyPath: itemCount
-      value: 90
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 5194119782603112733, guid: 04d01e6d74af6af40b591a757e41bd02, type: 3}
       propertyPath: m_Name
@@ -361,7 +361,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4020092144798230732, guid: 04d01e6d74af6af40b591a757e41bd02, type: 3}
       propertyPath: itemCount
-      value: 90
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 5194119782603112733, guid: 04d01e6d74af6af40b591a757e41bd02, type: 3}
       propertyPath: m_Name
@@ -2132,7 +2132,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4020092144798230732, guid: df5f3e946acaa3f41a6f2fd47516b46d, type: 3}
       propertyPath: itemCount
-      value: 60
+      value: 32
       objectReference: {fileID: 0}
     - target: {fileID: 5194119782603112733, guid: df5f3e946acaa3f41a6f2fd47516b46d, type: 3}
       propertyPath: m_Name
@@ -3649,7 +3649,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4020092144798230732, guid: df5f3e946acaa3f41a6f2fd47516b46d, type: 3}
       propertyPath: itemCount
-      value: 60
+      value: 32
       objectReference: {fileID: 0}
     - target: {fileID: 5194119782603112733, guid: df5f3e946acaa3f41a6f2fd47516b46d, type: 3}
       propertyPath: m_Name
@@ -3767,7 +3767,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4020092144798230732, guid: 7e226b366eb06a347897a1f7ee111c2d, type: 3}
       propertyPath: itemCount
-      value: 180
+      value: 120
       objectReference: {fileID: 0}
     - target: {fileID: 5194119782603112733, guid: 7e226b366eb06a347897a1f7ee111c2d, type: 3}
       propertyPath: m_Name
@@ -4056,7 +4056,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4020092144798230732, guid: 7e226b366eb06a347897a1f7ee111c2d, type: 3}
       propertyPath: itemCount
-      value: 180
+      value: 120
       objectReference: {fileID: 0}
     - target: {fileID: 5194119782603112733, guid: 7e226b366eb06a347897a1f7ee111c2d, type: 3}
       propertyPath: m_Name

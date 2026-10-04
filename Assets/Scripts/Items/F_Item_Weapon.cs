@@ -88,6 +88,10 @@ public class F_Item_Weapon : F_Item
     // Wether or not the weapon reloads its entire magazine per reload cycle or just one at a time in a loop (Like loading a shotgun with shells)
     public bool weaponIsReloadOneBulletPerReload = false;
 
+    [Header("Weapon Handling Stats")]
+    // How many seconds this weapon takes to deploy when switched to before it is usable
+    public float weaponDeployDelay = 0.5f;
+
     
     [Header("Weapon Flags")]
 
@@ -106,7 +110,13 @@ public class F_Item_Weapon : F_Item
     // Time at which the current bolt action cycle finishes; reloading is blocked until then
     private float boltActionEndTime;
     private float nextSpreadRecoveryTime;
+    private float deployStartTime;
+    private float deployEndTime;
     private bool isReloading;
+    // Held clock state: delays run on HeldTime so they only progress while this weapon is held
+    private bool isHeld;
+    private float heldSinceTime;
+    private float accumulatedHeldTime;
     private float reloadSegmentStartTime;
     private float reloadSegmentDuration;
     // True during the completion delay at the end of a reload, when the reload can no longer be interrupted by firing
@@ -138,14 +148,74 @@ public class F_Item_Weapon : F_Item
                 return 1f;
             }
 
-            return Mathf.Clamp01((Time.time - reloadSegmentStartTime) / reloadSegmentDuration);
+            return Mathf.Clamp01((HeldTime - reloadSegmentStartTime) / reloadSegmentDuration);
         }
     }
 
     private void BeginReloadProgressSegment(float segmentDuration)
     {
-        reloadSegmentStartTime = Time.time;
+        reloadSegmentStartTime = HeldTime;
         reloadSegmentDuration = segmentDuration;
+    }
+
+    /// <summary>Whether the weapon is still being deployed after being selected, blocking all use.</summary>
+    public bool IsDeploying => HeldTime < deployEndTime;
+
+    /// <summary>Seconds this weapon has spent held. All weapon delays (deploy, fire rate, bolt action, reload) run on this clock so they only progress while the weapon is held.</summary>
+    public float HeldTime => accumulatedHeldTime + (isHeld ? Time.time - heldSinceTime : 0f);
+
+    /// <summary>Marks the weapon as held or holstered. Delay timers pause while it is not held.</summary>
+    /// <param name="isNowHeld">True when the weapon becomes the held weapon.</param>
+    public void SetHeld(bool isNowHeld)
+    {
+        if (isHeld == isNowHeld)
+        {
+            return;
+        }
+
+        if (isNowHeld)
+        {
+            heldSinceTime = Time.time;
+        }
+        else
+        {
+            accumulatedHeldTime += Time.time - heldSinceTime;
+        }
+
+        isHeld = isNowHeld;
+    }
+
+    // Waits for the given number of held seconds; time spent holstered does not count
+    private IEnumerator WaitForHeldSeconds(float duration)
+    {
+        float targetHeldTime = HeldTime + duration;
+        while (HeldTime < targetHeldTime)
+        {
+            yield return null;
+        }
+    }
+
+    /// <summary>Progress from 0 to 1 of the current deploy delay, or 0 when not deploying.</summary>
+    public float DeployProgress
+    {
+        get
+        {
+            if (!IsDeploying)
+            {
+                return 0f;
+            }
+
+            float deployDuration = deployEndTime - deployStartTime;
+            return deployDuration <= 0f ? 1f : Mathf.Clamp01((HeldTime - deployStartTime) / deployDuration);
+        }
+    }
+
+    /// <summary>Starts the deploy delay, during which the weapon cannot fire or reload. Cancels any in-progress reload.</summary>
+    public void BeginDeploy()
+    {
+        InterruptReload();
+        deployStartTime = HeldTime;
+        deployEndTime = HeldTime + Mathf.Max(minimumFireDelay, weaponDeployDelay);
     }
 
     /// <summary>The weapon's current accuracy cone half-angle, in radians.</summary>
@@ -168,7 +238,7 @@ public class F_Item_Weapon : F_Item
     /// <summary>Returns whether this weapon is currently able to fire a shot.</summary>
     public bool CanFireWeapon()
     {
-        if (isFinishingReload || Time.time < nextFireReadyTime)
+        if (IsDeploying || isFinishingReload || HeldTime < nextFireReadyTime)
         {
             return false;
         }
@@ -215,7 +285,7 @@ public class F_Item_Weapon : F_Item
     /// <returns>True when the follow-up shot was successfully fired.</returns>
     public bool TryFireBurstFollowupShot(Vector3 firePositionWorld)
     {
-        if (isFinishingReload || !TryConsumeAmmoForShot())
+        if (IsDeploying || isFinishingReload || !TryConsumeAmmoForShot())
         {
             return false;
         }
@@ -233,8 +303,8 @@ public class F_Item_Weapon : F_Item
             ? Mathf.Max(minimumFireDelay, weaponBoltActionDelay)
             : minimumFireDelay;
         float fireRateDelay = Mathf.Max(minimumFireDelay, weaponFireRateDelay);
-        nextFireReadyTime = Time.time + boltActionDelay + fireRateDelay;
-        boltActionEndTime = Time.time + boltActionDelay;
+        nextFireReadyTime = HeldTime + boltActionDelay + fireRateDelay;
+        boltActionEndTime = HeldTime + boltActionDelay;
 
         if (!weaponIsBoltAction || weaponBoltActionSound == null)
         {
@@ -252,7 +322,7 @@ public class F_Item_Weapon : F_Item
 
     private IEnumerator PlayBoltActionSoundRoutine(Vector3 firePositionWorld, float delay)
     {
-        yield return new WaitForSeconds(delay);
+        yield return WaitForHeldSeconds(delay);
         PlayBoltActionSound(firePositionWorld);
     }
 
@@ -360,7 +430,7 @@ public class F_Item_Weapon : F_Item
     /// <param name="playerInventory">The inventory the reload should draw ammo from.</param>
     public void StartReload(F_PlayerInventory playerInventory)
     {
-        if (isReloading || Time.time < boltActionEndTime || !weaponUsesAmmo || currentAmmoLoaded >= weaponAmmoCapacity || !HasReserveAmmo(playerInventory))
+        if (isReloading || IsDeploying || HeldTime < boltActionEndTime || !weaponUsesAmmo || currentAmmoLoaded >= weaponAmmoCapacity || !HasReserveAmmo(playerInventory))
         {
             return;
         }
@@ -411,7 +481,7 @@ public class F_Item_Weapon : F_Item
                     ? weaponReloadDelay * oneAtATimeFirstRoundDelayMultiplier
                     : weaponReloadDelay;
                 BeginReloadProgressSegment(roundDelay);
-                yield return new WaitForSeconds(roundDelay);
+                yield return WaitForHeldSeconds(roundDelay);
 
                 int consumedAmmo = weaponAmmoType != null
                     ? F_Utility_Helper_Inventory.ConsumeItemFromInventory(playerInventory, weaponAmmoType, 1)
@@ -432,20 +502,20 @@ public class F_Item_Weapon : F_Item
                 PlayReloadSound(weaponReloadEndSound);
                 isFinishingReload = true;
                 BeginReloadProgressSegment(0f);
-                yield return new WaitForSeconds(reloadCompletionDelay);
+                yield return WaitForHeldSeconds(reloadCompletionDelay);
             }
         }
         else
         {
             PlayReloadSound(weaponReloadStartSound);
             BeginReloadProgressSegment(weaponReloadDelay);
-            yield return new WaitForSeconds(weaponReloadDelay * reloadMiddleFraction);
+            yield return WaitForHeldSeconds(weaponReloadDelay * reloadMiddleFraction);
             if (HasReserveAmmo(playerInventory))
             {
                 PlayReloadSound(weaponReloadMiddleSound);
             }
 
-            yield return new WaitForSeconds(weaponReloadDelay * (1f - reloadMiddleFraction));
+            yield return WaitForHeldSeconds(weaponReloadDelay * (1f - reloadMiddleFraction));
 
             int neededAmmo = weaponAmmoCapacity - currentAmmoLoaded;
             int availableAmmo = weaponAmmoType != null
@@ -462,7 +532,7 @@ public class F_Item_Weapon : F_Item
                 currentAmmoLoaded += consumedAmmo;
                 isFinishingReload = true;
                 BeginReloadProgressSegment(0f);
-                yield return new WaitForSeconds(reloadCompletionDelay);
+                yield return WaitForHeldSeconds(reloadCompletionDelay);
             }
         }
 

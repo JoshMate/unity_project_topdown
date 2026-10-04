@@ -25,6 +25,7 @@ public class F_PlayerHeldWeapon : MonoBehaviour
     private F_GUI_Inventory_Slot selectedWeaponSlot;
     private bool hasExplicitWeaponSelection;
     private bool isBurstFiring;
+    private F_Item_Weapon heldWeaponItemTracked;
 
     /// <summary>Returns whether the selected slot currently contains a firearm that can fire.</summary>
     public bool CanFireCurrentWeapon
@@ -76,15 +77,46 @@ public class F_PlayerHeldWeapon : MonoBehaviour
 
     private void Update()
     {
+        SyncHeldWeaponItem();
         UpdateHeldWeaponSprite();
+    }
+
+    // Keeps weapon held state accurate so only the held weapon's delays progress
+    private void SyncHeldWeaponItem()
+    {
+        F_Item_Weapon currentWeaponItem = GetSelectedWeaponItem();
+        if (currentWeaponItem == heldWeaponItemTracked)
+        {
+            return;
+        }
+
+        if (heldWeaponItemTracked != null)
+        {
+            heldWeaponItemTracked.SetHeld(false);
+        }
+
+        heldWeaponItemTracked = currentWeaponItem;
+        if (heldWeaponItemTracked != null)
+        {
+            heldWeaponItemTracked.SetHeld(true);
+        }
     }
 
     /// <summary>Selects a weapon inventory slot and updates the visible held weapon.</summary>
     /// <param name="weaponSlot">The weapon slot to activate.</param>
     public void SelectWeaponSlot(F_GUI_Inventory_Slot weaponSlot)
     {
+        F_Item_Weapon previousWeaponItem = GetSelectedWeaponItem();
         selectedWeaponSlot = weaponSlot;
         hasExplicitWeaponSelection = true;
+
+        F_Item_Weapon newWeaponItem = GetSelectedWeaponItem();
+        if (newWeaponItem != null && newWeaponItem != previousWeaponItem)
+        {
+            newWeaponItem.BeginDeploy();
+        }
+        SyncHeldWeaponItem();
+
         UpdateHeldWeaponSprite();
     }
 

@@ -183,13 +183,13 @@ MonoBehaviour:
   weaponReloadOneAtATimeSound: {fileID: 8300000, guid: d3085596019423c46b939dbf530adc87, type: 3}
   weaponDamage: 25
   weaponDamageType: 1
-  weaponFireRateDelay: 1
+  weaponFireRateDelay: 0.5
   weaponRange: 25
   weaponRangeDamageFallOffMin: 0.3
   weaponProjectileSpeed: 15
   weaponProjectileShotCount: 1
   weaponProjectileBurstCount: 3
-  weaponProjectileBurstDelay: 0.1
+  weaponProjectileBurstDelay: 0.08
   weaponIsFullyAutomatic: 1
   weaponIsRangeReverseFallOff: 0
   weaponIsBoltAction: 0

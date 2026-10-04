@@ -88,10 +88,13 @@ public class F_Logic_CursorCrosshair : MonoBehaviour
         F_Item_Weapon weapon = GetEquippedFirearm();
         bool isMenuClosed = characterScreenManager == null || !characterScreenManager.isMenuOpen;
         bool isReloading = weapon != null && weapon.IsReloading && isMenuClosed;
-        bool showRing = isReloading && !weapon.IsFinishingReload;
-        UpdateReloadRing(showRing ? weapon.ReloadProgress : 0f, showRing);
+        bool isDeploying = weapon != null && weapon.IsDeploying && isMenuClosed;
+        bool showReloadRing = isReloading && !weapon.IsFinishingReload;
+        bool showRing = isDeploying || showReloadRing;
+        float ringProgress = isDeploying ? weapon.DeployProgress : (showReloadRing ? weapon.ReloadProgress : 0f);
+        UpdateReloadRing(ringProgress, showRing);
 
-        bool shouldShow = weapon != null && isMenuClosed && !isReloading;
+        bool shouldShow = weapon != null && isMenuClosed && !isReloading && !isDeploying;
         SetArmsVisible(shouldShow);
         if (!shouldShow)
         {
