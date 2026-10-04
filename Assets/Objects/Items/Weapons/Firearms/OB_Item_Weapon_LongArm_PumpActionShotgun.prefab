@@ -177,6 +177,7 @@ MonoBehaviour:
   weaponReloadMiddleSound: {fileID: 8300000, guid: 70ca4ce1a35d64a4dbe221e3d99617dc, type: 3}
   weaponReloadEndSound: {fileID: 8300000, guid: 29867624abd438240be1fb1c2dca9711, type: 3}
   weaponReloadOneAtATimeSound: {fileID: 8300000, guid: d3085596019423c46b939dbf530adc87, type: 3}
+  weaponDeploySound: {fileID: 8300000, guid: c9c17effdfdaef84395aee8fefe75926, type: 3}
   weaponDamage: 8
   weaponDamageType: 1
   weaponFireRateDelay: 0.4
@@ -203,3 +204,4 @@ MonoBehaviour:
   weaponReloadDelay: 0.5
   weaponShotLoudness: 20
   weaponIsReloadOneBulletPerReload: 1
+  weaponDeployDelay: 0.5

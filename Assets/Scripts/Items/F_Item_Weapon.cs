@@ -8,11 +8,9 @@ public class F_Item_Weapon : F_Item
     [Header("Weapon Art Projectile")]
     public Sprite weaponProjectileSprite;
 
-    [Header("Weapon Art Shot")]
+    [Header("Weapon Art Sounds")]
     public AudioClip weaponFireSound;
     public AudioClip weaponBoltActionSound;
-
-    [Header("Weapon Art Reload Sounds")]
     // Played when a full reload cycle begins
     public AudioClip weaponReloadStartSound;
     // Played when a full reload cycle is half way complete
@@ -21,6 +19,8 @@ public class F_Item_Weapon : F_Item
     public AudioClip weaponReloadEndSound;
     // Played once per round at the end of each round's delay when reloading one bullet at a time
     public AudioClip weaponReloadOneAtATimeSound;
+    // Played once at the start of deploying the weapon
+    public AudioClip weaponDeploySound;
 
     [Header("Weapon Damage Stats")]
     // How much damage the projectile deals when it hits a target
@@ -215,6 +215,8 @@ public class F_Item_Weapon : F_Item
     {
         InterruptReload();
         deployStartTime = HeldTime;
+        PlayReloadSound(weaponDeploySound);
+
         deployEndTime = HeldTime + Mathf.Max(minimumFireDelay, weaponDeployDelay);
     }
 
