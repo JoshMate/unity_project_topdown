@@ -1,10 +1,13 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+/// <summary>
+/// Lives on the persistent game manager. Places the player at the spawn point whenever the gameplay scene loads.
+/// Scene loading itself is driven by F_Logic_Loading.
+/// </summary>
 public class F_Logic_InitScene : MonoBehaviour
 {
     [Header("Constants Private")]
-    private const string initialGameplaySceneName = "Scene_TestRoom";
     private const string playerSpawnPointName = "PlayerSpawnPoint";
 
     [Header("Privates")]
@@ -22,14 +25,6 @@ public class F_Logic_InitScene : MonoBehaviour
         SceneManager.sceneLoaded += PlacePlayerAtSpawnPoint;
     }
 
-    private void Start()
-    {
-        if (gameManager != null && !SceneManager.GetSceneByName(initialGameplaySceneName).isLoaded)
-        {
-            SceneManager.LoadScene(initialGameplaySceneName, LoadSceneMode.Single);
-        }
-    }
-
     private void OnDestroy()
     {
         SceneManager.sceneLoaded -= PlacePlayerAtSpawnPoint;
@@ -37,7 +32,7 @@ public class F_Logic_InitScene : MonoBehaviour
 
     private void PlacePlayerAtSpawnPoint(Scene loadedScene, LoadSceneMode loadMode)
     {
-        if (loadedScene.name != initialGameplaySceneName)
+        if (loadedScene.name != F_Utility_Config_Scenes.initialGameplaySceneName)
         {
             return;
         }
@@ -48,7 +43,16 @@ public class F_Logic_InitScene : MonoBehaviour
             return;
         }
 
-        GameObject spawnPoint = GameObject.Find(playerSpawnPointName);
+        GameObject spawnPoint = null;
+        foreach (GameObject rootObject in loadedScene.GetRootGameObjects())
+        {
+            if (rootObject.name == playerSpawnPointName)
+            {
+                spawnPoint = rootObject;
+                break;
+            }
+        }
+
         if (spawnPoint == null)
         {
             Debug.LogError($"The gameplay scene is missing a {playerSpawnPointName} GameObject.");
