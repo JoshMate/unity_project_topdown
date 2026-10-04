@@ -96,7 +96,8 @@ public class F_Item : MonoBehaviour
         ApplyItemSprite();
     }
 
-    private void EnsureDefaultItemAssets()
+    /// <summary>Assigns default assets to any empty item references; subclasses extend this with their own defaults.</summary>
+    protected virtual void EnsureDefaultItemAssets()
     {
 #if UNITY_EDITOR
         if (itemSprite == null)

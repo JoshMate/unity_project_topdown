@@ -3390,11 +3390,6 @@ MonoBehaviour:
   useWeightThresholds: 0
   barFillImage: {fileID: 0}
   barCenterText: {fileID: 0}
-  weightClassColorFreeWeight: {r: 0.2, g: 0.5, b: 1, a: 1}
-  weightClassColorLightWeight: {r: 0.2, g: 0.8, b: 0.2, a: 1}
-  weightClassColorMediumWeight: {r: 1, g: 0.92, b: 0.2, a: 1}
-  weightClassColorHeavyWeight: {r: 1, g: 0.55, b: 0, a: 1}
-  weightClassColorTooMuchWeight: {r: 0.9, g: 0.1, b: 0.1, a: 1}
 --- !u!1001 &329468461
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6887,6 +6882,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::F_GUI_HUD_WeaponAmmo
   playerHeldWeapon: {fileID: 0}
   playerInventory: {fileID: 0}
+  weaponBrokenSprite: {fileID: -211043633503461525, guid: 3f4cebfdb12bdb344b6401cd96969bfb, type: 3}
 --- !u!1001 &792572683
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7771,11 +7767,6 @@ MonoBehaviour:
   useWeightThresholds: 0
   barFillImage: {fileID: 0}
   barCenterText: {fileID: 0}
-  weightClassColorFreeWeight: {r: 0.2, g: 0.5, b: 1, a: 1}
-  weightClassColorLightWeight: {r: 0.2, g: 0.8, b: 0.2, a: 1}
-  weightClassColorMediumWeight: {r: 1, g: 0.92, b: 0.2, a: 1}
-  weightClassColorHeavyWeight: {r: 1, g: 0.55, b: 0, a: 1}
-  weightClassColorTooMuchWeight: {r: 0.9, g: 0.1, b: 0.1, a: 1}
 --- !u!1001 &856771412
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8467,11 +8458,6 @@ MonoBehaviour:
   useWeightThresholds: 0
   barFillImage: {fileID: 0}
   barCenterText: {fileID: 0}
-  weightClassColorFreeWeight: {r: 0.2, g: 0.5, b: 1, a: 1}
-  weightClassColorLightWeight: {r: 0.2, g: 0.8, b: 0.2, a: 1}
-  weightClassColorMediumWeight: {r: 1, g: 0.92, b: 0.2, a: 1}
-  weightClassColorHeavyWeight: {r: 1, g: 0.55, b: 0, a: 1}
-  weightClassColorTooMuchWeight: {r: 0.9, g: 0.1, b: 0.1, a: 1}
 --- !u!1001 &918822319
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -13037,11 +13023,6 @@ MonoBehaviour:
   useWeightThresholds: 0
   barFillImage: {fileID: 0}
   barCenterText: {fileID: 0}
-  weightClassColorFreeWeight: {r: 0.2, g: 0.5, b: 1, a: 1}
-  weightClassColorLightWeight: {r: 0.2, g: 0.8, b: 0.2, a: 1}
-  weightClassColorMediumWeight: {r: 1, g: 0.92, b: 0.2, a: 1}
-  weightClassColorHeavyWeight: {r: 1, g: 0.55, b: 0, a: 1}
-  weightClassColorTooMuchWeight: {r: 0.9, g: 0.1, b: 0.1, a: 1}
 --- !u!1001 &1470441192
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -14075,11 +14056,6 @@ MonoBehaviour:
   useWeightThresholds: 1
   barFillImage: {fileID: 933331291}
   barCenterText: {fileID: 1081642374}
-  weightClassColorFreeWeight: {r: 0.2, g: 0.5, b: 1, a: 1}
-  weightClassColorLightWeight: {r: 0.2, g: 0.8, b: 0.2, a: 1}
-  weightClassColorMediumWeight: {r: 1, g: 0.92, b: 0.2, a: 1}
-  weightClassColorHeavyWeight: {r: 1, g: 0.55, b: 0, a: 1}
-  weightClassColorTooMuchWeight: {r: 0.9, g: 0.1, b: 0.1, a: 1}
 --- !u!114 &1527364551
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14578,11 +14554,6 @@ MonoBehaviour:
   useWeightThresholds: 0
   barFillImage: {fileID: 0}
   barCenterText: {fileID: 0}
-  weightClassColorFreeWeight: {r: 0.2, g: 0.5, b: 1, a: 1}
-  weightClassColorLightWeight: {r: 0.2, g: 0.8, b: 0.2, a: 1}
-  weightClassColorMediumWeight: {r: 1, g: 0.92, b: 0.2, a: 1}
-  weightClassColorHeavyWeight: {r: 1, g: 0.55, b: 0, a: 1}
-  weightClassColorTooMuchWeight: {r: 0.9, g: 0.1, b: 0.1, a: 1}
 --- !u!114 &1576406114 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3281728087406851122, guid: 46f3fc8dc1c73db4c8be76e93f5bd44d, type: 3}

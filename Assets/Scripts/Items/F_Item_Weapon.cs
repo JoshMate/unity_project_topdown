@@ -21,6 +21,10 @@ public class F_Item_Weapon : F_Item
     public AudioClip weaponReloadOneAtATimeSound;
     // Played once at the start of deploying the weapon
     public AudioClip weaponDeploySound;
+    // Played directly when the weapon's durability reaches zero and it breaks
+    public AudioClip weaponBreakSound;
+    // Played directly when a fire attempt is blocked because the weapon is broken or out of ammo
+    public AudioClip weaponDryFireSound;
 
     [Header("Weapon Damage Stats")]
     // How much damage the projectile deals when it hits a target
@@ -91,12 +95,22 @@ public class F_Item_Weapon : F_Item
     [Header("Weapon Handling Stats")]
     // How many seconds this weapon takes to deploy when switched to before it is usable
     public float weaponDeployDelay = 0.5f;
+    // How much durability the weapon currently has left
+    public float weaponDurabilityCurrent = 1000f;
+    // How much durability the weapon can ever have
+    public float weaponDurabilityMax = 1000f;
+    // How much durability the weapon has lost permanently and becomes the new max taken away from the max
+    public float weaponDurabilityLost = 0f;
+    // How much durability the weapon loses per time its shot
+    public float weaponDurabilityLostPerShot = 10f;
 
     
     [Header("Weapon Flags")]
 
 
     [Header("Constants Private")]
+    private const string defaultBreakSoundAssetPath = "Assets/Sound/Interface/SD_Interface_Weapon_Break.ogg";
+    private const string defaultDryFireSoundAssetPath = "Assets/Sound/Interface/SD_Interface_Weapon_Click.ogg";
     private const float minimumSpreadRecoveryDelay = 0.01f;
     private const float minimumFireDelay = 0f;
     private const float reloadMiddleFraction = 0.5f;
@@ -237,10 +251,85 @@ public class F_Item_Weapon : F_Item
         RecoverAccuracySpread();
     }
 
+    /// <summary>Maximum durability currently available after permanent losses are removed.</summary>
+    public float GetDurabilityMaxEffective()
+    {
+        return Mathf.Max(0f, weaponDurabilityMax - weaponDurabilityLost);
+    }
+
+    /// <summary>Current durability as a fraction of the effective maximum (0-1).</summary>
+    public float GetDurabilityCurrentFraction()
+    {
+        float effectiveMax = GetDurabilityMaxEffective();
+        if (effectiveMax <= 0f)
+        {
+            return 0f;
+        }
+
+        return Mathf.Clamp01(Mathf.Min(weaponDurabilityCurrent, effectiveMax) / effectiveMax);
+    }
+
+    /// <summary>Permanently lost durability as a fraction of the full maximum (0-1).</summary>
+    public float GetDurabilityLostFraction()
+    {
+        return weaponDurabilityMax <= 0f ? 0f : Mathf.Clamp01(weaponDurabilityLost / weaponDurabilityMax);
+    }
+
+    /// <summary>Whether the weapon has no durability left and cannot be used.</summary>
+    public bool IsBroken()
+    {
+        return weaponDurabilityCurrent <= 0f;
+    }
+
+    /// <summary>Applies the configured durability wear for a single shot.</summary>
+    public void ApplyDurabilityLossForShot()
+    {
+        bool wasBroken = IsBroken();
+        float clampedCurrent = Mathf.Min(weaponDurabilityCurrent, GetDurabilityMaxEffective());
+        weaponDurabilityCurrent = Mathf.Max(0f, clampedCurrent - weaponDurabilityLostPerShot);
+
+        if (!wasBroken && IsBroken() && weaponBreakSound != null)
+        {
+            F_Logic_Audio.PlaySound(weaponBreakSound, EnumSoundType.Direct);
+        }
+    }
+
+    /// <summary>Whether the weapon cannot fire because it is broken or has too little ammo loaded.</summary>
+    public bool IsFireBlockedByBrokenOrEmpty()
+    {
+        return IsBroken() || (weaponUsesAmmo && currentAmmoLoaded < weaponAmmoTakenPerShot);
+    }
+
+    /// <summary>Plays the dry-fire click used when a fire attempt is blocked by a broken weapon or empty ammo.</summary>
+    public void PlayDryFireSound()
+    {
+        if (weaponDryFireSound != null)
+        {
+            F_Logic_Audio.PlaySound(weaponDryFireSound, EnumSoundType.Direct);
+        }
+    }
+
+    /// <summary>Assigns the default break sound in the editor when none is set, alongside the base item defaults.</summary>
+    protected override void EnsureDefaultItemAssets()
+    {
+        base.EnsureDefaultItemAssets();
+#if UNITY_EDITOR
+        if (weaponBreakSound == null)
+        {
+            weaponBreakSound = UnityEditor.AssetDatabase.LoadAssetAtPath<AudioClip>(defaultBreakSoundAssetPath);
+        }
+
+        if (weaponDryFireSound == null)
+        {
+            weaponDryFireSound = UnityEditor.AssetDatabase.LoadAssetAtPath<AudioClip>(defaultDryFireSoundAssetPath);
+        }
+#endif
+    }
+
     /// <summary>Returns whether this weapon is currently able to fire a shot.</summary>
     public bool CanFireWeapon()
     {
-        if (IsDeploying || isFinishingReload || HeldTime < nextFireReadyTime)
+        if (IsBroken() || IsDeploying || isFinishingReload || HeldTime < nextFireReadyTime)
         {
             return false;
         }
@@ -278,6 +367,7 @@ public class F_Item_Weapon : F_Item
         }
 
         InterruptReload();
+        ApplyDurabilityLossForShot();
         ProcessShot(firePositionWorld);
         return true;
     }
@@ -287,12 +377,13 @@ public class F_Item_Weapon : F_Item
     /// <returns>True when the follow-up shot was successfully fired.</returns>
     public bool TryFireBurstFollowupShot(Vector3 firePositionWorld)
     {
-        if (IsDeploying || isFinishingReload || !TryConsumeAmmoForShot())
+        if (IsBroken() || IsDeploying || isFinishingReload || !TryConsumeAmmoForShot())
         {
             return false;
         }
 
         InterruptReload();
+        ApplyDurabilityLossForShot();
         ProcessShot(firePositionWorld);
         return true;
     }
@@ -432,7 +523,7 @@ public class F_Item_Weapon : F_Item
     /// <param name="playerInventory">The inventory the reload should draw ammo from.</param>
     public void StartReload(F_PlayerInventory playerInventory)
     {
-        if (isReloading || IsDeploying || HeldTime < boltActionEndTime || !weaponUsesAmmo || currentAmmoLoaded >= weaponAmmoCapacity || !HasReserveAmmo(playerInventory))
+        if (IsBroken() || isReloading || IsDeploying || HeldTime < boltActionEndTime || !weaponUsesAmmo || currentAmmoLoaded >= weaponAmmoCapacity || !HasReserveAmmo(playerInventory))
         {
             return;
         }

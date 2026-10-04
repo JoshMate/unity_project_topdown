@@ -47,6 +47,14 @@ public static class F_Utility_Config_Colours
     public static readonly Color32 cfgColourHudWeightHeavy = new Color32(255, 140, 0, opaqueAlpha);
     public static readonly Color32 cfgColourHudWeightTooMuch = new Color32(230, 26, 26, opaqueAlpha);
 
+    // Constants Public: Durability bar
+    public static readonly Color32 cfgDurabilityBarGood = new Color32(51, 204, 51, opaqueAlpha);
+    public static readonly Color32 cfgDurabilityBarYellow = new Color32(255, 235, 51, opaqueAlpha);
+    public static readonly Color32 cfgDurabilityBarOrange = new Color32(255, 140, 0, opaqueAlpha);
+    public static readonly Color32 cfgDurabilityBarBad = new Color32(230, 26, 26, opaqueAlpha);
+    public static readonly Color32 cfgDurabilityBarLost = new Color32(0, 0, 0, opaqueAlpha);
+    public static readonly Color32 cfgDurabilityBarBackground = new Color32(41, 41, 41, opaqueAlpha);
+
     // Constants Public: Loading screen
     public static readonly Color32 cfgColourLoadingBarBackground = new Color32(41, 46, 51, opaqueAlpha);
     public static readonly Color32 cfgColourLoadingBarFill = new Color32(217, 140, 38, opaqueAlpha);

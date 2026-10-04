@@ -11,6 +11,8 @@ public class F_GUI_Inventory_Slot : MonoBehaviour, IPointerClickHandler, IPointe
     private const float hotkeyLabelWidth = 28f;
     private const float hotkeyLabelHeight = 22f;
     private const float minimumHotkeyFontSize = 8f;
+    private const float durabilityBarHeight = 6f;
+    private const float durabilityBarPadding = 4f;
 
     [Header("Object Refs")]
     public F_Item slotItemObj;
@@ -23,6 +25,11 @@ public class F_GUI_Inventory_Slot : MonoBehaviour, IPointerClickHandler, IPointe
     [Header("Art")]
     public Sprite slotIconLocked;
     public Sprite slotIconPlaceHolder;
+    public Sprite slotBrokenSprite;
+
+    [Header("Durability GUI")]
+    public F_GUI_Durability_Bar durabilityBar;
+    public Image durabilityBrokenOverlay;
 
     [Header("Stats")]
     public enumSlotType slotType;
@@ -161,6 +168,8 @@ public class F_GUI_Inventory_Slot : MonoBehaviour, IPointerClickHandler, IPointe
 
         ApplySlotLockState();
 
+        CreateDurabilityGui();
+
         if (HasHotkeyBinding())
         {
             CreateSlotHotkeyHint();
@@ -248,6 +257,61 @@ public class F_GUI_Inventory_Slot : MonoBehaviour, IPointerClickHandler, IPointe
         }
     }
 
+    private void CreateDurabilityGui()
+    {
+        if (durabilityBrokenOverlay == null)
+        {
+            GameObject overlayObject = new GameObject(
+                "Slot_BrokenOverlay",
+                typeof(RectTransform),
+                typeof(CanvasRenderer),
+                typeof(Image));
+            overlayObject.transform.SetParent(transform, false);
+
+            RectTransform overlayRect = overlayObject.GetComponent<RectTransform>();
+            F_Utility_Helper_Gui.AnchorRectToSpriteArea(overlayRect, slotBrokenSprite);
+
+            durabilityBrokenOverlay = overlayObject.GetComponent<Image>();
+            durabilityBrokenOverlay.sprite = slotBrokenSprite;
+            durabilityBrokenOverlay.preserveAspect = false;
+            durabilityBrokenOverlay.raycastTarget = false;
+            durabilityBrokenOverlay.enabled = false;
+        }
+
+        if (durabilityBar == null)
+        {
+            durabilityBar = F_GUI_Durability_Bar.Create("Slot_DurabilityBar", transform);
+            RectTransform barRect = durabilityBar.GetComponent<RectTransform>();
+            barRect.anchorMin = Vector2.zero;
+            barRect.anchorMax = new Vector2(1f, 0f);
+            barRect.pivot = new Vector2(0.5f, 0f);
+            barRect.offsetMin = new Vector2(durabilityBarPadding, durabilityBarPadding);
+            barRect.offsetMax = new Vector2(-durabilityBarPadding, durabilityBarPadding + durabilityBarHeight);
+            durabilityBar.Hide();
+        }
+
+        if (slotDrawItemObj != null && slotDrawItemObj.transform.parent == transform)
+        {
+            int itemSiblingIndex = slotDrawItemObj.transform.GetSiblingIndex();
+            durabilityBrokenOverlay.transform.SetSiblingIndex(itemSiblingIndex + 1);
+            durabilityBar.transform.SetSiblingIndex(itemSiblingIndex + 2);
+        }
+    }
+
+    private void UpdateDurabilityGui()
+    {
+        F_Item_Weapon weapon = isSlotLocked ? null : slotItemObj as F_Item_Weapon;
+        if (durabilityBar != null)
+        {
+            durabilityBar.SetDurability(weapon);
+        }
+
+        if (durabilityBrokenOverlay != null)
+        {
+            durabilityBrokenOverlay.enabled = weapon != null && weapon.IsBroken() && slotBrokenSprite != null;
+        }
+    }
+
     private void Update()
     {
         ApplySlotLockState();
@@ -258,6 +322,7 @@ public class F_GUI_Inventory_Slot : MonoBehaviour, IPointerClickHandler, IPointe
 
         DrawSlotIcon();
         UpdateSlotHotkeyHint();
+        UpdateDurabilityGui();
 
         if (slotItemCountText != null)
         {

@@ -75,6 +75,24 @@ public class F_PlayerHeldWeapon : MonoBehaviour
         UpdateHeldWeaponSprite();
     }
 
+    /// <summary>Plays the dry-fire click when the selected firearm cannot fire because it is broken or out of ammo.</summary>
+    public void TryPlayDryFireSound()
+    {
+        if (isBurstFiring || selectedWeaponSlot == null || selectedWeaponSlot.slotItemObj == null)
+        {
+            return;
+        }
+
+        enumItemType selectedItemType = selectedWeaponSlot.slotItemObj.itemType;
+        bool isFirearm = selectedItemType == enumItemType.WeaponGunOneHanded ||
+                          selectedItemType == enumItemType.WeaponGunTwoHanded;
+        F_Item_Weapon weaponItem = GetSelectedWeaponItem();
+        if (isFirearm && weaponItem != null && !weaponItem.IsDeploying && weaponItem.IsFireBlockedByBrokenOrEmpty())
+        {
+            weaponItem.PlayDryFireSound();
+        }
+    }
+
     private void Update()
     {
         SyncHeldWeaponItem();
@@ -129,7 +147,7 @@ public class F_PlayerHeldWeapon : MonoBehaviour
         }
 
         F_Item_Weapon weaponItem = GetSelectedWeaponItem();
-        if (weaponItem == null || projectileObject == null || heldWeaponCurrentlySelected == null ||
+        if (weaponItem == null || weaponItem.IsBroken() || projectileObject == null || heldWeaponCurrentlySelected == null ||
             heldWeaponCurrentlySelected.firePosition == null)
         {
             return;
@@ -165,7 +183,7 @@ public class F_PlayerHeldWeapon : MonoBehaviour
                 yield return new WaitForSeconds(burstDelay);
             }
 
-            if (weaponItem == null || firePosition == null ||
+            if (weaponItem == null || firePosition == null || weaponItem.IsBroken() ||
                 !weaponItem.TryFireBurstFollowupShot(firePosition.position))
             {
                 break;

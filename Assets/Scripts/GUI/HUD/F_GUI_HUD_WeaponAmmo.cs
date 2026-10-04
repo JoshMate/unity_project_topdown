@@ -14,6 +14,8 @@ public class F_GUI_HUD_WeaponAmmo : MonoBehaviour
     private const float iconSize = 100f;
     private const float elementSpacing = 12f;
     private const float nameRowHeight = 24f;
+    private const float durabilityBarHeight = 6f;
+    private const float durabilityBarGap = 3f;
     private const float panelWidth = 480f;
     private const float panelHeight = (borderThickness + contentPadding) * 2f + iconSize + elementSpacing + nameRowHeight;
     private const float ammoFontSize = 42f;
@@ -31,7 +33,12 @@ public class F_GUI_HUD_WeaponAmmo : MonoBehaviour
     public F_PlayerHeldWeapon playerHeldWeapon;
     public F_PlayerInventory playerInventory;
 
+    [Header("Art")]
+    public Sprite weaponBrokenSprite;
+
     [Header("Privates")]
+    private F_GUI_Durability_Bar durabilityBar;
+    private Image brokenOverlayImage;
     private RectTransform panelRect;
     private GameObject weaponContentObj;
     private Image weaponIconImage;
@@ -73,6 +80,8 @@ public class F_GUI_HUD_WeaponAmmo : MonoBehaviour
         ammoIconImage.gameObject.SetActive(hasWeapon);
         ammoCountText.gameObject.SetActive(hasWeapon);
         weaponNameText.text = hasWeapon ? weapon.itemName : noWeaponMessage;
+        durabilityBar.SetDurability(weapon);
+        brokenOverlayImage.enabled = hasWeapon && weapon.IsBroken() && weaponBrokenSprite != null;
 
         if (!hasWeapon)
         {
@@ -146,6 +155,23 @@ public class F_GUI_HUD_WeaponAmmo : MonoBehaviour
         weaponIconImage = weaponIconRect.GetComponent<Image>();
         weaponIconImage.preserveAspect = true;
         weaponIconImage.raycastTarget = false;
+
+        RectTransform brokenOverlayRect = CreateUiObject("WeaponAmmo_BrokenOverlay", weaponIconRect, typeof(Image));
+        F_Utility_Helper_Gui.AnchorRectToSpriteArea(brokenOverlayRect, weaponBrokenSprite);
+        brokenOverlayImage = brokenOverlayRect.GetComponent<Image>();
+        brokenOverlayImage.sprite = weaponBrokenSprite;
+        brokenOverlayImage.preserveAspect = false;
+        brokenOverlayImage.raycastTarget = false;
+        brokenOverlayImage.enabled = false;
+
+        durabilityBar = F_GUI_Durability_Bar.Create("WeaponAmmo_DurabilityBar", contentRect);
+        RectTransform durabilityBarRect = durabilityBar.GetComponent<RectTransform>();
+        durabilityBarRect.anchorMin = new Vector2(0f, 1f);
+        durabilityBarRect.anchorMax = new Vector2(0f, 1f);
+        durabilityBarRect.pivot = new Vector2(0f, 1f);
+        durabilityBarRect.anchoredPosition = new Vector2(0f, -(iconSize + durabilityBarGap));
+        durabilityBarRect.sizeDelta = new Vector2(iconSize, durabilityBarHeight);
+        durabilityBar.Hide();
 
         RectTransform ammoIconRect = CreateUiObject("WeaponAmmo_AmmoIcon", contentRect, typeof(Image));
         ammoIconRect.anchorMin = new Vector2(1f, 1f);

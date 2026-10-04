@@ -72,6 +72,10 @@ public class F_PlayerController : MonoBehaviour
         {
             playerHeldWeapon.FireWeapon();
         }
+        else if (primaryActionRequested && controls.IsPrimaryActionPressed())
+        {
+            playerHeldWeapon.TryPlayDryFireSound();
+        }
 
         if (controls.IsReloadPressed())
         {

@@ -68,12 +68,16 @@ MonoBehaviour:
   slotDrawBorderObj: {fileID: 4783408293053436370}
   slotDrawItemObj: {fileID: 1759880860150990732}
   slotItemCountText: {fileID: 3568831661182381382}
-  quickSlotIndex: -1
   slotIconLocked: {fileID: 21300000, guid: 7000f5a6d56012b4198de04ba0567f85, type: 3}
   slotIconPlaceHolder: {fileID: 21300000, guid: 06104d2f981713a42b135bd1675d2c39, type: 3}
+  slotBrokenSprite: {fileID: -211043633503461525, guid: 3f4cebfdb12bdb344b6401cd96969bfb, type: 3}
+  durabilityBar: {fileID: 0}
+  durabilityBrokenOverlay: {fileID: 0}
   slotType: 0
   isSlotLocked: 0
   isSlotHovered: 0
+  slotHotkeyGroup: 0
+  slotHotkeyIndex: -1
 --- !u!65 &-2362762688302945032
 BoxCollider:
   m_ObjectHideFlags: 0
