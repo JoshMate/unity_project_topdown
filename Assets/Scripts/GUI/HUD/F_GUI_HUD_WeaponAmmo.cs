@@ -22,10 +22,10 @@ public class F_GUI_HUD_WeaponAmmo : MonoBehaviour
     private const string noWeaponMessage = "No Weapon Equiped";
     private const string ammoSeparator = " / ";
 
-    private static readonly Color panelBorderColor = new Color(0.94f, 0.94f, 0.94f, 1f);
-    private static readonly Color panelFillColor = new Color(0.105f, 0.105f, 0.105f, 1f);
-    private static readonly Color textColor = new Color(0.94f, 0.94f, 0.94f, 1f);
-    private static readonly Color emptyAmmoTextColor = new Color(0.85f, 0.3f, 0.3f, 1f);
+    private static readonly Color panelBorderColor = F_Utility_Config_Colours.cfgColourGuiPanelBorder;
+    private static readonly Color panelFillColor = F_Utility_Config_Colours.cfgColourGuiPanelFill;
+    private static readonly Color textColor = F_Utility_Config_Colours.cfgColourGuiText;
+    private static readonly Color emptyAmmoTextColor = F_Utility_Config_Colours.cfgColourHudAmmoEmptyText;
 
     [Header("Object Refs")]
     public F_PlayerHeldWeapon playerHeldWeapon;

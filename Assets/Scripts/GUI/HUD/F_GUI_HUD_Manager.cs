@@ -17,7 +17,12 @@ public class F_GUI_HUD_Manager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        // Apply the central config colours to each bar fill (the weight bar colours itself by weight class)
+        healthBar.SetFillColour(F_Utility_Config_Colours.cfgColourHudBarHealth);
+        staminaBar.SetFillColour(F_Utility_Config_Colours.cfgColourHudBarStamina);
+        hungerBar.SetFillColour(F_Utility_Config_Colours.cfgColourHudBarHunger);
+        thirstBar.SetFillColour(F_Utility_Config_Colours.cfgColourHudBarThirst);
+        toxicBar.SetFillColour(F_Utility_Config_Colours.cfgColourHudBarToxic);
     }
 
     // Update is called once per frame

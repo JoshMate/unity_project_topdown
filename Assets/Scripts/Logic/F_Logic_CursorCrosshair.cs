@@ -13,7 +13,7 @@ public class F_Logic_CursorCrosshair : MonoBehaviour
     public SpriteRenderer sortingReferenceRenderer;
 
     [Header("Crosshair Look")]
-    public Color crosshairColor = Color.white;
+    public Color crosshairColor = F_Utility_Config_Colours.cfgColourCursorCrosshair;
     // Length of each arm in world units
     public float armLength = 0.18f;
     // Thickness of each arm in world units
@@ -30,7 +30,7 @@ public class F_Logic_CursorCrosshair : MonoBehaviour
     public float gapSmoothingSpeed = 30f;
 
     [Header("Reload Ring")]
-    public Color reloadRingColor = Color.white;
+    public Color reloadRingColor = F_Utility_Config_Colours.cfgColourCursorReloadRing;
     // Outer radius of the reload progress ring in world units
     public float reloadRingRadius = 0.3f;
     // Thickness of the reload progress ring in world units
@@ -137,7 +137,7 @@ public class F_Logic_CursorCrosshair : MonoBehaviour
         {
             filterMode = FilterMode.Point
         };
-        whiteTexture.SetPixel(0, 0, Color.white);
+        whiteTexture.SetPixel(0, 0, F_Utility_Config_Colours.cfgColourWhite);
         whiteTexture.Apply();
         armSprite = Sprite.Create(whiteTexture, new Rect(0, 0, 1, 1), new Vector2(0.5f, 0.5f), textureSize);
 

@@ -17,6 +17,7 @@ public class F_Logic_Loading : MonoBehaviour
 
     private IEnumerator Start()
     {
+        ApplyBarColours();
         SetProgress(0f);
 
         // Init scene holds the game manager and persistent objects, which mark themselves DontDestroyOnLoad.
@@ -43,6 +44,27 @@ public class F_Logic_Loading : MonoBehaviour
 
         SceneManager.UnloadSceneAsync(F_Utility_Config_Scenes.initSceneName);
         SceneManager.UnloadSceneAsync(F_Utility_Config_Scenes.loadingSceneName);
+    }
+
+    // Applies the central config colours to the loading bar fill and its background (the fill's parent).
+    private void ApplyBarColours()
+    {
+        if (loadingBarFill == null)
+        {
+            return;
+        }
+
+        Image fillImage = loadingBarFill.GetComponent<Image>();
+        if (fillImage != null)
+        {
+            fillImage.color = F_Utility_Config_Colours.cfgColourLoadingBarFill;
+        }
+
+        Image backgroundImage = loadingBarFill.parent != null ? loadingBarFill.parent.GetComponent<Image>() : null;
+        if (backgroundImage != null)
+        {
+            backgroundImage.color = F_Utility_Config_Colours.cfgColourLoadingBarBackground;
+        }
     }
 
     private void SetProgress(float progress)

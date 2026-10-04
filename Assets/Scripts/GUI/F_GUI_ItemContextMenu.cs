@@ -28,14 +28,14 @@ public class F_GUI_ItemContextMenu : MonoBehaviour
     // Space occupied by the item name header and its divider before the option list begins.
     private const float headerBlockHeight = contentPadding + headerHeight + headerSeparatorSpacing + separatorThickness + headerSeparatorSpacing;
 
-    private static readonly Color panelBorderColor = new Color(0.94f, 0.94f, 0.94f, 1f);
-    private static readonly Color panelFillColor = new Color(0.105f, 0.105f, 0.105f, 1f);
-    private static readonly Color headerTextColor = new Color(0.94f, 0.94f, 0.94f, 1f);
-    private static readonly Color headerSeparatorColor = new Color(0.62f, 0.62f, 0.62f, 1f);
-    private static readonly Color optionBackgroundColor = new Color(0.16f, 0.16f, 0.16f, 1f);
-    private static readonly Color optionHighlightedColor = new Color(1.6f, 1.6f, 1.6f, 1f);
-    private static readonly Color optionPressedColor = new Color(1.3f, 1.3f, 1.3f, 1f);
-    private static readonly Color optionTextColor = new Color(0.94f, 0.94f, 0.94f, 1f);
+    private static readonly Color panelBorderColor = F_Utility_Config_Colours.cfgColourGuiPanelBorder;
+    private static readonly Color panelFillColor = F_Utility_Config_Colours.cfgColourGuiPanelFill;
+    private static readonly Color headerTextColor = F_Utility_Config_Colours.cfgColourGuiText;
+    private static readonly Color headerSeparatorColor = F_Utility_Config_Colours.cfgColourGuiSeparator;
+    private static readonly Color optionBackgroundColor = F_Utility_Config_Colours.cfgColourGuiOptionBackground;
+    private static readonly Color optionHighlightedColor = new Color(F_Utility_Config_Colours.cfgColourGuiOptionHighlightMultiplier, F_Utility_Config_Colours.cfgColourGuiOptionHighlightMultiplier, F_Utility_Config_Colours.cfgColourGuiOptionHighlightMultiplier, 1f);
+    private static readonly Color optionPressedColor = new Color(F_Utility_Config_Colours.cfgColourGuiOptionPressedMultiplier, F_Utility_Config_Colours.cfgColourGuiOptionPressedMultiplier, F_Utility_Config_Colours.cfgColourGuiOptionPressedMultiplier, 1f);
+    private static readonly Color optionTextColor = F_Utility_Config_Colours.cfgColourGuiText;
 
     [Header("Context Menu References")]
     public Canvas contextMenuCanvas;

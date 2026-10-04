@@ -17,11 +17,6 @@ public class F_GUI_HUD_Bar : MonoBehaviour
     public bool useWeightThresholds;
     public Image barFillImage;
     public TextMeshProUGUI barCenterText;
-    public Color weightClassColorFreeWeight = new Color(0.2f, 0.5f, 1f);
-    public Color weightClassColorLightWeight = new Color(0.2f, 0.8f, 0.2f);
-    public Color weightClassColorMediumWeight = new Color(1f, 0.92f, 0.2f);
-    public Color weightClassColorHeavyWeight = new Color(1f, 0.55f, 0f);
-    public Color weightClassColorTooMuchWeight = new Color(0.9f, 0.1f, 0.1f);
 
     // Start is called before the first frame update
     void Start()
@@ -61,23 +56,36 @@ public class F_GUI_HUD_Bar : MonoBehaviour
         }
     }
 
+    /// <summary>Sets the colour of this bar's slider fill image.</summary>
+    public void SetFillColour(Color fillColour)
+    {
+        if (barSlider != null && barSlider.fillRect != null)
+        {
+            Image fillImage = barSlider.fillRect.GetComponent<Image>();
+            if (fillImage != null)
+            {
+                fillImage.color = fillColour;
+            }
+        }
+    }
+
     // Returns the configured colour for the given weight class.
     private Color GetWeightClassColor(enumWeightClass weightClass)
     {
         switch (weightClass)
         {
             case enumWeightClass.FreeWeight:
-                return weightClassColorFreeWeight;
+                return F_Utility_Config_Colours.cfgColourHudWeightFree;
             case enumWeightClass.LightWeight:
-                return weightClassColorLightWeight;
+                return F_Utility_Config_Colours.cfgColourHudWeightLight;
             case enumWeightClass.MediumWeight:
-                return weightClassColorMediumWeight;
+                return F_Utility_Config_Colours.cfgColourHudWeightMedium;
             case enumWeightClass.HeavyWeight:
-                return weightClassColorHeavyWeight;
+                return F_Utility_Config_Colours.cfgColourHudWeightHeavy;
             case enumWeightClass.TooMuchWeight:
-                return weightClassColorTooMuchWeight;
+                return F_Utility_Config_Colours.cfgColourHudWeightTooMuch;
             default:
-                return Color.white;
+                return F_Utility_Config_Colours.cfgColourWhite;
         }
     }
 

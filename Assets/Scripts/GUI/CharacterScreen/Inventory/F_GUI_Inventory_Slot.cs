@@ -253,7 +253,7 @@ public class F_GUI_Inventory_Slot : MonoBehaviour, IPointerClickHandler, IPointe
         ApplySlotLockState();
         if (slotDrawBorderObj != null && !isSlotLocked)
         {
-            slotDrawBorderObj.color = isSlotHovered ? Color.white : Color.gray;
+            slotDrawBorderObj.color = isSlotHovered ? F_Utility_Config_Colours.cfgColourInventorySlotBorderHovered : F_Utility_Config_Colours.cfgColourInventorySlotBorderDefault;
         }
 
         DrawSlotIcon();
