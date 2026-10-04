@@ -54,7 +54,7 @@ MonoBehaviour:
   itemWeight: 0.02
   itemValue: 10
   itemCount: 1
-  itemCountMax: 60
+  itemCountMax: 32
   itemSprite: {fileID: -8992469094741731674, guid: 160afa291f4b10e4fb57545d27fda0e3, type: 3}
   itemSoundPickup: {fileID: 8300000, guid: cacc5bc9e8fdaa1409aa6ff6823ce9c9, type: 3}
   itemSoundDrop: {fileID: 8300000, guid: 52daba66c8f82e94494016eb6c114a6f, type: 3}

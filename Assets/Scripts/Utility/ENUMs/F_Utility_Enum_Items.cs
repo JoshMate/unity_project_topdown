@@ -60,3 +60,20 @@ public enum enumItemContextAction
     Drop,
     Unload
 }
+
+public enum enumItemMaxCount
+{
+    CountMaxSingle          = 1,
+
+    CountMaxItemResource   = 500,
+    CountMaxItemMoney      = 1000,
+
+    CountMaxAmmoPistol      = 120,
+    CountMaxAmmoShotgun     = 32,
+    CountMaxAmmoRifle       = 60,
+    CountMaxAmmoMagnum      = 20,
+    CountMaxAmmoEnergy      = 100,
+    CountMaxAmmoOrdanance   = 10,
+    CountMaxAmmoArrow       = 10
+    
+}

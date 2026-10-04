@@ -35,7 +35,7 @@ public class F_Item : MonoBehaviour
     public float itemWeight = 1.0f;
     public int itemValue = 1;
     public int itemCount = 1;
-    public int itemCountMax = 1;
+    public enumItemMaxCount itemCountMax = enumItemMaxCount.CountMaxSingle;
 
     [Header("Item Art")]
     public Sprite itemSprite;
@@ -47,6 +47,9 @@ public class F_Item : MonoBehaviour
 
     /// <summary>Whether the item is currently stored in an inventory slot (managed by the inventory code).</summary>
     public bool IsInInventorySlot => isInInventorySlot;
+
+    /// <summary>The maximum stack size as an integer, read from the item's max count enum.</summary>
+    public int ItemCountMaxValue => (int)itemCountMax;
 
     private void OnEnable()
     {
@@ -168,7 +171,7 @@ public class F_Item : MonoBehaviour
             new F_ItemTooltipDetail("Weight", itemWeight.ToString("0.##", CultureInfo.InvariantCulture)),
             new F_ItemTooltipDetail("Value", itemValue.ToString(CultureInfo.InvariantCulture)),
             new F_ItemTooltipDetail("Stack Size", itemCount.ToString(CultureInfo.InvariantCulture)),
-            new F_ItemTooltipDetail("Max Stack Size", itemCountMax.ToString(CultureInfo.InvariantCulture))
+            new F_ItemTooltipDetail("Max Stack Size", ItemCountMaxValue.ToString(CultureInfo.InvariantCulture))
         };
     }
 

@@ -108,7 +108,7 @@ public static class F_Utility_Helper_Inventory
                 remainingCount -= AddToStack(slot.slotItemObj, remainingCount);
             }
 
-            int maximumStackCount = Mathf.Max(1, itemTemplate.itemCountMax);
+            int maximumStackCount = Mathf.Max(1, itemTemplate.ItemCountMaxValue);
             for (int slotIndex = 0; slotIndex < inventorySlots.Count && remainingCount > 0; slotIndex++)
             {
                 F_GUI_Inventory_Slot slot = inventorySlots[slotIndex];
@@ -399,7 +399,7 @@ public static class F_Utility_Helper_Inventory
             return 0;
         }
 
-        int availableStackSpace = destinationStack.itemCountMax - destinationStack.itemCount;
+        int availableStackSpace = destinationStack.ItemCountMaxValue - destinationStack.itemCount;
         int transferredCount = Mathf.Min(Mathf.Max(0, availableStackSpace), requestedCount);
         destinationStack.itemCount += transferredCount;
         return transferredCount;
