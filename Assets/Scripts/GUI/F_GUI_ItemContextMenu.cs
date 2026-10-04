@@ -28,14 +28,14 @@ public class F_GUI_ItemContextMenu : MonoBehaviour
     // Space occupied by the item name header and its divider before the option list begins.
     private const float headerBlockHeight = contentPadding + headerHeight + headerSeparatorSpacing + separatorThickness + headerSeparatorSpacing;
 
-    private static readonly Color panelBorderColor = F_Utility_Config_Colours.cfgColourGuiPanelBorder;
-    private static readonly Color panelFillColor = F_Utility_Config_Colours.cfgColourGuiPanelFill;
-    private static readonly Color headerTextColor = F_Utility_Config_Colours.cfgColourGuiText;
-    private static readonly Color headerSeparatorColor = F_Utility_Config_Colours.cfgColourGuiSeparator;
-    private static readonly Color optionBackgroundColor = F_Utility_Config_Colours.cfgColourGuiOptionBackground;
-    private static readonly Color optionHighlightedColor = new Color(F_Utility_Config_Colours.cfgColourGuiOptionHighlightMultiplier, F_Utility_Config_Colours.cfgColourGuiOptionHighlightMultiplier, F_Utility_Config_Colours.cfgColourGuiOptionHighlightMultiplier, 1f);
-    private static readonly Color optionPressedColor = new Color(F_Utility_Config_Colours.cfgColourGuiOptionPressedMultiplier, F_Utility_Config_Colours.cfgColourGuiOptionPressedMultiplier, F_Utility_Config_Colours.cfgColourGuiOptionPressedMultiplier, 1f);
-    private static readonly Color optionTextColor = F_Utility_Config_Colours.cfgColourGuiText;
+    private static readonly Color panelBorderColour = F_Utility_Config_Colours.cfgColourGuiPanelBorder;
+    private static readonly Color panelFillColour = F_Utility_Config_Colours.cfgColourGuiPanelFill;
+    private static readonly Color headerTextColour = F_Utility_Config_Colours.cfgColourGuiText;
+    private static readonly Color headerSeparatorColour = F_Utility_Config_Colours.cfgColourGuiSeparator;
+    private static readonly Color optionBackgroundColour = F_Utility_Config_Colours.cfgColourGuiOptionBackground;
+    private static readonly Color optionHighlightedColour = new Color(F_Utility_Config_Colours.cfgColourGuiOptionHighlightMultiplier, F_Utility_Config_Colours.cfgColourGuiOptionHighlightMultiplier, F_Utility_Config_Colours.cfgColourGuiOptionHighlightMultiplier, 1f);
+    private static readonly Color optionPressedColour = new Color(F_Utility_Config_Colours.cfgColourGuiOptionPressedMultiplier, F_Utility_Config_Colours.cfgColourGuiOptionPressedMultiplier, F_Utility_Config_Colours.cfgColourGuiOptionPressedMultiplier, 1f);
+    private static readonly Color optionTextColour = F_Utility_Config_Colours.cfgColourGuiText;
 
     [Header("Context Menu References")]
     public Canvas contextMenuCanvas;
@@ -80,7 +80,7 @@ public class F_GUI_ItemContextMenu : MonoBehaviour
             panelBorderImage = gameObject.AddComponent<Image>();
         }
 
-        panelBorderImage.color = panelBorderColor;
+        panelBorderImage.color = panelBorderColour;
         panelBorderImage.raycastTarget = false;
 
         if (contextMenuCanvasGroup == null)
@@ -197,7 +197,7 @@ public class F_GUI_ItemContextMenu : MonoBehaviour
         fillRect.offsetMax = new Vector2(-borderThickness, -borderThickness);
 
         Image fillImage = fillObj.GetComponent<Image>();
-        fillImage.color = panelFillColor;
+        fillImage.color = panelFillColour;
         fillImage.raycastTarget = false;
 
         GameObject headerObj = new GameObject(
@@ -217,7 +217,7 @@ public class F_GUI_ItemContextMenu : MonoBehaviour
         headerRect.sizeDelta = new Vector2(headerRect.sizeDelta.x, headerHeight);
 
         headerLabel = headerObj.GetComponent<TMP_Text>();
-        headerLabel.color = headerTextColor;
+        headerLabel.color = headerTextColour;
         headerLabel.fontSize = headerFontSize;
         headerLabel.fontStyle = FontStyles.Bold;
         headerLabel.alignment = TextAlignmentOptions.MidlineLeft;
@@ -242,7 +242,7 @@ public class F_GUI_ItemContextMenu : MonoBehaviour
         separatorRect.sizeDelta = new Vector2(separatorRect.sizeDelta.x, separatorThickness);
 
         Image separatorImage = separatorObj.GetComponent<Image>();
-        separatorImage.color = headerSeparatorColor;
+        separatorImage.color = headerSeparatorColour;
         separatorImage.raycastTarget = false;
 
         GameObject containerObj = new GameObject("ContextMenu_OptionsContainer", typeof(RectTransform));
@@ -361,17 +361,17 @@ public class F_GUI_ItemContextMenu : MonoBehaviour
         optionRect.sizeDelta = new Vector2(0f, optionHeight);
 
         Image optionBackground = optionObj.GetComponent<Image>();
-        optionBackground.color = optionBackgroundColor;
+        optionBackground.color = optionBackgroundColour;
 
         Button optionButton = optionObj.GetComponent<Button>();
         optionButton.targetGraphic = optionBackground;
-        ColorBlock optionColors = optionButton.colors;
-        optionColors.normalColor = Color.white;
-        optionColors.highlightedColor = optionHighlightedColor;
-        optionColors.pressedColor = optionPressedColor;
-        optionColors.selectedColor = Color.white;
-        optionColors.fadeDuration = 0.05f;
-        optionButton.colors = optionColors;
+        ColorBlock optionColours = optionButton.colors;
+        optionColours.normalColor = F_Utility_Config_Colours.cfgColourWhite;
+        optionColours.highlightedColor = optionHighlightedColour;
+        optionColours.pressedColor = optionPressedColour;
+        optionColours.selectedColor = F_Utility_Config_Colours.cfgColourWhite;
+        optionColours.fadeDuration = 0.05f;
+        optionButton.colors = optionColours;
         optionButton.onClick.AddListener(() => OnOptionClicked(action));
 
         GameObject labelObj = new GameObject(
@@ -389,7 +389,7 @@ public class F_GUI_ItemContextMenu : MonoBehaviour
 
         TMP_Text optionLabel = labelObj.GetComponent<TMP_Text>();
         optionLabel.text = F_Utility_Helper_ContextMenu.GetActionLabel(action);
-        optionLabel.color = optionTextColor;
+        optionLabel.color = optionTextColour;
         optionLabel.fontSize = optionFontSize;
         optionLabel.alignment = TextAlignmentOptions.MidlineLeft;
         optionLabel.raycastTarget = false;

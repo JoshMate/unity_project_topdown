@@ -13,7 +13,6 @@ public class F_Logic_CursorCrosshair : MonoBehaviour
     public SpriteRenderer sortingReferenceRenderer;
 
     [Header("Crosshair Look")]
-    public Color crosshairColor = F_Utility_Config_Colours.cfgColourCursorCrosshair;
     // Length of each arm in world units
     public float armLength = 0.18f;
     // Thickness of each arm in world units
@@ -30,7 +29,6 @@ public class F_Logic_CursorCrosshair : MonoBehaviour
     public float gapSmoothingSpeed = 30f;
 
     [Header("Reload Ring")]
-    public Color reloadRingColor = F_Utility_Config_Colours.cfgColourCursorReloadRing;
     // Outer radius of the reload progress ring in world units
     public float reloadRingRadius = 0.3f;
     // Thickness of the reload progress ring in world units
@@ -151,7 +149,7 @@ public class F_Logic_CursorCrosshair : MonoBehaviour
 
             SpriteRenderer armRenderer = armObject.AddComponent<SpriteRenderer>();
             armRenderer.sprite = armSprite;
-            armRenderer.color = crosshairColor;
+            armRenderer.color = F_Utility_Config_Colours.cfgColourCursorCrosshair;
             if (sortingReferenceRenderer != null)
             {
                 armRenderer.sortingLayerID = sortingReferenceRenderer.sortingLayerID;
@@ -176,7 +174,7 @@ public class F_Logic_CursorCrosshair : MonoBehaviour
         for (int armIndex = 0; armIndex < armCount; armIndex++)
         {
             armTransforms[armIndex].localPosition = armDirections[armIndex] * armCenterOffset;
-            armRenderers[armIndex].color = crosshairColor;
+            armRenderers[armIndex].color = F_Utility_Config_Colours.cfgColourCursorCrosshair;
         }
     }
     private void BuildReloadRing()
@@ -189,7 +187,7 @@ public class F_Logic_CursorCrosshair : MonoBehaviour
         ringObject.AddComponent<MeshFilter>().sharedMesh = ringMesh;
 
         ringMaterial = new Material(Shader.Find(ringShaderName));
-        ringMaterial.color = reloadRingColor;
+        ringMaterial.color = F_Utility_Config_Colours.cfgColourCursorReloadRing;
         ringRenderer = ringObject.AddComponent<MeshRenderer>();
         ringRenderer.sharedMaterial = ringMaterial;
         if (sortingReferenceRenderer != null)
@@ -253,7 +251,7 @@ public class F_Logic_CursorCrosshair : MonoBehaviour
         ringMesh.vertices = vertices;
         ringMesh.triangles = triangles;
         ringMesh.RecalculateBounds();
-        ringMaterial.color = reloadRingColor;
+        ringMaterial.color = F_Utility_Config_Colours.cfgColourCursorReloadRing;
     }
 
 

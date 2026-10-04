@@ -48,7 +48,7 @@ public class F_GUI_HUD_Bar : MonoBehaviour
 
         if (barFillImage != null)
         {
-            barFillImage.color = GetWeightClassColor(weightClass);
+            barFillImage.color = GetWeightClassColour(weightClass);
         }
         if (barCenterText != null)
         {
@@ -70,7 +70,7 @@ public class F_GUI_HUD_Bar : MonoBehaviour
     }
 
     // Returns the configured colour for the given weight class.
-    private Color GetWeightClassColor(enumWeightClass weightClass)
+    private Color GetWeightClassColour(enumWeightClass weightClass)
     {
         switch (weightClass)
         {

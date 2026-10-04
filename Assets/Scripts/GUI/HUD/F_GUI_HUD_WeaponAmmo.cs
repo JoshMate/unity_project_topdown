@@ -22,10 +22,10 @@ public class F_GUI_HUD_WeaponAmmo : MonoBehaviour
     private const string noWeaponMessage = "No Weapon Equiped";
     private const string ammoSeparator = " / ";
 
-    private static readonly Color panelBorderColor = F_Utility_Config_Colours.cfgColourGuiPanelBorder;
-    private static readonly Color panelFillColor = F_Utility_Config_Colours.cfgColourGuiPanelFill;
-    private static readonly Color textColor = F_Utility_Config_Colours.cfgColourGuiText;
-    private static readonly Color emptyAmmoTextColor = F_Utility_Config_Colours.cfgColourHudAmmoEmptyText;
+    private static readonly Color panelBorderColour = F_Utility_Config_Colours.cfgColourGuiPanelBorder;
+    private static readonly Color panelFillColour = F_Utility_Config_Colours.cfgColourGuiPanelFill;
+    private static readonly Color textColour = F_Utility_Config_Colours.cfgColourGuiText;
+    private static readonly Color emptyAmmoTextColour = F_Utility_Config_Colours.cfgColourHudAmmoEmptyText;
 
     [Header("Object Refs")]
     public F_PlayerHeldWeapon playerHeldWeapon;
@@ -94,7 +94,7 @@ public class F_GUI_HUD_WeaponAmmo : MonoBehaviour
             ? F_Utility_Helper_Inventory.GetItemCountInInventory(playerInventory, weapon.weaponAmmoType)
             : 0;
         ammoCountText.text = weapon.CurrentAmmoLoaded + ammoSeparator + reserveAmmo;
-        ammoCountText.color = weapon.CurrentAmmoLoaded <= 0 ? emptyAmmoTextColor : textColor;
+        ammoCountText.color = weapon.CurrentAmmoLoaded <= 0 ? emptyAmmoTextColour : textColour;
 
         Sprite ammoSprite = weapon.weaponAmmoType != null ? weapon.weaponAmmoType.itemSprite : null;
         ammoIconImage.sprite = ammoSprite;
@@ -122,13 +122,13 @@ public class F_GUI_HUD_WeaponAmmo : MonoBehaviour
             borderImage = gameObject.AddComponent<Image>();
         }
 
-        borderImage.color = panelBorderColor;
+        borderImage.color = panelBorderColour;
         borderImage.raycastTarget = false;
 
         RectTransform fillRect = CreateUiObject("WeaponAmmo_Fill", transform, typeof(Image));
         StretchToParent(fillRect, borderThickness);
         Image fillImage = fillRect.GetComponent<Image>();
-        fillImage.color = panelFillColor;
+        fillImage.color = panelFillColour;
         fillImage.raycastTarget = false;
 
         panelRect.sizeDelta = new Vector2(panelWidth, panelHeight);
@@ -200,7 +200,7 @@ public class F_GUI_HUD_WeaponAmmo : MonoBehaviour
 
     private static TMP_Text ConfigureLabel(TMP_Text label, float fontSize, FontStyles fontStyle, TextAlignmentOptions alignment)
     {
-        label.color = textColor;
+        label.color = textColour;
         label.fontSize = fontSize;
         label.fontStyle = fontStyle;
         label.alignment = alignment;
