@@ -23,7 +23,6 @@ public class F_PlayerHeldWeapon : MonoBehaviour
 
     [Header("Privates")]
     private F_GUI_Inventory_Slot selectedWeaponSlot;
-    private bool hasExplicitWeaponSelection;
     private bool isBurstFiring;
     private F_Item_Weapon heldWeaponItemTracked;
 
@@ -35,11 +34,6 @@ public class F_PlayerHeldWeapon : MonoBehaviour
             if (isBurstFiring)
             {
                 return false;
-            }
-
-            if (!hasExplicitWeaponSelection)
-            {
-                return heldWeaponCurrentlySelected != null;
             }
 
             if (selectedWeaponSlot == null || selectedWeaponSlot.slotItemObj == null)
@@ -126,7 +120,6 @@ public class F_PlayerHeldWeapon : MonoBehaviour
     {
         F_Item_Weapon previousWeaponItem = GetSelectedWeaponItem();
         selectedWeaponSlot = weaponSlot;
-        hasExplicitWeaponSelection = true;
 
         F_Item_Weapon newWeaponItem = GetSelectedWeaponItem();
         if (newWeaponItem != null && newWeaponItem != previousWeaponItem)
@@ -260,11 +253,7 @@ public class F_PlayerHeldWeapon : MonoBehaviour
     /// <summary>Refreshes the held weapon visual from the selected inventory item's type.</summary>
     public void UpdateHeldWeaponSprite()
     {
-        F_playerHeldWeaponIndividual weaponToShow = heldWeaponGunBig;
-        if (hasExplicitWeaponSelection)
-        {
-            weaponToShow = GetHeldWeaponForSelectedItem();
-        }
+        F_playerHeldWeaponIndividual weaponToShow = GetHeldWeaponForSelectedItem();
 
         heldWeaponCurrentlySelected = weaponToShow;
         SetWeaponVisible(heldWeaponGunBig, weaponToShow == heldWeaponGunBig);

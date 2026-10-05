@@ -18,6 +18,7 @@ public class F_Logic_Cursor : MonoBehaviour
     public TMP_Text  cursorText;
     public F_GUI_ItemTooltip itemTooltip;
     public F_GUI_ItemContextMenu itemContextMenu;
+    public F_GUI_Inventory_Slot cursorModifierPickupSlot;
 
     [Header("Art")]
     public Sprite cursorSpritePointer;

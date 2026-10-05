@@ -59,20 +59,43 @@ public class F_GUI_Inventory_Slot : MonoBehaviour, IPointerClickHandler, IPointe
             return;
         }
 
+        bool isRepeatSinglePickup = cursorObj.cursorModifierPickupSlot == this &&
+                                    cursorObj.controls != null && cursorObj.controls.IsControlModifierHeld();
+        if (isRepeatSinglePickup && cursorObj.cursorHeldItemObj != null &&
+            F_Utility_Helper_Inventory.TryTakeOneFromSlotToCursorStack(this, cursorObj))
+        {
+            return;
+        }
+
+        cursorObj.cursorModifierPickupSlot = null;
         if (cursorObj.cursorHeldItemObj != null)
         {
-            if (!F_Utility_Helper_Inventory.CheckIfItemTypeMatchesSlotType(this, cursorObj.cursorHeldItemObj))
+            F_Item heldItem = cursorObj.cursorHeldItemObj;
+            int placeCount = F_Utility_Helper_Inventory.GetModifierTransferCount(cursorObj.controls, heldItem.itemCount);
+            if (!F_Utility_Helper_Inventory.CheckIfItemTypeMatchesSlotType(this, heldItem))
             {
                 Debug.Log("The held item type does not fit in that slot!");
+            }
+            else if (placeCount < heldItem.itemCount)
+            {
+                F_Utility_Helper_Inventory.TryPlacePartialCursorStack(this, cursorObj, placeCount);
             }
             else if (!TryMergeHeldItemStack())
             {
                 (cursorObj.cursorHeldItemObj, slotItemObj) = (slotItemObj, cursorObj.cursorHeldItemObj);
             }
         }
-        else
+        else if (slotItemObj != null)
         {
-            (cursorObj.cursorHeldItemObj, slotItemObj) = (slotItemObj, cursorObj.cursorHeldItemObj);
+            int takeCount = F_Utility_Helper_Inventory.GetModifierTransferCount(cursorObj.controls, slotItemObj.itemCount);
+            if (takeCount >= slotItemObj.itemCount || !F_Utility_Helper_Inventory.TrySplitSlotStackToCursor(this, cursorObj, takeCount))
+            {
+                (cursorObj.cursorHeldItemObj, slotItemObj) = (slotItemObj, cursorObj.cursorHeldItemObj);
+            }
+            else if (cursorObj.controls != null && cursorObj.controls.IsControlModifierHeld())
+            {
+                cursorObj.cursorModifierPickupSlot = this;
+            }
         }
     }
 

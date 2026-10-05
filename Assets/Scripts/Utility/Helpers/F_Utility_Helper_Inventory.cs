@@ -3,6 +3,10 @@ using UnityEngine;
 
 public static class F_Utility_Helper_Inventory
 {
+    [Header("Constants Private")]
+    private const int cfgInventorySingleTransferCount = 1;
+    private const int cfgInventoryHalfStackDivisor = 2;
+
     /// <summary>Checks whether an item is compatible with an inventory slot.</summary>
     /// <param name="slotToCheck">The inventory slot to validate.</param>
     /// <param name="itemToCheck">The item being placed.</param>
@@ -369,6 +373,126 @@ public static class F_Utility_Helper_Inventory
         int transferredCount = AddToStack(destinationStack, sourceItem.itemCount);
         sourceItem.itemCount -= transferredCount;
         return transferredCount;
+    }
+
+    /// <summary>Works out how many items a click should move from a stack based on the held modifier keys.</summary>
+    /// <param name="controls">The shared controls used to read the modifier keys.</param>
+    /// <param name="stackCount">The number of items in the stack being clicked or held.</param>
+    /// <returns>1 with the control modifier, half rounded up with the shift modifier, otherwise the whole stack.</returns>
+    public static int GetModifierTransferCount(F_Logic_Controls controls, int stackCount)
+    {
+        if (controls == null)
+        {
+            return stackCount;
+        }
+
+        if (controls.IsControlModifierHeld())
+        {
+            return Mathf.Min(stackCount, cfgInventorySingleTransferCount);
+        }
+
+        if (controls.IsShiftModifierHeld())
+        {
+            return (stackCount + cfgInventoryHalfStackDivisor - 1) / cfgInventoryHalfStackDivisor;
+        }
+
+        return stackCount;
+    }
+
+    /// <summary>Splits part of a slot's stack into a new item instance held by the cursor.</summary>
+    /// <param name="sourceSlot">The slot whose stack is reduced.</param>
+    /// <param name="cursor">The empty cursor that receives the split stack.</param>
+    /// <param name="splitCount">How many items to take; must be lower than the slot's stack count.</param>
+    /// <returns>True when the split stack is now held by the cursor.</returns>
+    public static bool TrySplitSlotStackToCursor(F_GUI_Inventory_Slot sourceSlot, F_Logic_Cursor cursor, int splitCount)
+    {
+        F_Item sourceItem = sourceSlot != null ? sourceSlot.slotItemObj : null;
+        F_PlayerInventory playerInventory = GetCursorInventory(cursor);
+        if (sourceItem == null || playerInventory == null || cursor.cursorHeldItemObj != null ||
+            splitCount <= 0 || splitCount >= sourceItem.itemCount)
+        {
+            return false;
+        }
+
+        F_Item splitItem = CreateItemInstance(sourceItem, playerInventory, splitCount);
+        if (splitItem == null)
+        {
+            return false;
+        }
+
+        sourceItem.itemCount -= splitCount;
+        splitItem.SetInventoryStoredState(true);
+        cursor.cursorHeldItemObj = splitItem;
+        return true;
+    }
+
+    /// <summary>Places part of the cursor-held stack into an empty or stack-compatible slot.</summary>
+    /// <param name="targetSlot">The slot that receives the items.</param>
+    /// <param name="cursor">The cursor holding the source stack.</param>
+    /// <param name="placeCount">How many items to place; must be lower than the held stack count.</param>
+    /// <returns>True when at least one item was placed.</returns>
+    public static bool TryPlacePartialCursorStack(F_GUI_Inventory_Slot targetSlot, F_Logic_Cursor cursor, int placeCount)
+    {
+        F_Item heldItem = cursor != null ? cursor.cursorHeldItemObj : null;
+        F_PlayerInventory playerInventory = GetCursorInventory(cursor);
+        if (heldItem == null || targetSlot == null || playerInventory == null ||
+            placeCount <= 0 || placeCount >= heldItem.itemCount ||
+            !CheckIfItemTypeMatchesSlotType(targetSlot, heldItem))
+        {
+            return false;
+        }
+
+        if (targetSlot.slotItemObj == null)
+        {
+            F_Item placedItem = CreateItemInstance(heldItem, playerInventory, placeCount);
+            if (placedItem == null)
+            {
+                return false;
+            }
+
+            heldItem.itemCount -= placeCount;
+            placedItem.SetInventoryStoredState(true);
+            targetSlot.slotItemObj = placedItem;
+            return true;
+        }
+
+        if (!AreStackCompatible(heldItem, targetSlot.slotItemObj))
+        {
+            return false;
+        }
+
+        int transferredCount = AddToStack(targetSlot.slotItemObj, placeCount);
+        heldItem.itemCount -= transferredCount;
+        return transferredCount > 0;
+    }
+
+    /// <summary>Moves one item from a slot's stack onto the compatible stack held by the cursor.</summary>
+    /// <param name="sourceSlot">The slot the item is taken from; emptied when its last item moves.</param>
+    /// <param name="cursor">The cursor holding the stack that grows.</param>
+    /// <returns>True when one item was added to the held stack.</returns>
+    public static bool TryTakeOneFromSlotToCursorStack(F_GUI_Inventory_Slot sourceSlot, F_Logic_Cursor cursor)
+    {
+        F_Item sourceItem = sourceSlot != null ? sourceSlot.slotItemObj : null;
+        F_Item heldItem = cursor != null ? cursor.cursorHeldItemObj : null;
+        if (sourceItem == null || heldItem == null || !AreStackCompatible(heldItem, sourceItem) ||
+            AddToStack(heldItem, cfgInventorySingleTransferCount) <= 0)
+        {
+            return false;
+        }
+
+        sourceItem.itemCount -= cfgInventorySingleTransferCount;
+        if (sourceItem.itemCount <= 0)
+        {
+            sourceSlot.slotItemObj = null;
+            RemoveItemFromInventory(sourceItem, GetCursorInventory(cursor));
+        }
+
+        return true;
+    }
+
+    private static F_PlayerInventory GetCursorInventory(F_Logic_Cursor cursor)
+    {
+        return cursor != null && cursor.playerController != null ? cursor.playerController.playerInventory : null;
     }
 
     private static F_Item CreateItemInstance(

@@ -49,7 +49,12 @@ public class F_PlayerController : MonoBehaviour
         moveDirection = controls.GetMovementInput();
         mousePosition = playerCamera.ScreenToWorldPoint(controls.GetMouseScreenPosition());
 
-        if (controls.IsSprintPressed())
+        if (characterScreenManager.isMenuOpen && playerStats.isSprinting)
+        {
+            playerStats.SprintEnd();
+        }
+
+        if (controls.IsSprintPressed() && !characterScreenManager.isMenuOpen)
         {
             playerStats.SprintStart();
         }
