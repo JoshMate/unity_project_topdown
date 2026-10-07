@@ -21,7 +21,7 @@ public class F_Item : MonoBehaviour
 {
     [Header("Constants Private")]
     private const string defaultItemSpriteAssetPath = "Assets/Art/Logic/SP_Sprite_Default.png";
-    private const string defaultPickupSoundAssetPath = "Assets/Sound/Interface/SD_Interface_JUSP_Dip.ogg";
+    private const string defaultPickupSoundAssetPath = "Assets/Sound/Interface/SD_Interface_PickupItem.ogg";
     private const string defaultDropSoundAssetPath = "Assets/Sound/Interface/SD_Interface_JUSP_Slide.ogg";
 
     [Header("Object Refs")]

@@ -56,7 +56,7 @@ MonoBehaviour:
   itemCount: 1
   itemCountMax: 20
   itemSprite: {fileID: -8533178459657930156, guid: 1cfe14ff61380014e98cb61515725d62, type: 3}
-  itemSoundPickup: {fileID: 8300000, guid: cacc5bc9e8fdaa1409aa6ff6823ce9c9, type: 3}
+  itemSoundPickup: {fileID: 8300000, guid: 8e446704c52ec114c94c2e5486ef4926, type: 3}
   itemSoundDrop: {fileID: 8300000, guid: 52daba66c8f82e94494016eb6c114a6f, type: 3}
 --- !u!212 &3257486541222685028
 SpriteRenderer:

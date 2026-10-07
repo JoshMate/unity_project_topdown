@@ -172,7 +172,7 @@ MonoBehaviour:
   itemCount: 1
   itemCountMax: 1
   itemSprite: {fileID: -8933475670893701097, guid: 9b319aa062e8a8c46a3dcb373ae5e8ce, type: 3}
-  itemSoundPickup: {fileID: 8300000, guid: cacc5bc9e8fdaa1409aa6ff6823ce9c9, type: 3}
+  itemSoundPickup: {fileID: 8300000, guid: 8e446704c52ec114c94c2e5486ef4926, type: 3}
   itemSoundDrop: {fileID: 8300000, guid: 52daba66c8f82e94494016eb6c114a6f, type: 3}
   weaponProjectileSprite: {fileID: 21300000, guid: 803d441fac3a9174e87b8c8f7b1883eb, type: 3}
   weaponFireSound: {fileID: 8300000, guid: 03195e22d4e600c46940400cdede9da4, type: 3}

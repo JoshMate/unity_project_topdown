@@ -30,7 +30,15 @@ public class F_Logic_Cursor : MonoBehaviour
     [Header("Stats")]
     private float cursorPlaceMaxDistance = 2.5f;
 
+    [Header("Constants Private")]
+    private const float cfgCursorHeldCountScale = 1f;
+    private const float cfgCursorHeldCountFontSize = 2f;
+
     [Header("Privates")]
+    private readonly Vector2 cursorHeldItemPadding = new Vector2(0.02f, -0.02f);
+    private readonly Vector2 cursorHeldCountPadding = new Vector2(-0.02f, 0.02f);
+    private readonly Vector2 cursorHeldCountBoxSize = new Vector2(1f, 1f);
+    private TextMeshPro cursorHeldCountText;
     private Vector2 mousePosition;
     private GameObject cursorHoveredObject;
 
@@ -293,6 +301,95 @@ public class F_Logic_Cursor : MonoBehaviour
         if (cursorHeldItemObj == null)
         {
             cursorRendererItem.sprite = null;
+        }
+
+        PositionHeldItemVisual();
+        UpdateHeldItemCountText();
+    }
+
+    // Places the held item icon just below and right of the pointer so the two never overlap
+    private void PositionHeldItemVisual()
+    {
+        Sprite itemSprite = cursorRendererItem.sprite;
+        if (itemSprite == null || cursorRendererPointer.sprite == null)
+        {
+            return;
+        }
+
+        Bounds pointerBounds = cursorRendererPointer.bounds;
+        Vector2 iconTopLeft = new Vector2(pointerBounds.max.x, pointerBounds.min.y) + cursorHeldItemPadding;
+        Vector2 iconHalfSize = GetHeldIconHalfSize(itemSprite);
+        Vector2 iconCentre = new Vector2(iconTopLeft.x + iconHalfSize.x, iconTopLeft.y - iconHalfSize.y);
+        Vector2 iconCentreOffset = GetHeldIconCentreOffset(itemSprite);
+        cursorTransformItem.position = new Vector3(
+            iconCentre.x - iconCentreOffset.x,
+            iconCentre.y - iconCentreOffset.y,
+            cursorTransformItem.position.z);
+    }
+
+    private Vector2 GetHeldIconHalfSize(Sprite itemSprite)
+    {
+        Vector3 iconScale = cursorTransformItem.lossyScale;
+        return new Vector2(itemSprite.bounds.extents.x * Mathf.Abs(iconScale.x), itemSprite.bounds.extents.y * Mathf.Abs(iconScale.y));
+    }
+
+    private Vector2 GetHeldIconCentreOffset(Sprite itemSprite)
+    {
+        Vector3 iconScale = cursorTransformItem.lossyScale;
+        return new Vector2(itemSprite.bounds.center.x * iconScale.x, itemSprite.bounds.center.y * iconScale.y);
+    }
+
+    // Builds the small stack counter as a child of the held item visual so it follows the cursor
+    private void CreateHeldItemCountText()
+    {
+        GameObject countObject = new GameObject("Cursor_HeldItemCount");
+        countObject.transform.SetParent(cursorTransformItem, false);
+        countObject.transform.localScale = Vector3.one * cfgCursorHeldCountScale;
+
+        cursorHeldCountText = countObject.AddComponent<TextMeshPro>();
+        cursorHeldCountText.alignment = TextAlignmentOptions.BottomRight;
+        cursorHeldCountText.fontSize = cfgCursorHeldCountFontSize;
+        cursorHeldCountText.color = F_Utility_Config_Colours.cfgColourGuiText;
+        cursorHeldCountText.raycastTarget = false;
+        cursorHeldCountText.rectTransform.pivot = new Vector2(1f, 0f);
+        cursorHeldCountText.rectTransform.sizeDelta = cursorHeldCountBoxSize;
+        if (cursorText != null)
+        {
+            cursorHeldCountText.font = cursorText.font;
+            cursorHeldCountText.fontSharedMaterial = cursorText.fontSharedMaterial;
+        }
+
+        MeshRenderer countRenderer = cursorHeldCountText.GetComponent<MeshRenderer>();
+        countRenderer.sortingLayerID = cursorRendererItem.sortingLayerID;
+        countRenderer.sortingOrder = cursorRendererItem.sortingOrder + 1;
+        cursorHeldCountText.text = string.Empty;
+    }
+
+    // Shows the held stack count inside the icon's bottom-right corner, hiding it for empty or single-item cursors
+    private void UpdateHeldItemCountText()
+    {
+        if (cursorHeldCountText == null)
+        {
+            CreateHeldItemCountText();
+        }
+
+        string countLabel = cursorHeldItemObj != null && cursorHeldItemObj.itemCount > 1
+            ? cursorHeldItemObj.itemCount.ToString()
+            : string.Empty;
+        if (cursorHeldCountText.text != countLabel)
+        {
+            cursorHeldCountText.text = countLabel;
+        }
+
+        Sprite itemSprite = cursorRendererItem.sprite;
+        if (itemSprite != null)
+        {
+            Vector2 iconHalfSize = GetHeldIconHalfSize(itemSprite);
+            Vector2 iconCentre = (Vector2)cursorTransformItem.position + GetHeldIconCentreOffset(itemSprite);
+            cursorHeldCountText.transform.position = new Vector3(
+                iconCentre.x + iconHalfSize.x + cursorHeldCountPadding.x,
+                iconCentre.y - iconHalfSize.y + cursorHeldCountPadding.y,
+                cursorTransformItem.position.z);
         }
     }
     
