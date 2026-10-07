@@ -6,6 +6,7 @@ public enum enumDamageType
     Fire,
     Explosive,
     Toxic,
+    Heal,
     Typeless
 }
 

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using UnityEngine;
 
-public class F_PlayerStats : MonoBehaviour
+public class F_PlayerStats : F_Ent
 {
     [Header("Constants Private")]
     private const int defaultInventorySlotsAvailable = 9;
@@ -19,11 +19,6 @@ public class F_PlayerStats : MonoBehaviour
     public F_GUI_HUD_Manager hudManager;
     public F_GUI_CharacterScreen_Manager characterScreenManager;
 
-    [Header("Health Stats")]
-    public float health;
-    public float healthMax;
-    
-
     [Header("Stamina Stats")]
     public float stamina;
     public float staminaMax; 
@@ -37,8 +32,6 @@ public class F_PlayerStats : MonoBehaviour
     public float thirst; 
     public float thirstMax; 
     public float thirstDrainRateDelay;
-    public float toxic;
-    public float toxicMax;
 
 
     [Header("Movement Stats")]
@@ -66,8 +59,9 @@ public class F_PlayerStats : MonoBehaviour
     private float lastThirstDrainTime = 0f;
 
 
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         playerInventory = GetComponent<F_PlayerInventory>();
         RefreshInventorySlotStats();
         if (weightMax <= 0f)
@@ -119,13 +113,23 @@ public class F_PlayerStats : MonoBehaviour
     }
 
     // Start is called before the first frame update
-    void Start()
+    protected override void Start()
     {
-        
+        base.Start();
     }
 
-    void Update()
+    // The player persists after death to avoid breaking systems that reference it.
+    protected override bool DestroyOnDeath => false;
+
+    // Logs player death; death UI is out of scope for now.
+    protected override void OnDeath()
     {
+        Debug.Log("Player died.");
+    }
+
+    protected override void Update()
+    {
+        base.Update();
         UpdateInventoryWeight();
         UpdateWeightClass();
         HUDUpdate();
@@ -187,10 +191,10 @@ public class F_PlayerStats : MonoBehaviour
     // Update HUD
     private void HUDUpdate()
     {
-        hudManager.healthBar.barText.text = Math.Ceiling(health).ToString();
-        hudManager.healthBar.barTextMax.text = Math.Ceiling(healthMax).ToString();  
-        hudManager.healthBar.barSlider.value = health;
-        hudManager.healthBar.barSlider.maxValue = healthMax;
+        hudManager.healthBar.barText.text = Math.Ceiling(entStatHealth).ToString();
+        hudManager.healthBar.barTextMax.text = Math.Ceiling(entStatHealthMax).ToString();  
+        hudManager.healthBar.barSlider.value = entStatHealth;
+        hudManager.healthBar.barSlider.maxValue = entStatHealthMax;
 
         hudManager.staminaBar.barText.text = Math.Ceiling(stamina).ToString();
         hudManager.staminaBar.barTextMax.text = Math.Ceiling(staminaMax).ToString();
@@ -207,10 +211,10 @@ public class F_PlayerStats : MonoBehaviour
         hudManager.thirstBar.barSlider.value = thirst;
         hudManager.thirstBar.barSlider.maxValue = thirstMax;
 
-        hudManager.toxicBar.barText.text = Math.Ceiling(toxic).ToString();
-        hudManager.toxicBar.barTextMax.text = Math.Ceiling(toxicMax).ToString();
-        hudManager.toxicBar.barSlider.value = toxic;
-        hudManager.toxicBar.barSlider.maxValue = toxicMax;
+        hudManager.toxicBar.barText.text = Math.Ceiling(entStatToxic).ToString();
+        hudManager.toxicBar.barTextMax.text = Math.Ceiling(entStatToxicMax).ToString();
+        hudManager.toxicBar.barSlider.value = entStatToxic;
+        hudManager.toxicBar.barSlider.maxValue = entStatToxicMax;
 
         hudManager.weightBar.barText.text = weight.ToString("0.##", CultureInfo.InvariantCulture);
         hudManager.weightBar.barTextMax.text = weightMax.ToString("0.##", CultureInfo.InvariantCulture);
@@ -249,7 +253,7 @@ public class F_PlayerStats : MonoBehaviour
         // Hunger
         // Hunger Drains faster if Health is low
         float hungerDrainRateDelayFinal = hungerDrainRateDelay;
-        if (health <= (healthMax / 2))
+        if (entStatHealth <= (entStatHealthMax / 2))
         {
             hungerDrainRateDelayFinal = hungerDrainRateDelay/2;
         }

@@ -55,6 +55,17 @@ public static class F_Utility_Config_Colours
     public static readonly Color32 cfgDurabilityBarLost = new Color32(0, 0, 0, opaqueAlpha);
     public static readonly Color32 cfgDurabilityBarBackground = new Color32(41, 41, 41, opaqueAlpha);
 
+    // Constants Public: Damage numbers
+    public static readonly Color32 cfgColourDamageText = cfgColourWhite;
+    public static readonly Color32 cfgColourDamageHealText = new Color32(51, 204, 51, opaqueAlpha);
+
+    // Constants Public: Ent blood / material hit colours
+    public static readonly Color32 cfgColourBloodMetal = new Color32(255, 200, 80, opaqueAlpha);
+    public static readonly Color32 cfgColourBloodRock = new Color32(160, 160, 150, opaqueAlpha);
+    public static readonly Color32 cfgColourBloodWood = new Color32(139, 100, 60, opaqueAlpha);
+    public static readonly Color32 cfgColourBloodMeat = new Color32(159, 0, 0, opaqueAlpha);
+    public static readonly Color32 cfgColourBloodWater = new Color32(60, 140, 220, opaqueAlpha);
+
     // Constants Public: Loading screen
     public static readonly Color32 cfgColourLoadingBarBackground = new Color32(41, 46, 51, opaqueAlpha);
     public static readonly Color32 cfgColourLoadingBarFill = new Color32(217, 140, 38, opaqueAlpha);

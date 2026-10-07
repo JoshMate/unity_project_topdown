@@ -181,9 +181,9 @@ MonoBehaviour:
   weaponDeploySound: {fileID: 8300000, guid: c9c17effdfdaef84395aee8fefe75926, type: 3}
   weaponBreakSound: {fileID: 8300000, guid: 263289bb386566e42b36bb7f691e6e79, type: 3}
   weaponDryFireSound: {fileID: 8300000, guid: d0e21b6671c1c6a40ae0ac0f08847ce2, type: 3}
-  weaponDamage: 8
+  weaponDamage: 1
   weaponDamageType: 1
-  weaponFireRateDelay: 0.08
+  weaponFireRateDelay: 0.04
   weaponRange: 8
   weaponRangeDamageFallOffMin: 0.3
   weaponProjectileSpeed: 12
@@ -202,13 +202,13 @@ MonoBehaviour:
   weaponIsReverseRecoilImpulse: 0
   weaponUsesAmmo: 1
   weaponAmmoType: {fileID: 4020092144798230732, guid: 7e226b366eb06a347897a1f7ee111c2d, type: 3}
-  weaponAmmoCapacity: 18
+  weaponAmmoCapacity: 120
   weaponAmmoTakenPerShot: 1
   weaponReloadDelay: 1
   weaponShotLoudness: 10
   weaponIsReloadOneBulletPerReload: 0
   weaponDeployDelay: 0.5
-  weaponDurabilityCurrent: 1000
-  weaponDurabilityMax: 1000
+  weaponDurabilityCurrent: 10000
+  weaponDurabilityMax: 10000
   weaponDurabilityLost: 0
   weaponDurabilityLostPerShot: 10

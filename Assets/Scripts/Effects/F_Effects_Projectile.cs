@@ -21,6 +21,7 @@ public class F_Effects_Projectile : MonoBehaviour
     [Header("Privates")]
     // Cache motion before collision response can reduce the Rigidbody velocity to zero.
     private Vector2 lastTravelDirection;
+    private Vector2 lastVelocity;
     private Vector3 spawnPositionWorld;
     private float projectileDamage;
     private enumDamageType projectileDamageType = enumDamageType.Typeless;
@@ -28,8 +29,9 @@ public class F_Effects_Projectile : MonoBehaviour
     private float projectileRangeDamageFalloffMinPercent;
     private bool projectileUsesReverseRangeFalloff;
     private bool hasCombatData;
+    private GameObject projectileSource;
 
-    // Damage computed for the most recent impact, available for a future health/damage-receiver system to consume.
+    // Damage computed for the most recent impact, already applied to any hit F_Ent.
     private float lastImpactDamage;
     private enumDamageType lastImpactDamageType;
 
@@ -45,13 +47,16 @@ public class F_Effects_Projectile : MonoBehaviour
     /// <param name="range">Maximum travel distance; non-positive values are unlimited.</param>
     /// <param name="rangeDamageFalloffMinPercent">Damage multiplier at the end of range.</param>
     /// <param name="usesReverseRangeFalloff">Whether damage grows rather than falls across the range.</param>
+    /// <param name="source">The object that fired this projectile, used to attribute damage.</param>
     public void ConfigureCombatData(
         float damage,
         enumDamageType damageType,
         float range,
         float rangeDamageFalloffMinPercent,
-        bool usesReverseRangeFalloff)
+        bool usesReverseRangeFalloff,
+        GameObject source = null)
     {
+        projectileSource = source;
         projectileDamage = damage;
         projectileDamageType = damageType;
         projectileRange = range;
@@ -74,6 +79,7 @@ public class F_Effects_Projectile : MonoBehaviour
         Vector2 velocity = rb.linearVelocity;
         if (velocity.sqrMagnitude > directionEpsilon)
         {
+            lastVelocity = velocity;
             lastTravelDirection = velocity.normalized;
             float aimAngle = Mathf.Atan2(velocity.y, velocity.x) * Mathf.Rad2Deg;
             rb.rotation = aimAngle;
@@ -87,9 +93,24 @@ public class F_Effects_Projectile : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D other)
     {
+        F_Ent hitEntity = other.collider.GetComponentInParent<F_Ent>();
+
+        // Pass-through ents: ignore the collider and restore the velocity the physics response may have altered.
+        if (hitEntity != null && hitEntity.entFeatureCanShootThrough)
+        {
+            Physics2D.IgnoreCollision(other.otherCollider, other.collider);
+            rb.linearVelocity = lastVelocity;
+            return;
+        }
+
         float distanceTraveled = Vector3.Distance(transform.position, spawnPositionWorld);
         lastImpactDamage = hasCombatData ? GetDamageAtDistance(distanceTraveled) : 0f;
         lastImpactDamageType = hasCombatData ? projectileDamageType : enumDamageType.Typeless;
+
+        if (hitEntity != null)
+        {
+            hitEntity.TakeDamage(lastImpactDamage, lastImpactDamageType, projectileSource);
+        }
 
         // Prefer cached incoming motion; relative velocity is a fallback if the bullet has not moved yet.
         Vector2 incomingDirection = lastTravelDirection;
@@ -124,7 +145,7 @@ public class F_Effects_Projectile : MonoBehaviour
             }
         }
 
-        CreateProjectileImpact(other, impactPosition, outwardDirection);
+        CreateProjectileImpact(hitEntity, impactPosition, outwardDirection);
         Destroy(gameObject);
     }
 
@@ -139,10 +160,10 @@ public class F_Effects_Projectile : MonoBehaviour
         return projectileDamage * damageMultiplier;
     }
 
-    void CreateProjectileImpact(Collision2D other, Vector2 impactPosition, Vector2 outwardDirection)
+    void CreateProjectileImpact(F_Ent hitEntity, Vector2 impactPosition, Vector2 outwardDirection)
     {
-        // Only entities have the blood-color data used by this impact prefab.
-        if (projectileImpactObject == null || !other.gameObject.TryGetComponent<F_Ent>(out F_Ent hitEntity))
+        // Only entities have the material data used for the impact colour.
+        if (projectileImpactObject == null || hitEntity == null)
         {
             return;
         }
@@ -158,7 +179,7 @@ public class F_Effects_Projectile : MonoBehaviour
 
         if (impactObject.TryGetComponent<F_Effects_Projectile_Impact>(out F_Effects_Projectile_Impact impactEffect))
         {
-            impactEffect.bloodColour = hitEntity.bloodColour;
+            impactEffect.bloodColour = hitEntity.entMaterialBloodColour;
         }
     }
 }

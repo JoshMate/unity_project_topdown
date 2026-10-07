@@ -13557,45 +13557,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   entMaterialSettings:
   - materialType: 0
-    materialHitSounds:
-    - {fileID: 8300000, guid: fbfcac7766a9c52449dec4f8e068ec63, type: 3}
-    - {fileID: 8300000, guid: fbfcac7766a9c52449dec4f8e068ec63, type: 3}
-    - {fileID: 8300000, guid: 2d298609c11951449b1701d4a94f8b34, type: 3}
-    - {fileID: 8300000, guid: 80f2fc59e524fbf48aa0d52a8ccbd6bc, type: 3}
-    - {fileID: 8300000, guid: 6ebf3173612c5164ba421d6a29789ef1, type: 3}
-    materialDeathSounds:
-    - {fileID: 8300000, guid: 93927d8bec8cf3742948185ebd0a31f8, type: 3}
-    - {fileID: 8300000, guid: 1a81b57889d5b7642b9350dd30f41572, type: 3}
+    materialHitSounds: []
+    materialDeathSounds: []
     materialBloodColour: {r: 1, g: 0.78431374, b: 0.3137255, a: 1}
   - materialType: 1
     materialHitSounds: []
     materialDeathSounds: []
     materialBloodColour: {r: 0.627451, g: 0.627451, b: 0.5882353, a: 1}
   - materialType: 2
-    materialHitSounds:
-    - {fileID: 8300000, guid: 1d8e19dadb2380b4ab8fcf0256e0cb0f, type: 3}
-    - {fileID: 8300000, guid: 44115fb59eda93e4db37a79279c229ce, type: 3}
-    - {fileID: 8300000, guid: 02593da4ca231f94caba2369eb2ebcd0, type: 3}
-    materialDeathSounds:
-    - {fileID: 8300000, guid: 09559ca54b83a4e47a064ae6177de2a8, type: 3}
-    - {fileID: 8300000, guid: ae60d4f56fe228549a637b3b9b177496, type: 3}
-    - {fileID: 8300000, guid: d94f1b20857dc24499da18e876f4f3ff, type: 3}
-    - {fileID: 8300000, guid: f04ffb6f8b9c14447b3b871f5a34862a, type: 3}
-    - {fileID: 8300000, guid: 21fbc9eec6fe4df43a19c3b63bd20a96, type: 3}
-    materialBloodColour: {r: 0.54509807, g: 0.39215687, b: 0.23529412, a: 1}
-  - materialType: 3
     materialHitSounds: []
     materialDeathSounds: []
-    materialBloodColour: {r: 0.66967785, g: 0.9084027, b: 0.9528302, a: 1}
+    materialBloodColour: {r: 0.54509807, g: 0.39215687, b: 0.23529412, a: 1}
   - materialType: 3
     materialHitSounds: []
     materialDeathSounds: []
     materialBloodColour: {r: 0.62352943, g: 0, b: 0, a: 1}
   - materialType: 4
-    materialHitSounds: []
-    materialDeathSounds: []
-    materialBloodColour: {r: 0.23529412, g: 0.54901963, b: 0.8627451, a: 1}
-  - materialType: 5
     materialHitSounds: []
     materialDeathSounds: []
     materialBloodColour: {r: 0.23529412, g: 0.54901963, b: 0.8627451, a: 1}
@@ -16335,65 +16312,6 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
---- !u!1 &1923525968
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1923525969}
-  - component: {fileID: 1923525970}
-  m_Layer: 0
-  m_Name: Logic_DamageNumbers
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1923525969
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1923525968}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1999702261}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1923525970
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1923525968}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2f092ef89954dd74a8311df6cf332c64, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::F_Logic_DamageNumbers
-  damageNumberIcons:
-  - damageType: 0
-    icon: {fileID: -5694363763452880999, guid: 99926551799192246853b458ff7bf09c, type: 3}
-  - damageType: 1
-    icon: {fileID: -2996650849444741871, guid: c6923bae3a39d744bb12763d63ad5add, type: 3}
-  - damageType: 2
-    icon: {fileID: -4899060148447775392, guid: aabdd01092ed122408605c9a7840e3f1, type: 3}
-  - damageType: 3
-    icon: {fileID: -6426707371659750511, guid: 30402b6530fbbc340bb3f4a97b37f1fd, type: 3}
-  - damageType: 4
-    icon: {fileID: -5541941425025284738, guid: ed3b18223e44b0943bc70867ea4f8735, type: 3}
-  - damageType: 5
-    icon: {fileID: 3951844034123644615, guid: fafa0201e8a3c974dbbc6da141253c57, type: 3}
-  - damageType: 6
-    icon: {fileID: 6937099774268759820, guid: f2dd8d6937e1fc649bc2ab91acd7d57a, type: 3}
 --- !u!1 &1923641606
 GameObject:
   m_ObjectHideFlags: 0
@@ -16770,7 +16688,6 @@ Transform:
   - {fileID: 165690130}
   - {fileID: 12211569}
   - {fileID: 1887670601}
-  - {fileID: 1923525969}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1999702262

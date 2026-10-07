@@ -226,7 +226,8 @@ public class F_PlayerHeldWeapon : MonoBehaviour
                     weaponItem.weaponDamageType,
                     weaponItem.weaponRange,
                     weaponItem.weaponRangeDamageFallOffMin,
-                    weaponItem.weaponIsRangeReverseFallOff);
+                    weaponItem.weaponIsRangeReverseFallOff,
+                    gameObject);
             }
         }
     }
