@@ -72,7 +72,7 @@ public static class F_Utility_Config_Damage
     // ---------------------------------------------------------------------------------------------
 
     // Extra space kept between numbers
-    public const float cfgDamageNumberOverlapPadding = 0.01f;
+    public const float cfgDamageNumberOverlapPadding = 0.00f;
     // Side-by-side positions tried per row (centre, then alternating right and left)
     public const int cfgDamageNumberOverlapSlotsPerRow = 5;
     // Rows tried upwards when a row has no free position
@@ -98,6 +98,9 @@ public static class F_Utility_Config_Damage
     public static readonly Color32 cfgHealthBarColourMedium = F_Utility_Config_Colours.cfgDurabilityBarYellow;
     public static readonly Color32 cfgHealthBarColourLow = F_Utility_Config_Colours.cfgDurabilityBarOrange;
     public static readonly Color32 cfgHealthBarColourCritical = F_Utility_Config_Colours.cfgDurabilityBarBad;
+    // Black background drawn behind the bar at full width, one sorting step below the fill
+    public static readonly Color32 cfgHealthBarColourBackground = F_Utility_Config_Colours.cfgDurabilityBarLost;
+    public const int cfgHealthBarBackgroundSortingOrderOffset = 89;
     // Health fraction at or above which each colour applies (below Low uses Critical)
     public const float cfgHealthBarThresholdHigh = 0.75f;
     public const float cfgHealthBarThresholdMedium = 0.5f;

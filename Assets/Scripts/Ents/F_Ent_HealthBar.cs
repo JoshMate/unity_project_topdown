@@ -1,7 +1,7 @@
 using UnityEngine;
 
 /// <summary>
-/// Small backgroundless health bar drawn just above an ent while it is damaged.
+/// Small health bar with a black background drawn just above an ent while it is damaged.
 /// Added automatically by F_Ent; all values come from F_Utility_Config_Damage.
 /// </summary>
 [RequireComponent(typeof(F_Ent))]
@@ -9,6 +9,7 @@ public class F_Ent_HealthBar : MonoBehaviour
 {
     [Header("Constants Private")]
     private const string healthBarObjectName = "HealthBar_Fill";
+    private const string healthBarBackgroundObjectName = "HealthBar_Background";
     private const float healthBarFullFraction = 1f;
     private const int whiteTexturePixelSize = 1;
     private const float whiteSpritePixelsPerUnit = 1f;
@@ -18,6 +19,8 @@ public class F_Ent_HealthBar : MonoBehaviour
     private F_Ent healthBarEnt;
     private Transform healthBarTransform;
     private SpriteRenderer healthBarRenderer;
+    private Transform healthBarBackgroundTransform;
+    private SpriteRenderer healthBarBackgroundRenderer;
     private static Sprite whiteSprite;
 
     private void Awake()
@@ -28,6 +31,8 @@ public class F_Ent_HealthBar : MonoBehaviour
 
     private void LateUpdate()
     {
+        EnsureBarExists();
+
         float fraction = healthBarEnt.entStatHealthMax > 0f
             ? Mathf.Clamp01(healthBarEnt.entStatHealth / healthBarEnt.entStatHealthMax)
             : 0f;
@@ -36,6 +41,7 @@ public class F_Ent_HealthBar : MonoBehaviour
         if (healthBarRenderer.enabled != visible)
         {
             healthBarRenderer.enabled = visible;
+            healthBarBackgroundRenderer.enabled = visible;
         }
 
         if (!visible)
@@ -58,6 +64,16 @@ public class F_Ent_HealthBar : MonoBehaviour
             F_Utility_Config_Damage.cfgHealthBarHeight,
             1f);
 
+        healthBarBackgroundTransform.rotation = Quaternion.identity;
+        healthBarBackgroundTransform.position = healthBarTransform.position;
+        healthBarBackgroundTransform.localScale = new Vector3(
+            barWidth / whiteSpritePixelsPerUnit,
+            F_Utility_Config_Damage.cfgHealthBarHeight,
+            1f);
+        healthBarBackgroundRenderer.color = F_Utility_Config_Damage.cfgHealthBarColourBackground;
+        healthBarBackgroundRenderer.sortingLayerID = sortingLayerId;
+        healthBarBackgroundRenderer.sortingOrder = sortingOrder + F_Utility_Config_Damage.cfgHealthBarBackgroundSortingOrderOffset;
+
         healthBarRenderer.color = GetBarColour(fraction);
         healthBarRenderer.sortingLayerID = sortingLayerId;
         healthBarRenderer.sortingOrder = sortingOrder + F_Utility_Config_Damage.cfgHealthBarSortingOrderOffset;
@@ -66,19 +82,46 @@ public class F_Ent_HealthBar : MonoBehaviour
     // Builds the fill sprite as an unparented object so the ent's rotation and scale never distort it
     private void CreateBar()
     {
-        GameObject barObject = new GameObject($"{healthBarObjectName}_{name}");
-        healthBarTransform = barObject.transform;
-        healthBarRenderer = barObject.AddComponent<SpriteRenderer>();
-        healthBarRenderer.sprite = GetWhiteSprite();
-        healthBarRenderer.enabled = false;
+        CreateBarPart(healthBarObjectName, out healthBarTransform, out healthBarRenderer);
+        CreateBarPart(healthBarBackgroundObjectName, out healthBarBackgroundTransform, out healthBarBackgroundRenderer);
     }
 
-    private void OnDestroy()
+    // Creates one disabled white sprite object for the bar
+    private void CreateBarPart(string partName, out Transform partTransform, out SpriteRenderer partRenderer)
     {
+        GameObject partObject = new GameObject($"{partName}_{name}");
+        partTransform = partObject.transform;
+        partRenderer = partObject.AddComponent<SpriteRenderer>();
+        partRenderer.sprite = GetWhiteSprite();
+        partRenderer.enabled = false;
+    }
+
+    // Bar objects are unparented, so a scene unload can destroy them while a persistent ent lives on
+    private void EnsureBarExists()
+    {
+        if (healthBarRenderer == null || healthBarBackgroundRenderer == null)
+        {
+            DestroyBar();
+            CreateBar();
+        }
+    }
+
+    private void DestroyBar()
+    {
+        if (healthBarBackgroundTransform != null)
+        {
+            Destroy(healthBarBackgroundTransform.gameObject);
+        }
+
         if (healthBarTransform != null)
         {
             Destroy(healthBarTransform.gameObject);
         }
+    }
+
+    private void OnDestroy()
+    {
+        DestroyBar();
     }
 
     // Left-pivoted white 1x1 sprite shared by every bar
