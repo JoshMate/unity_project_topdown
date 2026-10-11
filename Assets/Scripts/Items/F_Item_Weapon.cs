@@ -21,6 +21,8 @@ public class F_Item_Weapon : F_Item
     public AudioClip weaponReloadOneAtATimeSound;
     // Played once at the start of deploying the weapon
     public AudioClip weaponDeploySound;
+    // Played once when the weapon finishes deploying and becomes usable
+    public AudioClip weaponDeployEndSound;
     // Played directly when the weapon's durability reaches zero and it breaks
     public AudioClip weaponBreakSound;
     // Played directly when a fire attempt is blocked because the weapon is broken or out of ammo
@@ -111,6 +113,8 @@ public class F_Item_Weapon : F_Item
     [Header("Constants Private")]
     private const string defaultBreakSoundAssetPath = "Assets/Sound/Interface/SD_Interface_Weapon_Break.ogg";
     private const string defaultDryFireSoundAssetPath = "Assets/Sound/Interface/SD_Interface_Weapon_Click.ogg";
+    private const string defaultDeployStartSoundAssetPath = "Assets/Sound/Interface/SD_Interface_Deploy_Weapon_Start.wav";
+    private const string defaultDeployEndSoundAssetPath = "Assets/Sound/Interface/SD_Interface_Deploy_Weapon_End.wav";
     private const float minimumSpreadRecoveryDelay = 0.01f;
     private const float minimumFireDelay = 0f;
     private const float reloadMiddleFraction = 0.5f;
@@ -126,6 +130,8 @@ public class F_Item_Weapon : F_Item
     private float nextSpreadRecoveryTime;
     private float deployStartTime;
     private float deployEndTime;
+    // True from the start of a deploy until its end sound has been played
+    private bool isDeployEndSoundPending;
     private bool isReloading;
     // Held clock state: delays run on HeldTime so they only progress while this weapon is held
     private bool isHeld;
@@ -232,6 +238,19 @@ public class F_Item_Weapon : F_Item
         PlayReloadSound(weaponDeploySound);
 
         deployEndTime = HeldTime + Mathf.Max(minimumFireDelay, weaponDeployDelay);
+        isDeployEndSoundPending = true;
+    }
+
+    // Plays the deploy end sound once the weapon is held and its deploy delay has finished
+    private void PlayDeployEndSoundWhenFinished()
+    {
+        if (!isDeployEndSoundPending || !isHeld || IsDeploying)
+        {
+            return;
+        }
+
+        isDeployEndSoundPending = false;
+        PlayReloadSound(weaponDeployEndSound);
     }
 
     /// <summary>The weapon's current accuracy cone half-angle, in radians.</summary>
@@ -249,6 +268,7 @@ public class F_Item_Weapon : F_Item
     void Update()
     {
         RecoverAccuracySpread();
+        PlayDeployEndSoundWhenFinished();
     }
 
     /// <summary>Maximum durability currently available after permanent losses are removed.</summary>
@@ -322,6 +342,16 @@ public class F_Item_Weapon : F_Item
         if (weaponDryFireSound == null)
         {
             weaponDryFireSound = UnityEditor.AssetDatabase.LoadAssetAtPath<AudioClip>(defaultDryFireSoundAssetPath);
+        }
+
+        if (weaponDeploySound == null)
+        {
+            weaponDeploySound = UnityEditor.AssetDatabase.LoadAssetAtPath<AudioClip>(defaultDeployStartSoundAssetPath);
+        }
+
+        if (weaponDeployEndSound == null)
+        {
+            weaponDeployEndSound = UnityEditor.AssetDatabase.LoadAssetAtPath<AudioClip>(defaultDeployEndSoundAssetPath);
         }
 #endif
     }
