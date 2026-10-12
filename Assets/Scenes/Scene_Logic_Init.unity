@@ -3926,7 +3926,7 @@ MonoBehaviour:
   entFeatureCanShootThrough: 0
   entFeatureShatterOnDeath: 1
   entMaterialHitSounds: []
-  entMaterialDeathSounds: []
+  entMaterialDestroySounds: []
   entMaterialBloodColour: {r: 1, g: 1, b: 1, a: 1}
   hudManager: {fileID: 1030426464}
   characterScreenManager: {fileID: 1262635912}
@@ -13557,48 +13557,132 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   entMaterialSettings:
   - materialType: 0
+    materialHitSounds: []
+    materialDestroySounds: []
+    materialFootStepSounds: []
+    materialFillColour: {r: 0.43137255, g: 0.3137255, b: 0.19607843, a: 1}
+    materialOutlineColour: {r: 0.27450982, g: 0.19607843, b: 0.11764706, a: 1}
+    materialBloodColour: {r: 0.43137255, g: 0.3137255, b: 0.19607843, a: 1}
+    materialDecalColour: {r: 0.3137255, g: 0.22745098, b: 0.13725491, a: 1}
+  - materialType: 1
+    materialHitSounds: []
+    materialDestroySounds: []
+    materialFootStepSounds: []
+    materialFillColour: {r: 0.88235295, g: 0.78431374, b: 0.5294118, a: 1}
+    materialOutlineColour: {r: 0.6666667, g: 0.5686275, b: 0.3529412, a: 1}
+    materialBloodColour: {r: 0.9019608, g: 0.8039216, b: 0.54901963, a: 1}
+    materialDecalColour: {r: 0.78431374, g: 0.6862745, b: 0.4509804, a: 1}
+  - materialType: 2
+    materialHitSounds: []
+    materialDestroySounds: []
+    materialFootStepSounds: []
+    materialFillColour: {r: 0.9411765, g: 0.9607843, b: 1, a: 1}
+    materialOutlineColour: {r: 0.7058824, g: 0.7647059, b: 0.84313726, a: 1}
+    materialBloodColour: {r: 0.9411765, g: 0.9607843, b: 1, a: 1}
+    materialDecalColour: {r: 0.84313726, g: 0.88235295, b: 0.9411765, a: 1}
+  - materialType: 3
+    materialHitSounds: []
+    materialDestroySounds: []
+    materialFootStepSounds: []
+    materialFillColour: {r: 0.3529412, g: 0.627451, b: 0.23529412, a: 1}
+    materialOutlineColour: {r: 0.19607843, g: 0.39215687, b: 0.13725491, a: 1}
+    materialBloodColour: {r: 0.3529412, g: 0.627451, b: 0.23529412, a: 1}
+    materialDecalColour: {r: 0.25490198, g: 0.47058824, b: 0.1764706, a: 1}
+  - materialType: 4
+    materialHitSounds:
+    - {fileID: 8300000, guid: 1d8e19dadb2380b4ab8fcf0256e0cb0f, type: 3}
+    - {fileID: 8300000, guid: 44115fb59eda93e4db37a79279c229ce, type: 3}
+    - {fileID: 8300000, guid: 02593da4ca231f94caba2369eb2ebcd0, type: 3}
+    materialDestroySounds:
+    - {fileID: 8300000, guid: 09559ca54b83a4e47a064ae6177de2a8, type: 3}
+    - {fileID: 8300000, guid: ae60d4f56fe228549a637b3b9b177496, type: 3}
+    - {fileID: 8300000, guid: d94f1b20857dc24499da18e876f4f3ff, type: 3}
+    - {fileID: 8300000, guid: f04ffb6f8b9c14447b3b871f5a34862a, type: 3}
+    - {fileID: 8300000, guid: 21fbc9eec6fe4df43a19c3b63bd20a96, type: 3}
+    materialFootStepSounds: []
+    materialFillColour: {r: 0.54509807, g: 0.39215687, b: 0.23529412, a: 1}
+    materialOutlineColour: {r: 0.33333334, g: 0.22745098, b: 0.11764706, a: 1}
+    materialBloodColour: {r: 0.54509807, g: 0.39215687, b: 0.23529412, a: 1}
+    materialDecalColour: {r: 0.39215687, g: 0.27450982, b: 0.15686275, a: 1}
+  - materialType: 5
+    materialHitSounds: []
+    materialDestroySounds: []
+    materialFootStepSounds: []
+    materialFillColour: {r: 0.8627451, g: 0.27450982, b: 0.27450982, a: 1}
+    materialOutlineColour: {r: 0.54901963, g: 0.13725491, b: 0.13725491, a: 1}
+    materialBloodColour: {r: 0.8627451, g: 0.27450982, b: 0.27450982, a: 1}
+    materialDecalColour: {r: 0.6666667, g: 0.19607843, b: 0.19607843, a: 1}
+  - materialType: 6
+    materialHitSounds: []
+    materialDestroySounds: []
+    materialFootStepSounds: []
+    materialFillColour: {r: 0.54901963, g: 0.54901963, b: 0.5294118, a: 1}
+    materialOutlineColour: {r: 0.33333334, g: 0.33333334, b: 0.3137255, a: 1}
+    materialBloodColour: {r: 0.627451, g: 0.627451, b: 0.5882353, a: 1}
+    materialDecalColour: {r: 0.43137255, g: 0.43137255, b: 0.4117647, a: 1}
+  - materialType: 7
     materialHitSounds:
     - {fileID: 8300000, guid: fbfcac7766a9c52449dec4f8e068ec63, type: 3}
     - {fileID: 8300000, guid: fbfcac7766a9c52449dec4f8e068ec63, type: 3}
     - {fileID: 8300000, guid: 2d298609c11951449b1701d4a94f8b34, type: 3}
     - {fileID: 8300000, guid: 80f2fc59e524fbf48aa0d52a8ccbd6bc, type: 3}
     - {fileID: 8300000, guid: 6ebf3173612c5164ba421d6a29789ef1, type: 3}
-    materialDeathSounds:
-    - {fileID: 8300000, guid: 93927d8bec8cf3742948185ebd0a31f8, type: 3}
+    materialDestroySounds:
     - {fileID: 8300000, guid: 1a81b57889d5b7642b9350dd30f41572, type: 3}
-    materialBloodColour: {r: 1, g: 0.78431374, b: 0.3137255, a: 1}
-  - materialType: 1
+    - {fileID: 8300000, guid: 93927d8bec8cf3742948185ebd0a31f8, type: 3}
+    materialFootStepSounds: []
+    materialFillColour: {r: 0.5882353, g: 0.60784316, b: 0.64705884, a: 1}
+    materialOutlineColour: {r: 0.29411766, g: 0.3137255, b: 0.3529412, a: 1}
+    materialBloodColour: {r: 0.58431375, g: 0.6039216, b: 0.6431373, a: 1}
+    materialDecalColour: {r: 0.37254903, g: 0.39215687, b: 0.43137255, a: 1}
+  - materialType: 8
     materialHitSounds: []
-    materialDeathSounds: []
-    materialBloodColour: {r: 0.627451, g: 0.627451, b: 0.5882353, a: 1}
-  - materialType: 2
-    materialHitSounds:
-    - {fileID: 8300000, guid: 1d8e19dadb2380b4ab8fcf0256e0cb0f, type: 3}
-    - {fileID: 8300000, guid: 44115fb59eda93e4db37a79279c229ce, type: 3}
-    - {fileID: 8300000, guid: 02593da4ca231f94caba2369eb2ebcd0, type: 3}
-    materialDeathSounds:
-    - {fileID: 8300000, guid: 09559ca54b83a4e47a064ae6177de2a8, type: 3}
-    - {fileID: 8300000, guid: ae60d4f56fe228549a637b3b9b177496, type: 3}
-    - {fileID: 8300000, guid: d94f1b20857dc24499da18e876f4f3ff, type: 3}
-    - {fileID: 8300000, guid: f04ffb6f8b9c14447b3b871f5a34862a, type: 3}
-    - {fileID: 8300000, guid: 21fbc9eec6fe4df43a19c3b63bd20a96, type: 3}
-    materialBloodColour: {r: 0.54509807, g: 0.39215687, b: 0.23529412, a: 1}
-  - materialType: 3
+    materialDestroySounds: []
+    materialFootStepSounds: []
+    materialFillColour: {r: 0.5943396, g: 0.372864, b: 0.5878903, a: 1}
+    materialOutlineColour: {r: 0.4245283, g: 0.2743414, b: 0.4192586, a: 1}
+    materialBloodColour: {r: 0.5921569, g: 0.37254903, b: 0.58431375, a: 1}
+    materialDecalColour: {r: 0.41960788, g: 0.27058825, b: 0.4156863, a: 1}
+  - materialType: 9
     materialHitSounds: []
-    materialDeathSounds: []
-    materialBloodColour: {r: 0.66967785, g: 0.9084027, b: 0.9528302, a: 1}
-  - materialType: 3
+    materialDestroySounds: []
+    materialFootStepSounds: []
+    materialFillColour: {r: 0.67058825, g: 0.9098039, b: 0.9529412, a: 1}
+    materialOutlineColour: {r: 0.39215687, g: 0.627451, b: 0.6862745, a: 1}
+    materialBloodColour: {r: 0.67058825, g: 0.9098039, b: 0.9529412, a: 1}
+    materialDecalColour: {r: 0.54901963, g: 0.78431374, b: 0.84313726, a: 1}
+  - materialType: 10
     materialHitSounds: []
-    materialDeathSounds: []
+    materialDestroySounds: []
+    materialFootStepSounds: []
+    materialFillColour: {r: 0.78431374, g: 0.92156863, b: 0.9607843, a: 1}
+    materialOutlineColour: {r: 0.50980395, g: 0.6666667, b: 0.7254902, a: 1}
+    materialBloodColour: {r: 0.78431374, g: 0.92156863, b: 0.9607843, a: 1}
+    materialDecalColour: {r: 0.64705884, g: 0.78431374, b: 0.84313726, a: 1}
+  - materialType: 11
+    materialHitSounds: []
+    materialDestroySounds: []
+    materialFootStepSounds: []
+    materialFillColour: {r: 0.6666667, g: 0.23529412, b: 0.23529412, a: 1}
+    materialOutlineColour: {r: 0.39215687, g: 0.078431375, b: 0.078431375, a: 1}
     materialBloodColour: {r: 0.62352943, g: 0, b: 0, a: 1}
-  - materialType: 4
+    materialDecalColour: {r: 0.47058824, g: 0, b: 0, a: 1}
+  - materialType: 12
     materialHitSounds: []
-    materialDeathSounds: []
+    materialDestroySounds: []
+    materialFootStepSounds: []
+    materialFillColour: {r: 0.23529412, g: 0.54901963, b: 0.8627451, a: 1}
+    materialOutlineColour: {r: 0.11764706, g: 0.3529412, b: 0.627451, a: 1}
     materialBloodColour: {r: 0.23529412, g: 0.54901963, b: 0.8627451, a: 1}
-  - materialType: 5
+    materialDecalColour: {r: 0.1764706, g: 0.43137255, b: 0.7254902, a: 1}
+  - materialType: 13
     materialHitSounds: []
-    materialDeathSounds: []
-    materialBloodColour: {r: 0.23529412, g: 0.54901963, b: 0.8627451, a: 1}
+    materialDestroySounds: []
+    materialFootStepSounds: []
+    materialFillColour: {r: 0.88235295, g: 0.88235295, b: 0.88235295, a: 1}
+    materialOutlineColour: {r: 0.74509805, g: 0.74509805, b: 0.74509805, a: 1}
+    materialBloodColour: {r: 0.88235295, g: 0.88235295, b: 0.88235295, a: 1}
+    materialDecalColour: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
 --- !u!4 &1486839920
 Transform:
   m_ObjectHideFlags: 0

@@ -89,20 +89,4 @@ public static class F_Utility_Helper_Damage
             }
         }
     }
-
-    /// <summary>Looks up the blood or hit-effect colour for a material.</summary>
-    /// <param name="material">The ent's material type.</param>
-    /// <returns>The configured colour for the material.</returns>
-    public static Color GetBloodColour(enumMaterialType material)
-    {
-        switch (material)
-        {
-            case enumMaterialType.Metal: return F_Utility_Config_Colours.cfgColourBloodMetal;
-            case enumMaterialType.Rock: return F_Utility_Config_Colours.cfgColourBloodRock;
-            case enumMaterialType.Wood: return F_Utility_Config_Colours.cfgColourBloodWood;
-            case enumMaterialType.Meat: return F_Utility_Config_Colours.cfgColourBloodMeat;
-            case enumMaterialType.Water: return F_Utility_Config_Colours.cfgColourBloodWater;
-            default: return F_Utility_Config_Colours.cfgColourWhite;
-        }
-    }
 }

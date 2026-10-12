@@ -75,8 +75,7 @@ public class F_Logic_Globals : MonoBehaviour
             {
                 entMaterialSettings.Add(new F_Ent_MaterialSettings
                 {
-                    materialType = material,
-                    materialBloodColour = F_Utility_Helper_Damage.GetBloodColour(material)
+                    materialType = material
                 });
             }
         }

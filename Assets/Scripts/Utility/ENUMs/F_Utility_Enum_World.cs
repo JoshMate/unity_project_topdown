@@ -1,11 +1,19 @@
 public enum enumMaterialType
 {
-    Metal,
-    Rock,
+    Dirt,
+    Sand,
+    Snow,
+    Grass,
     Wood,
+    Plastic,
+    Stone,
+    Metal,
+    Composite,
     Glass,
+    Perspex,
     Meat,
-    Water
+    Water,
+    Air
 }
 
 

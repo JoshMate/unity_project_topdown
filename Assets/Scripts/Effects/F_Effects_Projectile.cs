@@ -163,7 +163,7 @@ public class F_Effects_Projectile : MonoBehaviour
     void CreateProjectileImpact(F_Ent hitEntity, Vector2 impactPosition, Vector2 outwardDirection)
     {
         // Only entities have the material data used for the impact colour.
-        if (projectileImpactObject == null || hitEntity == null)
+        if (projectileImpactObject == null || hitEntity == null || !hitEntity.entCreateBloodOnHit)
         {
             return;
         }

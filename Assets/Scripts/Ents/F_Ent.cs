@@ -47,15 +47,21 @@ public class F_Ent : MonoBehaviour
     public bool entFeatureCanShootThrough = false;
     // Whether this ent's sprites shatter into pieces when it dies
     public bool entFeatureShatterOnDeath = true;
+    // Whether this ent emits blood particles when hit
+    public bool entCreateBloodOnHit = true;
+    // Whether this ent creates a decal when it dies
+    public bool entCreateDecalOnDestroy = true;
 
 
     [Header("Ent Material Config (assigned from entFeatureMaterial)")]
     // One clip is picked at random when this ent gets hit
     public AudioClip[] entMaterialHitSounds;
     // One clip is picked at random when this ent dies
-    public AudioClip[] entMaterialDeathSounds;
+    public AudioClip[] entMaterialDestroySounds;
     // Colour of on-hit particle effects
     public Color entMaterialBloodColour = Color.white;
+    // Colour of the decal left on the floor when this ent dies
+    public Color entMaterialDecalColour = Color.white;
 
     [Header("Constants Private")]
     private const float entHealthFloor = 0f;
@@ -96,13 +102,13 @@ public class F_Ent : MonoBehaviour
         F_Ent_MaterialSettings settings = F_Logic_Globals.GetEntMaterialSettings(entFeatureMaterial);
         if (settings == null)
         {
-            entMaterialBloodColour = F_Utility_Helper_Damage.GetBloodColour(entFeatureMaterial);
             return;
         }
 
         entMaterialHitSounds = settings.materialHitSounds;
-        entMaterialDeathSounds = settings.materialDeathSounds;
+        entMaterialDestroySounds = settings.materialDestroySounds;
         entMaterialBloodColour = settings.materialBloodColour;
+        entMaterialDecalColour = settings.materialDecalColour;
     }
 
     // Plays a random non-empty clip from the array, if any.
@@ -215,7 +221,11 @@ public class F_Ent : MonoBehaviour
     {
         entIsDead = true;
         OnDied?.Invoke(this);
-        PlayEntSound(entMaterialDeathSounds);
+        PlayEntSound(entMaterialDestroySounds);
+        if (entCreateDecalOnDestroy)
+        {
+            CreateDestroyDecal();
+        }
         if (entFeatureShatterOnDeath)
         {
             ShatterSprites();
@@ -230,6 +240,15 @@ public class F_Ent : MonoBehaviour
 
     // Whether the whole ent object is destroyed on death; override to false for objects that must persist, such as the player.
     protected virtual bool DestroyOnDeath => true;
+
+    // Draws a decal in the material's decal colour on the floor decal layer, centred under the ent's visual centre.
+    private void CreateDestroyDecal()
+    {
+        Bounds entBounds = F_Utility_Helper_Decal.GetSpriteBounds(gameObject);
+        float largestExtent = Mathf.Max(entBounds.size.x, entBounds.size.y);
+        float decalDiameter = Mathf.Max(F_Utility_Config_Decal.cfgDecalSizeMin, largestExtent * F_Utility_Config_Decal.cfgDecalSizeMultiplier);
+        F_Utility_Helper_Decal.CreateFloorDecal(entBounds.center, entMaterialDecalColour, decalDiameter);
+    }
 
     // Removes all collision from this ent and its children so a dead ent no longer blocks movement or projectiles.
     private void DisableColliders()
