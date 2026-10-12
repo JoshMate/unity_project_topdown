@@ -171,6 +171,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: OB_World_Wall_Shape_Square
       objectReference: {fileID: 0}
+    - target: {fileID: 4611494174158579643, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_Color.b
+      value: 0.23529412
+      objectReference: {fileID: 0}
+    - target: {fileID: 4611494174158579643, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_Color.g
+      value: 0.39215687
+      objectReference: {fileID: 0}
+    - target: {fileID: 4611494174158579643, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_Color.r
+      value: 0.54509807
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -227,6 +239,18 @@ PrefabInstance:
     - target: {fileID: 2813996396988073590, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
       propertyPath: m_Name
       value: OB_World_Wall_Shape_Square (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4611494174158579643, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_Color.b
+      value: 0.23529412
+      objectReference: {fileID: 0}
+    - target: {fileID: 4611494174158579643, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_Color.g
+      value: 0.39215687
+      objectReference: {fileID: 0}
+    - target: {fileID: 4611494174158579643, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_Color.r
+      value: 0.54509807
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -346,6 +370,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: OB_World_Wall_Shape_Square (4)
       objectReference: {fileID: 0}
+    - target: {fileID: 4611494174158579643, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_Color.b
+      value: 0.23529412
+      objectReference: {fileID: 0}
+    - target: {fileID: 4611494174158579643, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_Color.g
+      value: 0.39215687
+      objectReference: {fileID: 0}
+    - target: {fileID: 4611494174158579643, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_Color.r
+      value: 0.54509807
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -361,7 +397,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1000238371947742931, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 8
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 1000238371947742931, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
       propertyPath: m_LocalPosition.y
@@ -402,6 +438,18 @@ PrefabInstance:
     - target: {fileID: 2813996396988073590, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
       propertyPath: m_Name
       value: OB_World_Wall_Shape_Square (8)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4611494174158579643, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_Color.b
+      value: 0.23529412
+      objectReference: {fileID: 0}
+    - target: {fileID: 4611494174158579643, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_Color.g
+      value: 0.39215687
+      objectReference: {fileID: 0}
+    - target: {fileID: 4611494174158579643, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_Color.r
+      value: 0.54509807
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -459,6 +507,18 @@ PrefabInstance:
     - target: {fileID: 2813996396988073590, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
       propertyPath: m_Name
       value: OB_World_Wall_Shape_Square (5)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4611494174158579643, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_Color.b
+      value: 0.23529412
+      objectReference: {fileID: 0}
+    - target: {fileID: 4611494174158579643, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_Color.g
+      value: 0.39215687
+      objectReference: {fileID: 0}
+    - target: {fileID: 4611494174158579643, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_Color.r
+      value: 0.54509807
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -578,6 +638,87 @@ PrefabInstance:
       propertyPath: m_Name
       value: OB_World_Wall_Shape_Square (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 4611494174158579643, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_Color.b
+      value: 0.23529412
+      objectReference: {fileID: 0}
+    - target: {fileID: 4611494174158579643, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_Color.g
+      value: 0.39215687
+      objectReference: {fileID: 0}
+    - target: {fileID: 4611494174158579643, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_Color.r
+      value: 0.54509807
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+--- !u!1001 &314740652
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1000238371947742931, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000238371947742931, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000238371947742931, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000238371947742931, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000238371947742931, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000238371947742931, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000238371947742931, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000238371947742931, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000238371947742931, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000238371947742931, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2813996396988073590, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_Name
+      value: OB_World_Wall_Shape_Square (16)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4611494174158579643, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_Color.b
+      value: 0.23529412
+      objectReference: {fileID: 0}
+    - target: {fileID: 4611494174158579643, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_Color.g
+      value: 0.39215687
+      objectReference: {fileID: 0}
+    - target: {fileID: 4611494174158579643, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_Color.r
+      value: 0.54509807
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -634,6 +775,18 @@ PrefabInstance:
     - target: {fileID: 2813996396988073590, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
       propertyPath: m_Name
       value: OB_World_Wall_Shape_Square (11)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4611494174158579643, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_Color.b
+      value: 0.23529412
+      objectReference: {fileID: 0}
+    - target: {fileID: 4611494174158579643, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_Color.g
+      value: 0.39215687
+      objectReference: {fileID: 0}
+    - target: {fileID: 4611494174158579643, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_Color.r
+      value: 0.54509807
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -825,7 +978,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1000238371947742931, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 6
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1000238371947742931, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
       propertyPath: m_LocalPosition.y
@@ -867,6 +1020,103 @@ PrefabInstance:
       propertyPath: m_Name
       value: OB_World_Wall_Shape_Square (7)
       objectReference: {fileID: 0}
+    - target: {fileID: 4611494174158579643, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_Color.b
+      value: 0.23529412
+      objectReference: {fileID: 0}
+    - target: {fileID: 4611494174158579643, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_Color.g
+      value: 0.39215687
+      objectReference: {fileID: 0}
+    - target: {fileID: 4611494174158579643, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_Color.r
+      value: 0.54509807
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+--- !u!1001 &915572464
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1000238371947742931, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000238371947742931, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000238371947742931, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000238371947742931, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000238371947742931, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000238371947742931, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000238371947742931, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000238371947742931, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000238371947742931, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000238371947742931, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2813996396988073590, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_Name
+      value: OB_World_Wall_Shape_Square (17)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4611494174158579643, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_Color.b
+      value: 0.5294118
+      objectReference: {fileID: 0}
+    - target: {fileID: 4611494174158579643, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_Color.g
+      value: 0.54901963
+      objectReference: {fileID: 0}
+    - target: {fileID: 4611494174158579643, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_Color.r
+      value: 0.54901963
+      objectReference: {fileID: 0}
+    - target: {fileID: 7413522968095097262, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: entInfoName
+      value: Stone Wall
+      objectReference: {fileID: 0}
+    - target: {fileID: 7413522968095097262, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: entStatHealth
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 7413522968095097262, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: entStatHealthMax
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 7413522968095097262, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: entFeatureMaterial
+      value: 6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -903,6 +1153,75 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &1051190392
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1000238371947742931, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000238371947742931, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000238371947742931, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000238371947742931, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000238371947742931, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000238371947742931, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000238371947742931, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000238371947742931, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000238371947742931, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000238371947742931, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2813996396988073590, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_Name
+      value: OB_World_Wall_Shape_Square (18)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4611494174158579643, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_Color.b
+      value: 0.23529412
+      objectReference: {fileID: 0}
+    - target: {fileID: 4611494174158579643, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_Color.g
+      value: 0.39215687
+      objectReference: {fileID: 0}
+    - target: {fileID: 4611494174158579643, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_Color.r
+      value: 0.54509807
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
 --- !u!1001 &1346774656
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -954,6 +1273,18 @@ PrefabInstance:
     - target: {fileID: 2813996396988073590, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
       propertyPath: m_Name
       value: OB_World_Wall_Shape_Square (9)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4611494174158579643, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_Color.b
+      value: 0.23529412
+      objectReference: {fileID: 0}
+    - target: {fileID: 4611494174158579643, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_Color.g
+      value: 0.39215687
+      objectReference: {fileID: 0}
+    - target: {fileID: 4611494174158579643, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_Color.r
+      value: 0.54509807
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1011,6 +1342,18 @@ PrefabInstance:
     - target: {fileID: 2813996396988073590, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
       propertyPath: m_Name
       value: OB_World_Wall_Shape_Square (12)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4611494174158579643, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_Color.b
+      value: 0.23529412
+      objectReference: {fileID: 0}
+    - target: {fileID: 4611494174158579643, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_Color.g
+      value: 0.39215687
+      objectReference: {fileID: 0}
+    - target: {fileID: 4611494174158579643, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_Color.r
+      value: 0.54509807
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1125,6 +1468,18 @@ PrefabInstance:
     - target: {fileID: 2813996396988073590, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
       propertyPath: m_Name
       value: OB_World_Wall_Shape_Square (10)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4611494174158579643, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_Color.b
+      value: 0.23529412
+      objectReference: {fileID: 0}
+    - target: {fileID: 4611494174158579643, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_Color.g
+      value: 0.39215687
+      objectReference: {fileID: 0}
+    - target: {fileID: 4611494174158579643, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_Color.r
+      value: 0.54509807
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1267,7 +1622,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1000238371947742931, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1000238371947742931, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1304,6 +1659,18 @@ PrefabInstance:
     - target: {fileID: 2813996396988073590, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
       propertyPath: m_Name
       value: OB_World_Wall_Shape_Square (6)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4611494174158579643, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_Color.b
+      value: 0.23529412
+      objectReference: {fileID: 0}
+    - target: {fileID: 4611494174158579643, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_Color.g
+      value: 0.39215687
+      objectReference: {fileID: 0}
+    - target: {fileID: 4611494174158579643, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_Color.r
+      value: 0.54509807
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1480,6 +1847,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: OB_World_Wall_Shape_Square (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 4611494174158579643, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_Color.b
+      value: 0.23529412
+      objectReference: {fileID: 0}
+    - target: {fileID: 4611494174158579643, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_Color.g
+      value: 0.39215687
+      objectReference: {fileID: 0}
+    - target: {fileID: 4611494174158579643, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_Color.r
+      value: 0.54509807
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1536,6 +1915,18 @@ PrefabInstance:
     - target: {fileID: 2813996396988073590, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
       propertyPath: m_Name
       value: OB_World_Wall_Shape_Square (14)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4611494174158579643, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_Color.b
+      value: 0.23529412
+      objectReference: {fileID: 0}
+    - target: {fileID: 4611494174158579643, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_Color.g
+      value: 0.39215687
+      objectReference: {fileID: 0}
+    - target: {fileID: 4611494174158579643, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_Color.r
+      value: 0.54509807
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1594,6 +1985,87 @@ PrefabInstance:
       propertyPath: m_Name
       value: OB_World_Wall_Shape_Square (13)
       objectReference: {fileID: 0}
+    - target: {fileID: 4611494174158579643, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_Color.b
+      value: 0.23529412
+      objectReference: {fileID: 0}
+    - target: {fileID: 4611494174158579643, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_Color.g
+      value: 0.39215687
+      objectReference: {fileID: 0}
+    - target: {fileID: 4611494174158579643, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_Color.r
+      value: 0.54509807
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+--- !u!1001 &2121679656
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1000238371947742931, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000238371947742931, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000238371947742931, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000238371947742931, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000238371947742931, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000238371947742931, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000238371947742931, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000238371947742931, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000238371947742931, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000238371947742931, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2813996396988073590, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_Name
+      value: OB_World_Wall_Shape_Square (15)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4611494174158579643, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_Color.b
+      value: 0.23529412
+      objectReference: {fileID: 0}
+    - target: {fileID: 4611494174158579643, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_Color.g
+      value: 0.39215687
+      objectReference: {fileID: 0}
+    - target: {fileID: 4611494174158579643, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: m_Color.r
+      value: 0.54509807
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1624,6 +2096,10 @@ SceneRoots:
   - {fileID: 850866105}
   - {fileID: 113329542}
   - {fileID: 1346774656}
+  - {fileID: 2121679656}
+  - {fileID: 314740652}
+  - {fileID: 915572464}
+  - {fileID: 1051190392}
   - {fileID: 1503674880}
   - {fileID: 381964495}
   - {fileID: 1452283942}
