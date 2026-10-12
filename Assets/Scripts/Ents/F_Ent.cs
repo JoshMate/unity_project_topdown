@@ -5,12 +5,13 @@ using UnityEngine;
 
 public class F_Ent : MonoBehaviour
 {
-
     [Header("Ent Information")]
     // Current health points when this reaches zero the entity should run a on death method 
     public string entInfoName = "Entity Name";
     // Current health points when this reaches zero the entity should run a on death method 
     public string entInfoDescription = "Entity Description";
+    // What materuial this ent is made out of, which will affect hit sounds, and blood colour based on material
+    public enumMaterialType entFeatureMaterial;
 
     [Header("Ent Health Stats")]
     // Current health points when this reaches zero the entity should run a on death method 
@@ -37,31 +38,29 @@ public class F_Ent : MonoBehaviour
     public float entResistanceToxic = 0.0f;
 
     [Header("Ent Features")]
-    // What materuial this ent is made out of, which will affect hit sounds, and blood colour based on material
-    public enumMaterialType entFeatureMaterial;
     // Whether or not this ent blocks npcs vision
     public bool entFeatureCanSeeThrough = false;
     // Whether or not this ent can be moved through by the player or npcs
     public bool entFeatureCanWalkThrough = false;
     // Whether or not this bullets should collide with this ent or pass straight over
-    public bool entFeatureCanShootThrough = false;
+    public bool entFeatureCanShootOver = false;
     // Whether this ent's sprites shatter into pieces when it dies
     public bool entFeatureShatterOnDeath = true;
     // Whether this ent emits blood particles when hit
-    public bool entCreateBloodOnHit = true;
+    public bool entFeatureCreateBloodOnHit = true;
     // Whether this ent creates a decal when it dies
-    public bool entCreateDecalOnDestroy = true;
+    public bool entFeatureCreateDecalOnDestroy = true;
 
 
-    [Header("Ent Material Config (assigned from entFeatureMaterial)")]
+    // Ent material config: assigned at runtime from the global settings for entFeatureMaterial, so it is neither serialised nor shown in the Inspector.
     // One clip is picked at random when this ent gets hit
-    public AudioClip[] entMaterialHitSounds;
+    [NonSerialized] public AudioClip[] entMaterialHitSounds;
     // One clip is picked at random when this ent dies
-    public AudioClip[] entMaterialDestroySounds;
+    [NonSerialized] public AudioClip[] entMaterialDestroySounds;
     // Colour of on-hit particle effects
-    public Color entMaterialBloodColour = Color.white;
+    [NonSerialized] public Color entMaterialBloodColour = Color.white;
     // Colour of the decal left on the floor when this ent dies
-    public Color entMaterialDecalColour = Color.white;
+    [NonSerialized] public Color entMaterialDecalColour = Color.white;
 
     [Header("Constants Private")]
     private const float entHealthFloor = 0f;
@@ -222,7 +221,7 @@ public class F_Ent : MonoBehaviour
         entIsDead = true;
         OnDied?.Invoke(this);
         PlayEntSound(entMaterialDestroySounds);
-        if (entCreateDecalOnDestroy)
+        if (entFeatureCreateDecalOnDestroy)
         {
             CreateDestroyDecal();
         }

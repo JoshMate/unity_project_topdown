@@ -113,7 +113,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: SP_Damage_Type_Toxic_0
+      name: SP_Damage_Type_Toxic
       rect:
         serializedVersion: 2
         x: 15
@@ -148,6 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
+      SP_Damage_Type_Toxic: 3951844034123644615
       SP_Damage_Type_Toxic_0: 3951844034123644615
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0

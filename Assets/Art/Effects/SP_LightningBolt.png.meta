@@ -113,7 +113,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: SP_LightningBolt_0
+      name: SP_LightningBolt
       rect:
         serializedVersion: 2
         x: 11
@@ -148,6 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
+      SP_LightningBolt: -3232960219934792765
       SP_LightningBolt_0: -3232960219934792765
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0

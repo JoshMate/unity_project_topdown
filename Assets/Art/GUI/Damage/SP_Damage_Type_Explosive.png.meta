@@ -113,7 +113,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: SP_Damage_Type_Explosive_0
+      name: SP_Damage_Type_Explosive
       rect:
         serializedVersion: 2
         x: 2
@@ -148,6 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
+      SP_Damage_Type_Explosive: -5541941425025284738
       SP_Damage_Type_Explosive_0: -5541941425025284738
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0

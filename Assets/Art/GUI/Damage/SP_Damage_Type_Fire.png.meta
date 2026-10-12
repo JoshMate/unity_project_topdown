@@ -113,7 +113,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: SP_Damage_Type_Fire_0
+      name: SP_Damage_Type_Fire
       rect:
         serializedVersion: 2
         x: 11
@@ -148,6 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
+      SP_Damage_Type_Fire: -6426707371659750511
       SP_Damage_Type_Fire_0: -6426707371659750511
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0

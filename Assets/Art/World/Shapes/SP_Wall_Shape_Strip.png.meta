@@ -113,7 +113,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: SP_Wall_Shape_Middle_0
+      name: SP_Wall_Shape_Strip
       rect:
         serializedVersion: 2
         x: 0
@@ -149,6 +149,7 @@ TextureImporter:
       entries: []
     nameFileIdTable:
       SP_Wall_Shape_Middle_0: -3692846876270852125
+      SP_Wall_Shape_Strip: -3692846876270852125
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -27,7 +27,7 @@ public sealed class JMSpriteImportPostprocessor : AssetPostprocessor
         }
 
         if (textureImporter.textureType == TextureImporterType.Sprite &&
-            textureImporter.spriteImportMode == SpriteImportMode.Multiple)
+            textureImporter.spriteImportMode == SpriteImportMode.Single)
         {
             // Preserve each authored slice and pivot while normalizing the shared importer settings.
             ApplySpritePresetSettingsPreservingSpriteSheet(textureImporter);

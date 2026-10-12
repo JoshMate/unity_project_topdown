@@ -102,7 +102,7 @@ public class F_GUI_ItemTooltip : MonoBehaviour
 
         string itemName = item.itemName ?? string.Empty;
         string itemDescription = item.itemDescription ?? string.Empty;
-        Sprite itemSprite = item.itemSprite;
+        Sprite itemSprite = item.ItemSprite;
 
         StringBuilder detailsBuilder = new StringBuilder();
         IReadOnlyList<F_ItemTooltipDetail> details = item.GetTooltipDetails();

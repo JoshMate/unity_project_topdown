@@ -113,7 +113,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: SP_Floor_Shape_Half_0
+      name: SP_Floor_Shape_Half
       rect:
         serializedVersion: 2
         x: 0
@@ -148,6 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
+      SP_Floor_Shape_Half: 5954247741820428066
       SP_Floor_Shape_Half_0: 5954247741820428066
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0

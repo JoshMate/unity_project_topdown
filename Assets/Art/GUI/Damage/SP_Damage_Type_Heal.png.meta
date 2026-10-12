@@ -113,7 +113,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: SP_Damage_Type_Heal_0
+      name: SP_Damage_Type_Heal
       rect:
         serializedVersion: 2
         x: 7
@@ -148,6 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
+      SP_Damage_Type_Heal: 6937099774268759820
       SP_Damage_Type_Heal_0: 6937099774268759820
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0

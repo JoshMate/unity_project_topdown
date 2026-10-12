@@ -113,7 +113,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: SP_OneHanded_KitchenKnife_0
+      name: SP_OneHanded_KitchenKnife
       rect:
         serializedVersion: 2
         x: 18
@@ -148,6 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
+      SP_OneHanded_KitchenKnife: 7077808489984928389
       SP_OneHanded_KitchenKnife_0: 7077808489984928389
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0

@@ -113,7 +113,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: SP_Wall_Shape_Bollard_0
+      name: SP_Wall_Shape_Bollard
       rect:
         serializedVersion: 2
         x: 15
@@ -148,6 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
+      SP_Wall_Shape_Bollard: -1149570832631960749
       SP_Wall_Shape_Bollard_0: -1149570832631960749
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0

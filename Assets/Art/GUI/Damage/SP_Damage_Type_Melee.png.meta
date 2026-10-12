@@ -113,7 +113,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: SP_Damage_Type_Melee_0
+      name: SP_Damage_Type_Melee
       rect:
         serializedVersion: 2
         x: 15
@@ -148,6 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
+      SP_Damage_Type_Melee: -5694363763452880999
       SP_Damage_Type_Melee_0: -5694363763452880999
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0

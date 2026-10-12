@@ -113,7 +113,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: SP_Ammo_Shotgun_0
+      name: SP_Ammo_Shotgun
       rect:
         serializedVersion: 2
         x: 0
@@ -148,6 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
+      SP_Ammo_Shotgun: -8992469094741731674
       SP_Ammo_Shotgun_0: -8992469094741731674
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0

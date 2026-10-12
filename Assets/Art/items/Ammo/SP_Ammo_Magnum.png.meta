@@ -113,7 +113,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: SP_Ammo_Magnum_0
+      name: SP_Ammo_Magnum
       rect:
         serializedVersion: 2
         x: 0
@@ -148,6 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
+      SP_Ammo_Magnum: -8533178459657930156
       SP_Ammo_Magnum_0: -8533178459657930156
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0

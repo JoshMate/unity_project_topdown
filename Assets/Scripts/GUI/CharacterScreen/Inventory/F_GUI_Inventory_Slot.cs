@@ -243,7 +243,7 @@ public class F_GUI_Inventory_Slot : MonoBehaviour, IPointerClickHandler, IPointe
     {
         Sprite slotIconToDraw = isSlotLocked
             ? slotIconLocked
-            : slotItemObj != null ? slotItemObj.itemSprite : slotIconPlaceHolder;
+            : slotItemObj != null ? slotItemObj.ItemSprite : slotIconPlaceHolder;
 
         if (slotIconToDraw == null || slotDrawItemObj == null)
         {

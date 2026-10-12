@@ -88,8 +88,8 @@ public class F_GUI_HUD_WeaponAmmo : MonoBehaviour
             return;
         }
 
-        weaponIconImage.sprite = weapon.itemSprite;
-        weaponIconImage.enabled = weapon.itemSprite != null;
+        weaponIconImage.sprite = weapon.ItemSprite;
+        weaponIconImage.enabled = weapon.ItemSprite != null;
 
         bool showAmmo = weapon.weaponUsesAmmo;
         ammoCountText.gameObject.SetActive(showAmmo);
@@ -105,7 +105,7 @@ public class F_GUI_HUD_WeaponAmmo : MonoBehaviour
         ammoCountText.text = weapon.CurrentAmmoLoaded + ammoSeparator + reserveAmmo;
         ammoCountText.color = weapon.CurrentAmmoLoaded <= 0 ? emptyAmmoTextColour : textColour;
 
-        Sprite ammoSprite = weapon.weaponAmmoType != null ? weapon.weaponAmmoType.itemSprite : null;
+        Sprite ammoSprite = weapon.weaponAmmoType != null ? weapon.weaponAmmoType.ItemSprite : null;
         ammoIconImage.sprite = ammoSprite;
         ammoIconImage.enabled = ammoSprite != null;
     }

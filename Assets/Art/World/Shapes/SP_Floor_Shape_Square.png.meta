@@ -113,7 +113,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: SP_Floor_Shape_Square_0
+      name: SP_Floor_Shape_Square
       rect:
         serializedVersion: 2
         x: 0
@@ -148,6 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
+      SP_Floor_Shape_Square: 7462404816627556955
       SP_Floor_Shape_Square_0: 7462404816627556955
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0

@@ -113,7 +113,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: SP_SmallArm_Glock_0
+      name: SP_SmallArm_Glock
       rect:
         serializedVersion: 2
         x: 17
@@ -148,6 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
+      SP_SmallArm_Glock: 4271609836247489768
       SP_SmallArm_Glock_0: 4271609836247489768
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0

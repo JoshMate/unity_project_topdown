@@ -113,7 +113,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: SP_Wall_Shape_Half_0
+      name: SP_Wall_Shape_Half
       rect:
         serializedVersion: 2
         x: 0
@@ -148,6 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
+      SP_Wall_Shape_Half: -4682101384450453844
       SP_Wall_Shape_Half_0: -4682101384450453844
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0

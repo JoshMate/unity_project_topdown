@@ -3908,8 +3908,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 805c1640dfada3347bf10a59b8c07a1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  entArtSprite: {fileID: 0}
   entInfoName: Entity Name
   entInfoDescription: Entity Description
+  entFeatureMaterial: 0
   entStatHealth: 100
   entStatHealthMax: 100
   entStatToxic: 0
@@ -3920,14 +3922,12 @@ MonoBehaviour:
   entResistanceFire: 0
   entResistanceExplosive: 0
   entResistanceToxic: 0
-  entFeatureMaterial: 0
   entFeatureCanSeeThrough: 0
   entFeatureCanWalkThrough: 0
-  entFeatureCanShootThrough: 0
+  entFeatureCanShootOver: 0
   entFeatureShatterOnDeath: 1
-  entMaterialHitSounds: []
-  entMaterialDestroySounds: []
-  entMaterialBloodColour: {r: 1, g: 1, b: 1, a: 1}
+  entFeatureCreateBloodOnHit: 1
+  entFeatureCreateDecalOnDestroy: 1
   hudManager: {fileID: 1030426464}
   characterScreenManager: {fileID: 1262635912}
   stamina: 100

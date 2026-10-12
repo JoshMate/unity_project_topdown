@@ -96,7 +96,7 @@ public class F_Effects_Projectile : MonoBehaviour
         F_Ent hitEntity = other.collider.GetComponentInParent<F_Ent>();
 
         // Pass-through ents: ignore the collider and restore the velocity the physics response may have altered.
-        if (hitEntity != null && hitEntity.entFeatureCanShootThrough)
+        if (hitEntity != null && hitEntity.entFeatureCanShootOver)
         {
             Physics2D.IgnoreCollision(other.otherCollider, other.collider);
             rb.linearVelocity = lastVelocity;
@@ -163,7 +163,7 @@ public class F_Effects_Projectile : MonoBehaviour
     void CreateProjectileImpact(F_Ent hitEntity, Vector2 impactPosition, Vector2 outwardDirection)
     {
         // Only entities have the material data used for the impact colour.
-        if (projectileImpactObject == null || hitEntity == null || !hitEntity.entCreateBloodOnHit)
+        if (projectileImpactObject == null || hitEntity == null || !hitEntity.entFeatureCreateBloodOnHit)
         {
             return;
         }

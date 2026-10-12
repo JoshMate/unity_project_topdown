@@ -113,7 +113,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: SP_Player_Cursor_Move_0
+      name: SP_Player_Cursor_Move
       rect:
         serializedVersion: 2
         x: 7
@@ -148,6 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
+      SP_Player_Cursor_Move: -7514872439172890611
       SP_Player_Cursor_Move_0: -7514872439172890611
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0

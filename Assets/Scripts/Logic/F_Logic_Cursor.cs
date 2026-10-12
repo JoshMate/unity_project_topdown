@@ -296,7 +296,7 @@ public class F_Logic_Cursor : MonoBehaviour
     {
         if (cursorHeldItemObj != null)
         {
-            cursorRendererItem.sprite = cursorHeldItemObj.itemSprite;
+            cursorRendererItem.sprite = cursorHeldItemObj.ItemSprite;
         }
         if (cursorHeldItemObj == null)
         {

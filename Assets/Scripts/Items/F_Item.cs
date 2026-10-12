@@ -15,12 +15,10 @@ public struct F_ItemTooltipDetail
     }
 }
 
-[ExecuteAlways]
 [RequireComponent(typeof(SpriteRenderer), typeof(PolygonCollider2D))]
 public class F_Item : MonoBehaviour
 {
     [Header("Constants Private")]
-    private const string defaultItemSpriteAssetPath = "Assets/Art/Logic/SP_Sprite_Default.png";
     private const string defaultPickupSoundAssetPath = "Assets/Sound/Interface/SD_Interface_PickupItem.ogg";
     private const string defaultDropSoundAssetPath = "Assets/Sound/Interface/SD_Interface_JUSP_Slide.ogg";
 
@@ -38,7 +36,6 @@ public class F_Item : MonoBehaviour
     public enumItemMaxCount itemCountMax = enumItemMaxCount.CountMaxSingle;
 
     [Header("Item Art")]
-    public Sprite itemSprite;
     public AudioClip itemSoundPickup;
     public AudioClip itemSoundDrop;
 
@@ -51,60 +48,25 @@ public class F_Item : MonoBehaviour
     /// <summary>The maximum stack size as an integer, read from the item's max count enum.</summary>
     public int ItemCountMaxValue => (int)itemCountMax;
 
-    private void OnEnable()
+    /// <summary>The sprite shown by this item, read directly from its sprite renderer.</summary>
+    public Sprite ItemSprite => itemSpriteRenderer != null ? itemSpriteRenderer.sprite : null;
+
+    private void Awake()
     {
-        EnsureDefaultItemAssets();
         EnsureSpriteRendererReference();
-        ApplyItemSpriteInEditorOrRuntime();
+        ConfigurePickupCollider();
     }
 
     private void OnValidate()
     {
         EnsureDefaultItemAssets();
         EnsureSpriteRendererReference();
-#if UNITY_EDITOR
-        UnityEditor.EditorApplication.delayCall -= ApplyItemSpriteAfterValidation;
-        UnityEditor.EditorApplication.delayCall += ApplyItemSpriteAfterValidation;
-#else
-        ApplyItemSprite();
-#endif
-    }
-
-#if UNITY_EDITOR
-    private void ApplyItemSpriteAfterValidation()
-    {
-        if (this == null)
-        {
-            return;
-        }
-
-        EnsureSpriteRendererReference();
-        ApplyItemSprite();
-    }
-#endif
-
-    private void ApplyItemSpriteInEditorOrRuntime()
-    {
-#if UNITY_EDITOR
-        if (!Application.isPlaying)
-        {
-            UnityEditor.EditorApplication.delayCall -= ApplyItemSpriteAfterValidation;
-            UnityEditor.EditorApplication.delayCall += ApplyItemSpriteAfterValidation;
-            return;
-        }
-#endif
-        ApplyItemSprite();
     }
 
     /// <summary>Assigns default assets to any empty item references; subclasses extend this with their own defaults.</summary>
     protected virtual void EnsureDefaultItemAssets()
     {
 #if UNITY_EDITOR
-        if (itemSprite == null)
-        {
-            itemSprite = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>(defaultItemSpriteAssetPath);
-        }
-
         if (itemSoundPickup == null)
         {
             itemSoundPickup = UnityEditor.AssetDatabase.LoadAssetAtPath<AudioClip>(defaultPickupSoundAssetPath);
@@ -125,13 +87,9 @@ public class F_Item : MonoBehaviour
         }
     }
 
-    private void ApplyItemSprite()
+    // Builds the trigger collider from the sprite's physics shape.
+    private void ConfigurePickupCollider()
     {
-        if (itemSpriteRenderer != null)
-        {
-            itemSpriteRenderer.sprite = itemSprite;
-        }
-
         PolygonCollider2D itemPolygonCollider = GetComponent<PolygonCollider2D>();
         if (itemPolygonCollider == null)
         {
@@ -139,6 +97,7 @@ public class F_Item : MonoBehaviour
         }
 
         itemPolygonCollider.isTrigger = true;
+        Sprite itemSprite = ItemSprite;
         if (itemSprite == null)
         {
             return;

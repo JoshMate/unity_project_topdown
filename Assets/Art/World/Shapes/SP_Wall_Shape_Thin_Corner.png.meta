@@ -113,7 +113,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: SP_Wall_Shape_ThinCorner_0
+      name: SP_Wall_Shape_Thin_Corner
       rect:
         serializedVersion: 2
         x: 0
@@ -149,6 +149,7 @@ TextureImporter:
       entries: []
     nameFileIdTable:
       SP_Wall_Shape_ThinCorner_0: 2328940768047255499
+      SP_Wall_Shape_Thin_Corner: 2328940768047255499
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

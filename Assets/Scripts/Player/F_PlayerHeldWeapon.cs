@@ -3,9 +3,6 @@ using UnityEngine;
 
 public class F_PlayerHeldWeapon : MonoBehaviour
 {
-    [Header("Art")]
-    public Sprite weaponSprite;
-
     [Header("Object Refs")]
     public GameObject projectileObject;
     public GameObject projectileImpactObject;
