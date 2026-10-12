@@ -179,11 +179,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e977737ef31f06b4c983632d11e1039b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  entInfoName: Wall
+  entInfoName: Wooden Wall
   entInfoDescription: A solid wall
-  entFeatureMaterial: 0
-  entStatHealth: 100
-  entStatHealthMax: 100
+  entFeatureMaterial: 4
+  entStatHealth: 25
+  entStatHealthMax: 25
   entStatToxic: 0
   entStatToxicMax: 1000
   entResistanceMelee: 0
