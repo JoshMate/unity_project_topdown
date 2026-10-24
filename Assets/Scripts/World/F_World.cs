@@ -6,11 +6,36 @@ public class F_World : F_Ent
     [Header("World Features")]
     // Outline and collision shape; the sprite for each shape is set in OB_Config_WorldShapes
     public enumWorldShape worldShape = enumWorldShape.WallSquare;
+    // When enabled, health and resistances come from the material's entry in OB_Config_EntMaterials; disable to use this object's own values
+    public bool worldUseMaterialStats = true;
 
     protected override void Awake()
     {
+        if (worldUseMaterialStats)
+        {
+            ApplyMaterialStats();
+        }
         base.Awake();
         ApplyWorldAppearance();
+    }
+
+    /// <summary>Copies the default max health and resistances configured for this object's material, and starts it at full health.</summary>
+    public void ApplyMaterialStats()
+    {
+        F_Ent_MaterialSettings settings = F_Logic_Globals.GetEntMaterialSettings(entFeatureMaterial);
+        if (settings == null)
+        {
+            return;
+        }
+
+        entStatHealthMax = settings.materialHealthMax;
+        entStatHealth = settings.materialHealthMax;
+        entResistanceMelee = settings.materialResistanceMelee;
+        entResistanceBullet = settings.materialResistanceBullet;
+        entResistanceEnergy = settings.materialResistanceEnergy;
+        entResistanceFire = settings.materialResistanceFire;
+        entResistanceExplosive = settings.materialResistanceExplosive;
+        entResistanceToxic = settings.materialResistanceToxic;
     }
 
     // Keeps the editor preview in sync when the shape or material is changed in the Inspector

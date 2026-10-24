@@ -22,6 +22,13 @@ MonoBehaviour:
     materialTexture: {fileID: 2800000, guid: 81ce9fed7be3bcf499ae675f67892265, type: 3}
     materialBloodColour: {r: 0.43137255, g: 0.3137255, b: 0.19607843, a: 1}
     materialDecalColour: {r: 0.3137255, g: 0.22745098, b: 0.13725491, a: 1}
+    materialHealthMax: 50
+    materialResistanceMelee: 0
+    materialResistanceBullet: 0.4
+    materialResistanceEnergy: 0.6
+    materialResistanceFire: 0.8
+    materialResistanceExplosive: 0
+    materialResistanceToxic: 1
   - materialType: 1
     materialHitSounds: []
     materialDestroySounds: []
@@ -29,6 +36,13 @@ MonoBehaviour:
     materialTexture: {fileID: 2800000, guid: d5312d611218c6043b2a2d9d0aa86fd9, type: 3}
     materialBloodColour: {r: 0.9019608, g: 0.8039216, b: 0.54901963, a: 1}
     materialDecalColour: {r: 0.78431374, g: 0.6862745, b: 0.4509804, a: 1}
+    materialHealthMax: 50
+    materialResistanceMelee: 0
+    materialResistanceBullet: 0.4
+    materialResistanceEnergy: 0.6
+    materialResistanceFire: 0.8
+    materialResistanceExplosive: 0
+    materialResistanceToxic: 1
   - materialType: 2
     materialHitSounds: []
     materialDestroySounds: []
@@ -36,6 +50,13 @@ MonoBehaviour:
     materialTexture: {fileID: 2800000, guid: a44dad1c6e10d044c92ec07ae658f6bf, type: 3}
     materialBloodColour: {r: 0.9411765, g: 0.9607843, b: 1, a: 1}
     materialDecalColour: {r: 0.84313726, g: 0.88235295, b: 0.9411765, a: 1}
+    materialHealthMax: 50
+    materialResistanceMelee: 0
+    materialResistanceBullet: 0.4
+    materialResistanceEnergy: 0.6
+    materialResistanceFire: 0.8
+    materialResistanceExplosive: 0
+    materialResistanceToxic: 1
   - materialType: 3
     materialHitSounds: []
     materialDestroySounds: []
@@ -43,6 +64,13 @@ MonoBehaviour:
     materialTexture: {fileID: 2800000, guid: e4cddf7534dd56a4f888de876d400022, type: 3}
     materialBloodColour: {r: 0.3529412, g: 0.627451, b: 0.23529412, a: 1}
     materialDecalColour: {r: 0.25490198, g: 0.47058824, b: 0.1764706, a: 1}
+    materialHealthMax: 50
+    materialResistanceMelee: 0
+    materialResistanceBullet: 0.4
+    materialResistanceEnergy: 0.6
+    materialResistanceFire: 0.8
+    materialResistanceExplosive: 0
+    materialResistanceToxic: 1
   - materialType: 4
     materialHitSounds:
     - {fileID: 8300000, guid: 1d8e19dadb2380b4ab8fcf0256e0cb0f, type: 3}
@@ -58,6 +86,13 @@ MonoBehaviour:
     materialTexture: {fileID: 2800000, guid: eb32ec8e7b6ebcf469114740914195aa, type: 3}
     materialBloodColour: {r: 0.54509807, g: 0.39215687, b: 0.23529412, a: 1}
     materialDecalColour: {r: 0.39215687, g: 0.27450982, b: 0.15686275, a: 1}
+    materialHealthMax: 50
+    materialResistanceMelee: 0
+    materialResistanceBullet: 0.25
+    materialResistanceEnergy: 0.5
+    materialResistanceFire: 0
+    materialResistanceExplosive: 0
+    materialResistanceToxic: 1
   - materialType: 5
     materialHitSounds: []
     materialDestroySounds: []
@@ -65,6 +100,13 @@ MonoBehaviour:
     materialTexture: {fileID: 2800000, guid: 29eb1acbc23251345800719cae6811a0, type: 3}
     materialBloodColour: {r: 0.8627451, g: 0.27450982, b: 0.27450982, a: 1}
     materialDecalColour: {r: 0.6666667, g: 0.19607843, b: 0.19607843, a: 1}
+    materialHealthMax: 100
+    materialResistanceMelee: 0
+    materialResistanceBullet: 0.4
+    materialResistanceEnergy: 0.6
+    materialResistanceFire: 0.8
+    materialResistanceExplosive: 0
+    materialResistanceToxic: 1
   - materialType: 6
     materialHitSounds: []
     materialDestroySounds: []
@@ -72,6 +114,13 @@ MonoBehaviour:
     materialTexture: {fileID: 2800000, guid: 584326b7736f8944c97433cca7c5991e, type: 3}
     materialBloodColour: {r: 0.627451, g: 0.627451, b: 0.5882353, a: 1}
     materialDecalColour: {r: 0.43137255, g: 0.43137255, b: 0.4117647, a: 1}
+    materialHealthMax: 250
+    materialResistanceMelee: 0
+    materialResistanceBullet: 0.4
+    materialResistanceEnergy: 0.6
+    materialResistanceFire: 0.8
+    materialResistanceExplosive: 0
+    materialResistanceToxic: 1
   - materialType: 7
     materialHitSounds:
     - {fileID: 8300000, guid: fbfcac7766a9c52449dec4f8e068ec63, type: 3}
@@ -86,6 +135,13 @@ MonoBehaviour:
     materialTexture: {fileID: 2800000, guid: 5e3efecfabe9bde459c001a47e5b8b06, type: 3}
     materialBloodColour: {r: 0.58431375, g: 0.6039216, b: 0.6431373, a: 1}
     materialDecalColour: {r: 0.37254903, g: 0.39215687, b: 0.43137255, a: 1}
+    materialHealthMax: 500
+    materialResistanceMelee: 0
+    materialResistanceBullet: 0.4
+    materialResistanceEnergy: 0.6
+    materialResistanceFire: 0.8
+    materialResistanceExplosive: 0
+    materialResistanceToxic: 1
   - materialType: 8
     materialHitSounds: []
     materialDestroySounds: []
@@ -93,6 +149,13 @@ MonoBehaviour:
     materialTexture: {fileID: 2800000, guid: c210f68c422baf14ebd16deca28d1389, type: 3}
     materialBloodColour: {r: 0.5921569, g: 0.37254903, b: 0.58431375, a: 1}
     materialDecalColour: {r: 0.41960788, g: 0.27058825, b: 0.4156863, a: 1}
+    materialHealthMax: 1000
+    materialResistanceMelee: 0
+    materialResistanceBullet: 0.4
+    materialResistanceEnergy: 0.6
+    materialResistanceFire: 0.8
+    materialResistanceExplosive: 0
+    materialResistanceToxic: 1
   - materialType: 9
     materialHitSounds: []
     materialDestroySounds: []
@@ -100,6 +163,13 @@ MonoBehaviour:
     materialTexture: {fileID: 2800000, guid: aeeca18582db7cb4fba0622d15dd3089, type: 3}
     materialBloodColour: {r: 0.67058825, g: 0.9098039, b: 0.9529412, a: 1}
     materialDecalColour: {r: 0.54901963, g: 0.78431374, b: 0.84313726, a: 1}
+    materialHealthMax: 25
+    materialResistanceMelee: 0
+    materialResistanceBullet: 0.4
+    materialResistanceEnergy: 0.6
+    materialResistanceFire: 0.8
+    materialResistanceExplosive: 0
+    materialResistanceToxic: 1
   - materialType: 10
     materialHitSounds: []
     materialDestroySounds: []
@@ -107,6 +177,13 @@ MonoBehaviour:
     materialTexture: {fileID: 2800000, guid: 74543c2f17c65834d855d95737167901, type: 3}
     materialBloodColour: {r: 0.78431374, g: 0.92156863, b: 0.9607843, a: 1}
     materialDecalColour: {r: 0.64705884, g: 0.78431374, b: 0.84313726, a: 1}
+    materialHealthMax: 500
+    materialResistanceMelee: 0
+    materialResistanceBullet: 0.4
+    materialResistanceEnergy: 0.6
+    materialResistanceFire: 0.8
+    materialResistanceExplosive: 0
+    materialResistanceToxic: 1
   - materialType: 11
     materialHitSounds: []
     materialDestroySounds: []
@@ -114,6 +191,13 @@ MonoBehaviour:
     materialTexture: {fileID: 2800000, guid: 67a88c485ad67e4418fe4174627fff08, type: 3}
     materialBloodColour: {r: 0.62352943, g: 0, b: 0, a: 1}
     materialDecalColour: {r: 0.47058824, g: 0, b: 0, a: 1}
+    materialHealthMax: 50
+    materialResistanceMelee: 0
+    materialResistanceBullet: 0
+    materialResistanceEnergy: 0
+    materialResistanceFire: 0
+    materialResistanceExplosive: 0
+    materialResistanceToxic: 0
   - materialType: 12
     materialHitSounds: []
     materialDestroySounds: []
@@ -121,6 +205,13 @@ MonoBehaviour:
     materialTexture: {fileID: 2800000, guid: 1fd0a83bd915b6346bdc8af8126a283d, type: 3}
     materialBloodColour: {r: 0.23529412, g: 0.54901963, b: 0.8627451, a: 1}
     materialDecalColour: {r: 0.1764706, g: 0.43137255, b: 0.7254902, a: 1}
+    materialHealthMax: 50
+    materialResistanceMelee: 0
+    materialResistanceBullet: 0.4
+    materialResistanceEnergy: 0.6
+    materialResistanceFire: 0.8
+    materialResistanceExplosive: 0
+    materialResistanceToxic: 1
   - materialType: 13
     materialHitSounds: []
     materialDestroySounds: []
@@ -128,3 +219,10 @@ MonoBehaviour:
     materialTexture: {fileID: 2800000, guid: eb63e5c784a5341458da1f65b344f853, type: 3}
     materialBloodColour: {r: 0.88235295, g: 0.88235295, b: 0.88235295, a: 1}
     materialDecalColour: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    materialHealthMax: 50
+    materialResistanceMelee: 0
+    materialResistanceBullet: 0.4
+    materialResistanceEnergy: 0.6
+    materialResistanceFire: 0.8
+    materialResistanceExplosive: 0
+    materialResistanceToxic: 1

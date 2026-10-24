@@ -28,4 +28,21 @@ public class F_Ent_MaterialSettings
     public Color materialBloodColour = Color.white;
     // Colour of the on-death decal effects for this material
     public Color materialDecalColour = Color.white;
+
+    [Header("Health Stats")]
+    // Default max health for world objects of this material; they start at full health
+    public float materialHealthMax = 100f;
+
+    [Header("Resistance Stats")]
+    // Default resistances for world objects of this material. 1.0 fully immune, 0.0 takes full damage.
+    [Range(materialResistanceMin, materialResistanceMax)] public float materialResistanceMelee = 0f;
+    [Range(materialResistanceMin, materialResistanceMax)] public float materialResistanceBullet = 0f;
+    [Range(materialResistanceMin, materialResistanceMax)] public float materialResistanceEnergy = 0f;
+    [Range(materialResistanceMin, materialResistanceMax)] public float materialResistanceFire = 0f;
+    [Range(materialResistanceMin, materialResistanceMax)] public float materialResistanceExplosive = 0f;
+    [Range(materialResistanceMin, materialResistanceMax)] public float materialResistanceToxic = 0f;
+
+    [Header("Constants Private")]
+    private const float materialResistanceMin = 0f;
+    private const float materialResistanceMax = 1f;
 }
