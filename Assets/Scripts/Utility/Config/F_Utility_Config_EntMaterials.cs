@@ -13,6 +13,10 @@ public class F_Utility_Config_EntMaterials : ScriptableObject
     private const string cfgEntMaterialsResourcePath = "OB_Config_EntMaterials";
 
     [Header("Ent Material Config")]
+    // Base material using the world texture shader; each material type gets its texture applied on top
+    public Material cfgEntMaterialWorldMaterial;
+    // Texture pixels per world unit; keep equal to sprite pixels per unit for consistent pixel density
+    public float cfgEntMaterialTexturePixelsPerUnit = 64f;
     // One entry per enumMaterialType; ents copy the entry matching their material
     public List<F_Ent_MaterialSettings> cfgEntMaterialSettings = new List<F_Ent_MaterialSettings>();
 

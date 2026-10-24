@@ -19,11 +19,11 @@ public class F_Ent_MaterialSettings
     // One clip is picked at random when an ent of this material is walked on by the player or an npc
     public AudioClip[] materialFootStepSounds;
 
+    [Header("Textures")]
+    // Texture tiled seamlessly in world space across every world object of this material
+    public Texture2D materialTexture;
+
     [Header("Colours")]
-    // Colour of interior fill of the material
-    public Color materialFillColour = Color.white;
-    // Colour of thin outline around the material
-    public Color materialOutlineColour = Color.white;
     // Colour of the on-hit particle effects for this material
     public Color materialBloodColour = Color.white;
     // Colour of the on-death decal effects for this material

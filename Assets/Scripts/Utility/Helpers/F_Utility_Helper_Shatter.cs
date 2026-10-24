@@ -129,29 +129,33 @@ public static class F_Utility_Helper_Shatter
 
         // Vertex 0 is the centroid, followed by the ring; the fan keeps convex Voronoi cells intact.
         Vector3[] vertices = new Vector3[polygon.Count + 1];
-        Vector2[] uvs = new Vector2[polygon.Count + 1];
+        // xy: sprite texture coordinate, zw: world position at spawn so world-textured pieces keep their texture while moving
+        List<Vector4> uvs = new List<Vector4>(polygon.Count + 1);
         int[] triangles = new int[polygon.Count * 3];
         Vector2 textureSize = new Vector2(texture.width, texture.height);
+        Transform rendererTransform = spriteRenderer.transform;
 
         vertices[0] = Vector3.zero;
-        uvs[0] = GetUv(centroid, pixelsPerUnit, pivot, textureOffset, textureRect, textureSize);
+        uvs.Add(GetPieceUv(centroid, rendererTransform, flip, pixelsPerUnit, pivot, textureOffset, textureRect, textureSize));
         for (int pointIndex = 0; pointIndex < polygon.Count; pointIndex++)
         {
             Vector2 relative = polygon[pointIndex] - centroid;
             vertices[pointIndex + 1] = new Vector3(relative.x * flip.x, relative.y * flip.y, 0f);
-            uvs[pointIndex + 1] = GetUv(polygon[pointIndex], pixelsPerUnit, pivot, textureOffset, textureRect, textureSize);
+            uvs.Add(GetPieceUv(polygon[pointIndex], rendererTransform, flip, pixelsPerUnit, pivot, textureOffset, textureRect, textureSize));
 
             triangles[pointIndex * 3] = 0;
             triangles[pointIndex * 3 + 1] = pointIndex + 1;
             triangles[pointIndex * 3 + 2] = (pointIndex + 1) % polygon.Count + 1;
         }
 
-        Mesh mesh = new Mesh { vertices = vertices, uv = uvs, triangles = triangles };
+        Mesh mesh = new Mesh { vertices = vertices };
+        mesh.SetUVs(0, uvs);
+        mesh.triangles = triangles;
         mesh.RecalculateBounds();
 
         Material material = new Material(spriteRenderer.sharedMaterial) { mainTexture = texture, color = spriteRenderer.color };
+        F_Utility_Helper_EntMaterial.LockWorldTextureToMesh(material);
 
-        Transform rendererTransform = spriteRenderer.transform;
         GameObject pieceObject = new GameObject(cfgShatterPieceNamePrefix + spriteRenderer.name);
         pieceObject.transform.SetPositionAndRotation(
             rendererTransform.TransformPoint(new Vector3(centroid.x * flip.x, centroid.y * flip.y, 0f)),
@@ -171,6 +175,14 @@ public static class F_Utility_Helper_Shatter
         float lifetime = Random.Range(F_Utility_Config_Shatter.cfgShatterLifetimeMin, F_Utility_Config_Shatter.cfgShatterLifetimeMax);
 
         pieceObject.AddComponent<F_Effects_ShatterPiece>().Initialise(velocity, spin, lifetime, material, mesh);
+    }
+
+    // Packs a sprite-local point's texture coordinate (xy) with its current world position (zw).
+    private static Vector4 GetPieceUv(Vector2 localPoint, Transform rendererTransform, Vector2 flip, float pixelsPerUnit, Vector2 pivot, Vector2 textureOffset, Rect textureRect, Vector2 textureSize)
+    {
+        Vector2 textureUv = GetUv(localPoint, pixelsPerUnit, pivot, textureOffset, textureRect, textureSize);
+        Vector3 worldPoint = rendererTransform.TransformPoint(new Vector3(localPoint.x * flip.x, localPoint.y * flip.y, 0f));
+        return new Vector4(textureUv.x, textureUv.y, worldPoint.x, worldPoint.y);
     }
 
     // Converts a sprite-local point into a normalised texture coordinate.

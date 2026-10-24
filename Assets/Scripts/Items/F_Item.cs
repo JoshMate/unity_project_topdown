@@ -97,28 +97,7 @@ public class F_Item : MonoBehaviour
         }
 
         itemPolygonCollider.isTrigger = true;
-        Sprite itemSprite = ItemSprite;
-        if (itemSprite == null)
-        {
-            return;
-        }
-
-        int physicsShapeCount = itemSprite.GetPhysicsShapeCount();
-        if (physicsShapeCount == 0)
-        {
-            return;
-        }
-
-        itemPolygonCollider.pathCount = physicsShapeCount;
-        List<Vector2> physicsShape = new List<Vector2>();
-        for (int shapeIndex = 0; shapeIndex < physicsShapeCount; shapeIndex++)
-        {
-            physicsShape.Clear();
-            itemSprite.GetPhysicsShape(shapeIndex, physicsShape);
-            itemPolygonCollider.SetPath(shapeIndex, physicsShape);
-        }
-
-        itemPolygonCollider.useDelaunayMesh = true;
+        F_Utility_Helper_Sprite.ApplyPhysicsShape(itemPolygonCollider, ItemSprite);
     }
 
     /// <summary>Returns the item properties displayed by the generic item tooltip.</summary>

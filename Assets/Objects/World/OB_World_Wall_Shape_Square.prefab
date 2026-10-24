@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 1000238371947742931}
   - component: {fileID: 4611494174158579643}
   - component: {fileID: 5159597281262935005}
-  - component: {fileID: 4037906562490598042}
   - component: {fileID: 7413522968095097262}
+  - component: {fileID: 3156603666387615710}
   m_Layer: 0
   m_Name: OB_World_Wall_Shape_Square
   m_TagString: Tag_Ent
@@ -61,7 +61,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 923d4e3adba6b5444b58466b1ca7961f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -84,7 +84,7 @@ SpriteRenderer:
   m_SortingLayer: 5
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -8503905631841630684, guid: d16ff655ec86f5e47a90e8245ecce314, type: 3}
+  m_Sprite: {fileID: 21300000, guid: d16ff655ec86f5e47a90e8245ecce314, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -121,8 +121,40 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 7
---- !u!61 &4037906562490598042
-BoxCollider2D:
+--- !u!114 &7413522968095097262
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2813996396988073590}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e977737ef31f06b4c983632d11e1039b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  entInfoName: Wooden Wall
+  entInfoDescription: A solid wall
+  entFeatureMaterial: 4
+  entStatHealth: 25
+  entStatHealthMax: 25
+  entStatToxic: 0
+  entStatToxicMax: 1000
+  entResistanceMelee: 0
+  entResistanceBullet: 0
+  entResistanceEnergy: 0
+  entResistanceFire: 0
+  entResistanceExplosive: 0
+  entResistanceToxic: 0
+  entFeatureCanSeeThrough: 0
+  entFeatureCanWalkThrough: 0
+  entFeatureCanShootOver: 0
+  entFeatureShatterOnDeath: 1
+  entFeatureCreateBloodOnHit: 1
+  entFeatureCreateDecalOnDestroy: 1
+  worldShape: 0
+--- !u!60 &3156603666387615710
+PolygonCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -165,36 +197,10 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1, y: 1}
-  m_EdgeRadius: 0
---- !u!114 &7413522968095097262
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2813996396988073590}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e977737ef31f06b4c983632d11e1039b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  entInfoName: Wooden Wall
-  entInfoDescription: A solid wall
-  entFeatureMaterial: 4
-  entStatHealth: 25
-  entStatHealthMax: 25
-  entStatToxic: 0
-  entStatToxicMax: 1000
-  entResistanceMelee: 0
-  entResistanceBullet: 0
-  entResistanceEnergy: 0
-  entResistanceFire: 0
-  entResistanceExplosive: 0
-  entResistanceToxic: 0
-  entFeatureCanSeeThrough: 0
-  entFeatureCanWalkThrough: 0
-  entFeatureCanShootOver: 0
-  entFeatureShatterOnDeath: 1
-  entFeatureCreateBloodOnHit: 1
-  entFeatureCreateDecalOnDestroy: 1
+  m_Points:
+    m_Paths:
+    - - {x: -0.5, y: 0.5}
+      - {x: -0.5, y: -0.5}
+      - {x: 0.5, y: -0.5}
+      - {x: 0.5, y: 0.5}
+  m_UseDelaunayMesh: 1

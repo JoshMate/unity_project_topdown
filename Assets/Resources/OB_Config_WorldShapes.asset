@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b227e65ac79c06f489ba4b85b9ea62d6, type: 3}
+  m_Name: OB_Config_WorldShapes
+  m_EditorClassIdentifier: Assembly-CSharp::F_Utility_Config_WorldShapes
+  cfgWorldShapeSettings:
+  - shapeType: 0
+    shapeSprite: {fileID: 21300000, guid: d16ff655ec86f5e47a90e8245ecce314, type: 3}
+  - shapeType: 1
+    shapeSprite: {fileID: 21300000, guid: f0fab4720a5602f439cbc32cf1f44ecc, type: 3}
+  - shapeType: 2
+    shapeSprite: {fileID: 21300000, guid: 62bae9ab688687144ac5acb773cc85c1, type: 3}
+  - shapeType: 3
+    shapeSprite: {fileID: 21300000, guid: 1d4c5652d2c987a40be6eeee5c9e909d, type: 3}
+  - shapeType: 4
+    shapeSprite: {fileID: 21300000, guid: b572108348afe774395419d3363c8dcd, type: 3}
+  - shapeType: 5
+    shapeSprite: {fileID: 21300000, guid: 713cca1ae7cb2494ca0ae6b3051fc12d, type: 3}
+  - shapeType: 6
+    shapeSprite: {fileID: 21300000, guid: 66d274d02db37b642ad058a38cb6887c, type: 3}
+  - shapeType: 7
+    shapeSprite: {fileID: 21300000, guid: d6680e447f53f614194be73805f484e8, type: 3}
+  - shapeType: 8
+    shapeSprite: {fileID: 21300000, guid: e7773ee3835e65a499fa6c00b4f7724a, type: 3}
+  - shapeType: 9
+    shapeSprite: {fileID: 21300000, guid: 8e2f9f5fa50719b4b83684e3b3e7b26f, type: 3}
+  - shapeType: 10
+    shapeSprite: {fileID: 21300000, guid: 720a27e2c213bae4fa35a1e29d1544db, type: 3}
+  - shapeType: 11
+    shapeSprite: {fileID: 21300000, guid: ab08c3830d14c2143bc7db6c558f0ba1, type: 3}
