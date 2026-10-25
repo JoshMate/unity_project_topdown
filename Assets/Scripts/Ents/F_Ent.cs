@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class F_Ent : MonoBehaviour
 {
@@ -38,12 +39,13 @@ public class F_Ent : MonoBehaviour
     public float entResistanceToxic = 0.0f;
 
     [Header("Ent Features")]
-    // Whether or not this ent blocks npcs vision
+    // Whether or not this ent blocks npcs vision (reserved for NPC vision)
     public bool entFeatureCanSeeThrough = false;
-    // Whether or not this ent can be moved through by the player or npcs
+    // Whether or not movers (player, npcs) pass freely through this ent
     public bool entFeatureCanWalkThrough = false;
-    // Whether or not this bullets should collide with this ent or pass straight over
-    public bool entFeatureCanShootOver = false;
+    // Whether or not projectiles and bullets pass freely over this ent
+    [FormerlySerializedAs("entFeatureCanShootOver")]
+    public bool entFeatureCanShootThrough = false;
     // Whether this ent's sprites shatter into pieces when it dies
     public bool entFeatureShatterOnDeath = true;
     // Whether this ent emits blood particles when hit
@@ -89,6 +91,11 @@ public class F_Ent : MonoBehaviour
     {
         entStatHealth = Mathf.Clamp(entStatHealth, entHealthFloor, entStatHealthMax);
         ApplyMaterialConfig();
+        if (IsMover)
+        {
+            F_Utility_Helper_Physics.AssignPhysicsLayer(gameObject, F_Utility_Config_Physics.cfgPhysicsLayerMover);
+        }
+        ApplyPassThroughFeatures();
         if (GetComponent<F_Ent_HealthBar>() == null)
         {
             gameObject.AddComponent<F_Ent_HealthBar>();
@@ -109,6 +116,15 @@ public class F_Ent : MonoBehaviour
         entMaterialBloodColour = settings.materialBloodColour;
         entMaterialDecalColour = settings.materialDecalColour;
     }
+
+    /// <summary>Applies the walk-through and shoot-through features to this ent's colliders. Call again after changing either flag at runtime.</summary>
+    public void ApplyPassThroughFeatures()
+    {
+        F_Utility_Helper_Physics.ApplyEntPassThroughFeatures(this);
+    }
+
+    // Whether this ent walks or slides around and so passes through walk-through ents; override to true for the player and npcs.
+    protected virtual bool IsMover => false;
 
     // Plays a random non-empty clip from the array, if any.
     private void PlayEntSound(AudioClip[] sounds)

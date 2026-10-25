@@ -21,7 +21,6 @@ public class F_Effects_Projectile : MonoBehaviour
     [Header("Privates")]
     // Cache motion before collision response can reduce the Rigidbody velocity to zero.
     private Vector2 lastTravelDirection;
-    private Vector2 lastVelocity;
     private Vector3 spawnPositionWorld;
     private float projectileDamage;
     private enumDamageType projectileDamageType = enumDamageType.Typeless;
@@ -66,6 +65,11 @@ public class F_Effects_Projectile : MonoBehaviour
         hasCombatData = true;
     }
 
+    void Awake()
+    {
+        F_Utility_Helper_Physics.AssignPhysicsLayer(gameObject, F_Utility_Config_Physics.cfgPhysicsLayerProjectile);
+    }
+
     void Start()
     {
         if (!hasCombatData)
@@ -79,7 +83,6 @@ public class F_Effects_Projectile : MonoBehaviour
         Vector2 velocity = rb.linearVelocity;
         if (velocity.sqrMagnitude > directionEpsilon)
         {
-            lastVelocity = velocity;
             lastTravelDirection = velocity.normalized;
             float aimAngle = Mathf.Atan2(velocity.y, velocity.x) * Mathf.Rad2Deg;
             rb.rotation = aimAngle;
@@ -93,15 +96,8 @@ public class F_Effects_Projectile : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D other)
     {
+        // Shoot-through ents never reach here; their colliders exclude the projectile layer.
         F_Ent hitEntity = other.collider.GetComponentInParent<F_Ent>();
-
-        // Pass-through ents: ignore the collider and restore the velocity the physics response may have altered.
-        if (hitEntity != null && hitEntity.entFeatureCanShootOver)
-        {
-            Physics2D.IgnoreCollision(other.otherCollider, other.collider);
-            rb.linearVelocity = lastVelocity;
-            return;
-        }
 
         float distanceTraveled = Vector3.Distance(transform.position, spawnPositionWorld);
         lastImpactDamage = hasCombatData ? GetDamageAtDistance(distanceTraveled) : 0f;

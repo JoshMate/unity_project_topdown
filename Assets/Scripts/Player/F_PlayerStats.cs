@@ -121,6 +121,9 @@ public class F_PlayerStats : F_Ent
     // The player persists after death to avoid breaking systems that reference it.
     protected override bool DestroyOnDeath => false;
 
+    // The player moves around, so it passes through walk-through ents.
+    protected override bool IsMover => true;
+
     // Logs player death; death UI is out of scope for now.
     protected override void OnDeath()
     {
