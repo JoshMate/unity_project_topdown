@@ -104,4 +104,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34186f71319192a429e7e931aa116fd8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::F_Point
+  pointName: This thing spawns the player bruh. Like crazy man
   pointType: 1

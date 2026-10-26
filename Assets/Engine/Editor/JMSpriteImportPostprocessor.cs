@@ -9,6 +9,8 @@ public sealed class JMSpriteImportPostprocessor : AssetPostprocessor
     [Header("Constants Private")]
     private const string spriteArtFolder = "Assets/Art/";
     private const string spritePresetPath = "Assets/Engine/Editor/JMSpriteImport.preset";
+    // Point markers are mostly hollow frames; a full-rect mesh makes the whole square clickable in the Scene view
+    private const string spritePointArtFolder = "Assets/Art/Points/";
 
     [Header("Privates")]
     private static Preset cachedSpritePreset;
@@ -31,7 +33,7 @@ public sealed class JMSpriteImportPostprocessor : AssetPostprocessor
         {
             // Preserve each authored slice and pivot while normalizing the shared importer settings.
             ApplySpritePresetSettingsPreservingSpriteSheet(textureImporter);
-            ApplyTightMeshAndPhysicsShape(textureImporter);
+            ApplySpriteMeshAndPhysicsShape(textureImporter);
             return;
         }
 
@@ -48,7 +50,7 @@ public sealed class JMSpriteImportPostprocessor : AssetPostprocessor
             return;
         }
 
-        ApplyTightMeshAndPhysicsShape(textureImporter);
+        ApplySpriteMeshAndPhysicsShape(textureImporter);
     }
 
     private static void ApplySpritePresetSettingsPreservingSpriteSheet(TextureImporter textureImporter)
@@ -70,11 +72,14 @@ public sealed class JMSpriteImportPostprocessor : AssetPostprocessor
         textureImporter.spritePixelsPerUnit = 64;
     }
 
-    private static void ApplyTightMeshAndPhysicsShape(TextureImporter textureImporter)
+    // Point sprites get a full-rect mesh so they are clickable across their whole area; all other art uses a tight mesh
+    private void ApplySpriteMeshAndPhysicsShape(TextureImporter textureImporter)
     {
         TextureImporterSettings importSettings = new TextureImporterSettings();
         textureImporter.ReadTextureSettings(importSettings);
-        importSettings.spriteMeshType = SpriteMeshType.Tight;
+        importSettings.spriteMeshType = assetPath.StartsWith(spritePointArtFolder, StringComparison.Ordinal)
+            ? SpriteMeshType.FullRect
+            : SpriteMeshType.Tight;
         importSettings.spriteGenerateFallbackPhysicsShape = true;
         textureImporter.SetTextureSettings(importSettings);
     }

@@ -62,4 +62,9 @@ public static class F_Utility_Config_Colours
     // Constants Public: Loading screen
     public static readonly Color32 cfgColourLoadingBarBackground = new Color32(41, 46, 51, opaqueAlpha);
     public static readonly Color32 cfgColourLoadingBarFill = new Color32(217, 140, 38, opaqueAlpha);
+
+    // Constants Public: Editor point labels
+    public static readonly Color32 cfgColourPointLabelText = cfgColourWhite;
+    // Fully transparent so the Scene view click area over a point is invisible
+    public static readonly Color32 cfgColourPointPickArea = new Color32(0, 0, 0, 0);
 }

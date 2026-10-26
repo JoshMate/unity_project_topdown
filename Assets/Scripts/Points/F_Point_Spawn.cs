@@ -21,7 +21,11 @@ public class F_Point_Spawn : F_Point
 
     private void Start()
     {
-        SpawnFromList();
+        // F_Point runs in edit mode, so only spawn while the game is running
+        if (Application.isPlaying)
+        {
+            SpawnFromList();
+        }
     }
 
     private void OnValidate()
