@@ -20,7 +20,7 @@ public class F_Point_SpawnEntry
     // Items: the lowest item count assigned. Anything else: the fewest instances spawned
     [Min(spawnCountLowest)]
     public int spawnCountMin = spawnCountLowest;
-    // Items: the highest item count assigned. Anything else: the most instances spawned
+    // Items: the highest item count assigned, capped at the item's max count. Anything else: the most instances spawned
     [Min(spawnCountLowest)]
     public int spawnCountMax = spawnCountLowest;
     // How the count is distributed between min and max
@@ -35,10 +35,18 @@ public class F_Point_SpawnEntry
         return F_Utility_Helper_Random.RollIntegerInRange(spawnCountMin, spawnCountMax, spawnCountType);
     }
 
-    /// <summary>Keeps the counts valid after editing: at least the lowest count, and max never below min.</summary>
+    /// <summary>Keeps the counts valid after editing: at least the lowest count, max never below min, and items never above their max stack size.</summary>
     public void ValidateSpawnCounts()
     {
-        spawnCountMin = Mathf.Max(spawnCountLowest, spawnCountMin);
-        spawnCountMax = Mathf.Max(spawnCountMin, spawnCountMax);
+        int spawnCountHighest = GetSpawnCountHighest();
+        spawnCountMin = Mathf.Clamp(spawnCountMin, spawnCountLowest, spawnCountHighest);
+        spawnCountMax = Mathf.Clamp(spawnCountMax, spawnCountMin, spawnCountHighest);
+    }
+
+    // Items are capped at the max count defined on the item; anything else has no upper limit
+    private int GetSpawnCountHighest()
+    {
+        F_Item spawnItem = spawnObject != null ? spawnObject.GetComponent<F_Item>() : null;
+        return spawnItem != null ? Mathf.Max(spawnCountLowest, spawnItem.ItemCountMaxValue) : int.MaxValue;
     }
 }
