@@ -104,32 +104,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26f22298c6522b34a93927e1e39e3407, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::F_Point_Spawn
-  pointName: Test Random Weapon
+  pointName: Test Random Ammo
   pointType: 2
-  spawnChance: 50
+  spawnChance: 100
   spawnList:
-  - spawnObject: {fileID: 5194119782603112733, guid: 6dc79cad537b9104ba9cd4b713884a3c, type: 3}
+  - spawnObject: {fileID: 5194119782603112733, guid: 8be919d8b1276674da1c1db6fcac0137, type: 3}
     spawnWeight: 1
     spawnCountMin: 1
-    spawnCountMax: 1
-    spawnCountType: 0
-  - spawnObject: {fileID: 5194119782603112733, guid: 47d67708270cf0e498fb3bf92afe8fca, type: 3}
+    spawnCountMax: 20
+    spawnCountType: 1
+  - spawnObject: {fileID: 5194119782603112733, guid: 7e226b366eb06a347897a1f7ee111c2d, type: 3}
     spawnWeight: 1
     spawnCountMin: 1
-    spawnCountMax: 1
-    spawnCountType: 0
-  - spawnObject: {fileID: 5194119782603112733, guid: 47d67708270cf0e498fb3bf92afe8fca, type: 3}
+    spawnCountMax: 120
+    spawnCountType: 1
+  - spawnObject: {fileID: 5194119782603112733, guid: 04d01e6d74af6af40b591a757e41bd02, type: 3}
     spawnWeight: 1
     spawnCountMin: 1
-    spawnCountMax: 1
-    spawnCountType: 0
-  - spawnObject: {fileID: 5194119782603112733, guid: 0674c73fc68012540a1e73bbd9039f43, type: 3}
+    spawnCountMax: 60
+    spawnCountType: 1
+  - spawnObject: {fileID: 5194119782603112733, guid: df5f3e946acaa3f41a6f2fd47516b46d, type: 3}
     spawnWeight: 1
     spawnCountMin: 1
-    spawnCountMax: 1
-    spawnCountType: 0
-  - spawnObject: {fileID: 5194119782603112733, guid: 0674c73fc68012540a1e73bbd9039f43, type: 3}
-    spawnWeight: 1
-    spawnCountMin: 1
-    spawnCountMax: 1
-    spawnCountType: 0
+    spawnCountMax: 32
+    spawnCountType: 1
