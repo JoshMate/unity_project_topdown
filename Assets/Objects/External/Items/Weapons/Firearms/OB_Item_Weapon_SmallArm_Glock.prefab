@@ -168,7 +168,6 @@ MonoBehaviour:
   itemValue: 150
   itemCount: 1
   itemCountMax: 1
-  itemSprite: {fileID: 4271609836247489768, guid: e7a68358ea10b04488655010b0450ffd, type: 3}
   itemSoundPickup: {fileID: 8300000, guid: 8e446704c52ec114c94c2e5486ef4926, type: 3}
   itemSoundDrop: {fileID: 8300000, guid: 52daba66c8f82e94494016eb6c114a6f, type: 3}
   weaponProjectileSprite: {fileID: 21300000, guid: 803d441fac3a9174e87b8c8f7b1883eb, type: 3}
@@ -182,9 +181,9 @@ MonoBehaviour:
   weaponDeployEndSound: {fileID: 8300000, guid: c9c17effdfdaef84395aee8fefe75926, type: 3}
   weaponBreakSound: {fileID: 8300000, guid: 263289bb386566e42b36bb7f691e6e79, type: 3}
   weaponDryFireSound: {fileID: 8300000, guid: d0e21b6671c1c6a40ae0ac0f08847ce2, type: 3}
-  weaponDamage: 1
+  weaponDamage: 12
   weaponDamageType: 1
-  weaponFireRateDelay: 0.04
+  weaponFireRateDelay: 0.1
   weaponRange: 8
   weaponRangeDamageFallOffMin: 0.3
   weaponProjectileSpeed: 12

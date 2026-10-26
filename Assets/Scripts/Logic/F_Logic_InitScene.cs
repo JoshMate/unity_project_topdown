@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 public class F_Logic_InitScene : MonoBehaviour
 {
     [Header("Constants Private")]
-    private const string playerSpawnPointName = "PlayerSpawnPoint";
+    private const enumPointType playerSpawnPointType = enumPointType.FunctionPlayerSpawnPoint;
 
     [Header("Privates")]
     private F_Logic_GameManager gameManager;
@@ -43,19 +43,10 @@ public class F_Logic_InitScene : MonoBehaviour
             return;
         }
 
-        GameObject spawnPoint = null;
-        foreach (GameObject rootObject in loadedScene.GetRootGameObjects())
-        {
-            if (rootObject.name == playerSpawnPointName)
-            {
-                spawnPoint = rootObject;
-                break;
-            }
-        }
-
+        F_Point spawnPoint = F_Utility_Helper_Points.FindPointInScene(loadedScene, playerSpawnPointType);
         if (spawnPoint == null)
         {
-            Debug.LogError($"The gameplay scene is missing a {playerSpawnPointName} GameObject.");
+            Debug.LogError($"The gameplay scene is missing an F_Point with point type {playerSpawnPointType}.");
             return;
         }
 

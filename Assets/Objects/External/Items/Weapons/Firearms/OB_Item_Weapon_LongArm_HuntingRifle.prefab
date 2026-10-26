@@ -170,7 +170,6 @@ MonoBehaviour:
   itemValue: 300
   itemCount: 1
   itemCountMax: 1
-  itemSprite: {fileID: 21300000, guid: 10a59948f9a223a4ab0f3e2bb1c3a144, type: 3}
   itemSoundPickup: {fileID: 8300000, guid: 8e446704c52ec114c94c2e5486ef4926, type: 3}
   itemSoundDrop: {fileID: 8300000, guid: 52daba66c8f82e94494016eb6c114a6f, type: 3}
   weaponProjectileSprite: {fileID: 21300000, guid: 803d441fac3a9174e87b8c8f7b1883eb, type: 3}
@@ -184,7 +183,7 @@ MonoBehaviour:
   weaponDeployEndSound: {fileID: 8300000, guid: c9c17effdfdaef84395aee8fefe75926, type: 3}
   weaponBreakSound: {fileID: 8300000, guid: 263289bb386566e42b36bb7f691e6e79, type: 3}
   weaponDryFireSound: {fileID: 8300000, guid: d0e21b6671c1c6a40ae0ac0f08847ce2, type: 3}
-  weaponDamage: 25
+  weaponDamage: 32
   weaponDamageType: 1
   weaponFireRateDelay: 0.9
   weaponRange: 20
@@ -204,7 +203,7 @@ MonoBehaviour:
   weaponSpreadRecoilRecoveryDelay: 0.1
   weaponIsReverseRecoilImpulse: 0
   weaponUsesAmmo: 1
-  weaponAmmoType: {fileID: 4020092144798230732, guid: 04d01e6d74af6af40b591a757e41bd02, type: 3}
+  weaponAmmoType: {fileID: 4020092144798230732, guid: 8be919d8b1276674da1c1db6fcac0137, type: 3}
   weaponAmmoCapacity: 5
   weaponAmmoTakenPerShot: 1
   weaponReloadDelay: 0.6
