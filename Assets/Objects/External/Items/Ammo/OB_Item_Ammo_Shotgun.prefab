@@ -55,7 +55,6 @@ MonoBehaviour:
   itemValue: 10
   itemCount: 1
   itemCountMax: 32
-  itemSprite: {fileID: -8992469094741731674, guid: 160afa291f4b10e4fb57545d27fda0e3, type: 3}
   itemSoundPickup: {fileID: 8300000, guid: 8e446704c52ec114c94c2e5486ef4926, type: 3}
   itemSoundDrop: {fileID: 8300000, guid: 52daba66c8f82e94494016eb6c114a6f, type: 3}
 --- !u!212 &3257486541222685028
@@ -84,7 +83,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 76525be5ea4d69b428eaaf81ef16542a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

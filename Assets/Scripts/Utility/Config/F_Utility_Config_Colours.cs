@@ -26,6 +26,10 @@ public static class F_Utility_Config_Colours
     public static readonly Color32 cfgColourInventorySlotBorderHovered = cfgColourWhite;
     public static readonly Color32 cfgColourInventorySlotBorderDefault = cfgColourGrey;
 
+    // Constants Public: Interaction
+    // Outline drawn around a usable object (e.g. a container) when the cursor hovers it within interact range
+    public static readonly Color32 cfgColourInteractOutline = cfgColourWhite;
+
     // Constants Public: Cursor
     public static readonly Color32 cfgColourCursorCrosshair = cfgColourWhite;
     public static readonly Color32 cfgColourCursorReloadRing = cfgColourWhite;

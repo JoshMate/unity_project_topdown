@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public static class F_Utility_Helper_Inventory
 {
@@ -123,7 +124,7 @@ public static class F_Utility_Helper_Inventory
                 }
 
                 int stackCount = Mathf.Min(remainingCount, maximumStackCount);
-                F_Item newItem = CreateItemInstance(itemTemplate, playerInventory, stackCount);
+                F_Item newItem = CreateItemInstance(itemTemplate, playerInventory.transform.position, stackCount);
                 if (newItem == null)
                 {
                     return false;
@@ -137,7 +138,7 @@ public static class F_Utility_Helper_Inventory
 
         if (remainingCount > 0)
         {
-            F_Item remainderItem = CreateItemInstance(itemTemplate, playerInventory, remainingCount);
+            F_Item remainderItem = CreateItemInstance(itemTemplate, playerInventory.transform.position, remainingCount);
             if (remainderItem == null)
             {
                 return false;
@@ -147,6 +148,90 @@ public static class F_Utility_Helper_Inventory
         }
 
         return true;
+    }
+
+    /// <summary>Creates new item instances inside a container, stacking onto compatible items first and then filling empty slots. Anything that does not fit is discarded.</summary>
+    /// <param name="itemTemplate">The item prefab used as the instance template.</param>
+    /// <param name="count">The number of items to add.</param>
+    /// <param name="container">The container that receives the new item instances.</param>
+    /// <returns>The number of items actually added.</returns>
+    public static int AddItemToContainer(F_Item itemTemplate, int count, F_Ent_Container container)
+    {
+        if (itemTemplate == null || container == null || count <= 0)
+        {
+            return 0;
+        }
+
+        List<F_Item> containerItems = container.ContainerItems;
+        int remainingCount = count;
+
+        for (int slotIndex = 0; slotIndex < containerItems.Count && remainingCount > 0; slotIndex++)
+        {
+            if (AreStackCompatible(itemTemplate, containerItems[slotIndex]))
+            {
+                remainingCount -= AddToStack(containerItems[slotIndex], remainingCount);
+            }
+        }
+
+        int maximumStackCount = Mathf.Max(1, itemTemplate.ItemCountMaxValue);
+        for (int slotIndex = 0; slotIndex < containerItems.Count && remainingCount > 0; slotIndex++)
+        {
+            if (containerItems[slotIndex] != null)
+            {
+                continue;
+            }
+
+            int stackCount = Mathf.Min(remainingCount, maximumStackCount);
+            F_Item newItem = CreateItemInstance(itemTemplate, container.transform.position, stackCount);
+            if (newItem == null)
+            {
+                break;
+            }
+
+            // Containers can fill while their scene is still loading, when another scene is active; keep the item
+            // in the container's scene so it is not destroyed when the active (loading) scene unloads
+            SceneManager.MoveGameObjectToScene(newItem.gameObject, container.gameObject.scene);
+            newItem.SetInventoryStoredState(true);
+            containerItems[slotIndex] = newItem;
+            remainingCount -= stackCount;
+        }
+
+        return count - remainingCount;
+    }
+
+    /// <summary>Drops every item held by a container onto free grid cells around it, one item per cell, and empties the container.</summary>
+    /// <param name="container">The container releasing its items.</param>
+    /// <param name="searchRadiusMax">How many rings of grid cells to search for free space; items beyond that drop on the container itself.</param>
+    public static void DropContainerContents(F_Ent_Container container, int searchRadiusMax)
+    {
+        if (container == null)
+        {
+            return;
+        }
+
+        List<F_Item> containerItems = container.ContainerItems;
+        List<F_Item> itemsToDrop = new List<F_Item>();
+        for (int slotIndex = 0; slotIndex < containerItems.Count; slotIndex++)
+        {
+            if (containerItems[slotIndex] != null)
+            {
+                itemsToDrop.Add(containerItems[slotIndex]);
+            }
+
+            containerItems[slotIndex] = null;
+        }
+
+        Vector3 containerPosition = container.transform.position;
+        List<Vector2> freeCells = F_Utility_Helper_Physics.FindFreeGridCells(
+            containerPosition, itemsToDrop.Count, searchRadiusMax, container.gameObject);
+
+        for (int itemIndex = 0; itemIndex < itemsToDrop.Count; itemIndex++)
+        {
+            Vector3 dropPosition = itemIndex < freeCells.Count
+                ? new Vector3(freeCells[itemIndex].x, freeCells[itemIndex].y, containerPosition.z)
+                : containerPosition;
+            DropItemFromInventoryInternal(itemsToDrop[itemIndex], null, dropPosition, false);
+        }
     }
 
     /// <summary>Removes the loaded ammo from a weapon and adds it to the inventory as new ammo items.</summary>
@@ -414,7 +499,7 @@ public static class F_Utility_Helper_Inventory
             return false;
         }
 
-        F_Item splitItem = CreateItemInstance(sourceItem, playerInventory, splitCount);
+        F_Item splitItem = CreateItemInstance(sourceItem, playerInventory.transform.position, splitCount);
         if (splitItem == null)
         {
             return false;
@@ -444,7 +529,7 @@ public static class F_Utility_Helper_Inventory
 
         if (targetSlot.slotItemObj == null)
         {
-            F_Item placedItem = CreateItemInstance(heldItem, playerInventory, placeCount);
+            F_Item placedItem = CreateItemInstance(heldItem, playerInventory.transform.position, placeCount);
             if (placedItem == null)
             {
                 return false;
@@ -497,12 +582,12 @@ public static class F_Utility_Helper_Inventory
 
     private static F_Item CreateItemInstance(
         F_Item itemTemplate,
-        F_PlayerInventory playerInventory,
+        Vector3 spawnPosition,
         int itemCount)
     {
         GameObject itemInstance = Object.Instantiate(
             itemTemplate.gameObject,
-            playerInventory.transform.position,
+            spawnPosition,
             itemTemplate.transform.rotation);
         F_Item createdItem = itemInstance.GetComponent<F_Item>();
         if (createdItem == null)
@@ -621,6 +706,7 @@ public static class F_Utility_Helper_Inventory
         AddSlots(slots, playerInventory.invSlotWeapons);
         AddSlots(slots, playerInventory.invSlotQuickSlots);
         AddSlots(slots, playerInventory.invSlotInventory);
+        AddSlots(slots, playerInventory.invSlotContainer);
 
         return slots;
     }

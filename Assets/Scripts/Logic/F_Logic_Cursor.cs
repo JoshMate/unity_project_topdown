@@ -38,9 +38,17 @@ public class F_Logic_Cursor : MonoBehaviour
     private readonly Vector2 cursorHeldItemPadding = new Vector2(0.02f, -0.02f);
     private readonly Vector2 cursorHeldCountPadding = new Vector2(-0.02f, 0.02f);
     private readonly Vector2 cursorHeldCountBoxSize = new Vector2(1f, 1f);
+    private readonly List<Collider2D> cursorHoverResults = new List<Collider2D>();
     private TextMeshPro cursorHeldCountText;
     private Vector2 mousePosition;
     private GameObject cursorHoveredObject;
+    // Container under the cursor within interact range; outlined and opened by the interact key
+    private F_Ent_Container cursorHoveredContainer;
+    // World item under the cursor within interact range; outlined like a usable container
+    private F_Item cursorHoveredItem;
+
+    /// <summary>The furthest distance from the player at which items can be picked up or placed and containers opened.</summary>
+    public float CursorInteractMaxDistance => cursorPlaceMaxDistance;
 
 
 
@@ -114,21 +122,52 @@ public class F_Logic_Cursor : MonoBehaviour
             }
 
             cursorHoveredObject = null;
+            SetHoveredContainer(null);
+            SetHoveredItem(null);
             cursorText.text = string.Empty;
             UpdateItemTooltip(hoveredItem, pointerScreenPosition);
             return;
         }
 
-        RaycastHit2D hit = Physics2D.Raycast(mousePosition, Vector2.zero);
-        if (hit.collider != null)
+        // Check everything under the pointer: items take priority, otherwise a container in range can be used
+        F_Ent_Container hoveredContainer = null;
+        Collider2D firstHoveredCollider = null;
+        cursorHoverResults.Clear();
+        Physics2D.OverlapPoint(mousePosition, ContactFilter2D.noFilter, cursorHoverResults);
+        foreach (Collider2D hoverCollider in cursorHoverResults)
         {
-            hoveredItem = hit.collider.GetComponentInParent<F_Item>();
-            cursorHoveredObject = hoveredItem != null ? hoveredItem.gameObject : hit.collider.gameObject;
+            if (hoverCollider == null)
+            {
+                continue;
+            }
+
+            if (firstHoveredCollider == null)
+            {
+                firstHoveredCollider = hoverCollider;
+            }
+
+            if (hoveredItem == null)
+            {
+                hoveredItem = hoverCollider.GetComponentInParent<F_Item>();
+            }
+
+            if (hoveredContainer == null)
+            {
+                hoveredContainer = hoverCollider.GetComponentInParent<F_Ent_Container>();
+            }
         }
-        else
-        {
-            cursorHoveredObject = null;
-        }
+
+        cursorHoveredObject = hoveredItem != null
+            ? hoveredItem.gameObject
+            : firstHoveredCollider != null ? firstHoveredCollider.gameObject : null;
+
+        bool canOutlineItem = hoveredItem != null && hoveredItem != cursorHeldItemObj &&
+                              !hoveredItem.IsInInventorySlot && IsWithinInteractRange(hoveredItem.transform.position);
+        SetHoveredItem(canOutlineItem ? hoveredItem : null);
+
+        bool canUseContainer = hoveredItem == null && hoveredContainer != null && !hoveredContainer.IsDead &&
+                               IsWithinInteractRange(hoveredContainer.transform.position);
+        SetHoveredContainer(canUseContainer ? hoveredContainer : null);
 
         if (characterScreenManager.isMenuOpen)
         {
@@ -198,7 +237,18 @@ public class F_Logic_Cursor : MonoBehaviour
 
     private void ProcessInteractInput()
     {
-        if (!characterScreenManager.isMenuOpen || !controls.IsInteractPressed() || cursorHoveredObject == null)
+        if (!controls.IsInteractPressed())
+        {
+            return;
+        }
+
+        if (cursorHoveredContainer != null)
+        {
+            characterScreenManager.OpenContainerScreen(cursorHoveredContainer);
+            return;
+        }
+
+        if (!characterScreenManager.isMenuOpen || cursorHoveredObject == null)
         {
             return;
         }
@@ -209,8 +259,7 @@ public class F_Logic_Cursor : MonoBehaviour
             return;
         }
 
-        float distanceToPlayer = Vector2.Distance(hoveredItem.transform.position, playerController.transform.position);
-        if (distanceToPlayer > cursorPlaceMaxDistance)
+        if (!IsWithinInteractRange(hoveredItem.transform.position))
         {
             return;
         }
@@ -218,6 +267,53 @@ public class F_Logic_Cursor : MonoBehaviour
         if (F_Utility_Helper_Inventory.MoveItemToInventory(hoveredItem, playerController.playerInventory))
         {
             cursorHoveredObject = null;
+        }
+    }
+
+    // Whether a world position is close enough to the player to interact with
+    private bool IsWithinInteractRange(Vector2 worldPosition)
+    {
+        return playerController != null &&
+               Vector2.Distance(worldPosition, playerController.transform.position) <= cursorPlaceMaxDistance;
+    }
+
+    // Moves the hover outline from the previously hovered container to the new one (null clears it)
+    private void SetHoveredContainer(F_Ent_Container hoveredContainer)
+    {
+        if (hoveredContainer == cursorHoveredContainer)
+        {
+            return;
+        }
+
+        if (cursorHoveredContainer != null)
+        {
+            F_Utility_Helper_Outline.SetOutlineVisible(cursorHoveredContainer.gameObject, false);
+        }
+
+        cursorHoveredContainer = hoveredContainer;
+        if (cursorHoveredContainer != null)
+        {
+            F_Utility_Helper_Outline.SetOutlineVisible(cursorHoveredContainer.gameObject, true);
+        }
+    }
+
+    // Moves the hover outline from the previously hovered world item to the new one (null clears it)
+    private void SetHoveredItem(F_Item hoveredItem)
+    {
+        if (hoveredItem == cursorHoveredItem)
+        {
+            return;
+        }
+
+        if (cursorHoveredItem != null)
+        {
+            F_Utility_Helper_Outline.SetOutlineVisible(cursorHoveredItem.gameObject, false);
+        }
+
+        cursorHoveredItem = hoveredItem;
+        if (cursorHoveredItem != null)
+        {
+            F_Utility_Helper_Outline.SetOutlineVisible(cursorHoveredItem.gameObject, true);
         }
     }
 

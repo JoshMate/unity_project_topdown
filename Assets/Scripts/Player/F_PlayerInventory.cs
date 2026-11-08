@@ -30,6 +30,10 @@ public class F_PlayerInventory : MonoBehaviour
     [Header("Inventory Slot - Inventory")]
     public List<F_GUI_Inventory_Slot> invSlotInventory = new List<F_GUI_Inventory_Slot>();
 
+    [Header("Inventory Slot - Container")]
+    // Slots of the currently open container, filled at runtime by F_GUI_Container; not counted towards carried weight
+    [System.NonSerialized] public List<F_GUI_Inventory_Slot> invSlotContainer = new List<F_GUI_Inventory_Slot>();
+
     [Header("Privates")]
     private readonly HashSet<F_GUI_Inventory_Slot> visitedWeightSlots = new HashSet<F_GUI_Inventory_Slot>();
     private readonly HashSet<F_Item> visitedWeightItems = new HashSet<F_Item>();
