@@ -106,5 +106,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::F_Point_Spawn
   pointName: Ent Spawn
   pointType: 2
-  spawnChance: 100
-  spawnList: []
+  spawnLootTable: {fileID: 0}

@@ -163,7 +163,7 @@ MonoBehaviour:
     materialTexture: {fileID: 2800000, guid: aeeca18582db7cb4fba0622d15dd3089, type: 3}
     materialBloodColour: {r: 0.67058825, g: 0.9098039, b: 0.9529412, a: 1}
     materialDecalColour: {r: 0.54901963, g: 0.78431374, b: 0.84313726, a: 1}
-    materialHealthMax: 25
+    materialHealthMax: 5
     materialResistanceMelee: 0
     materialResistanceBullet: 0.4
     materialResistanceEnergy: 0.6
@@ -191,7 +191,7 @@ MonoBehaviour:
     materialTexture: {fileID: 2800000, guid: 67a88c485ad67e4418fe4174627fff08, type: 3}
     materialBloodColour: {r: 0.62352943, g: 0, b: 0, a: 1}
     materialDecalColour: {r: 0.47058824, g: 0, b: 0, a: 1}
-    materialHealthMax: 50
+    materialHealthMax: 100
     materialResistanceMelee: 0
     materialResistanceBullet: 0
     materialResistanceEnergy: 0
@@ -205,7 +205,7 @@ MonoBehaviour:
     materialTexture: {fileID: 2800000, guid: 1fd0a83bd915b6346bdc8af8126a283d, type: 3}
     materialBloodColour: {r: 0.23529412, g: 0.54901963, b: 0.8627451, a: 1}
     materialDecalColour: {r: 0.1764706, g: 0.43137255, b: 0.7254902, a: 1}
-    materialHealthMax: 50
+    materialHealthMax: 100
     materialResistanceMelee: 0
     materialResistanceBullet: 0.4
     materialResistanceEnergy: 0.6
@@ -219,7 +219,7 @@ MonoBehaviour:
     materialTexture: {fileID: 2800000, guid: eb63e5c784a5341458da1f65b344f853, type: 3}
     materialBloodColour: {r: 0.88235295, g: 0.88235295, b: 0.88235295, a: 1}
     materialDecalColour: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    materialHealthMax: 50
+    materialHealthMax: 100
     materialResistanceMelee: 0
     materialResistanceBullet: 0.4
     materialResistanceEnergy: 0.6

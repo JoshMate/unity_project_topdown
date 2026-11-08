@@ -106,30 +106,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::F_Point_Spawn
   pointName: Test Random Weapon
   pointType: 2
-  spawnChance: 100
-  spawnList:
-  - spawnObject: {fileID: 5194119782603112733, guid: 6dc79cad537b9104ba9cd4b713884a3c, type: 3}
-    spawnWeight: 1
-    spawnCountMin: 1
-    spawnCountMax: 1
-    spawnCountType: 0
-  - spawnObject: {fileID: 5194119782603112733, guid: 47d67708270cf0e498fb3bf92afe8fca, type: 3}
-    spawnWeight: 1
-    spawnCountMin: 1
-    spawnCountMax: 1
-    spawnCountType: 0
-  - spawnObject: {fileID: 5194119782603112733, guid: 47d67708270cf0e498fb3bf92afe8fca, type: 3}
-    spawnWeight: 1
-    spawnCountMin: 1
-    spawnCountMax: 1
-    spawnCountType: 0
-  - spawnObject: {fileID: 5194119782603112733, guid: 0674c73fc68012540a1e73bbd9039f43, type: 3}
-    spawnWeight: 1
-    spawnCountMin: 1
-    spawnCountMax: 1
-    spawnCountType: 0
-  - spawnObject: {fileID: 5194119782603112733, guid: 0674c73fc68012540a1e73bbd9039f43, type: 3}
-    spawnWeight: 1
-    spawnCountMin: 1
-    spawnCountMax: 1
-    spawnCountType: 0
+  spawnLootTable: {fileID: 11400000, guid: 7b17bb16c8e88364795a02a7a1696156, type: 2}

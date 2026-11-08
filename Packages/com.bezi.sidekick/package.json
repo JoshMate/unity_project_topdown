@@ -13,8 +13,8 @@
     "bezi",
     "bezi3d"
   ],
-  "unity": "2018.3",
-  "version": "0.122.4",
+  "unity": "2021.3",
+  "version": "0.136.1",
   "type": "library",
   "hideInEditor": false,
   "dependencies": {

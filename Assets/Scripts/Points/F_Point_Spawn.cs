@@ -3,63 +3,48 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 /// <summary>
-/// A point that, when the game starts, may spawn an entry picked by weight from its spawn list.
+/// A point that, when the game starts, rolls its loot table once and spawns the result at this point.
 /// Items receive the rolled count (split into stacks if it exceeds the stack size); anything else spawns that many instances.
 /// </summary>
 public class F_Point_Spawn : F_Point
 {
-    [Header("Constants Private")]
-    private const float spawnChanceMin = 0f;
-    private const float spawnChanceMax = 100f;
-
     [Header("Spawn Settings")]
-    // Percentage chance that this point spawns anything from its list
-    [Range(spawnChanceMin, spawnChanceMax)]
-    public float spawnChance = spawnChanceMax;
-    // Weighted options; one is picked when the spawn chance succeeds
-    public List<F_Point_SpawnEntry> spawnList = new List<F_Point_SpawnEntry>();
+    // The loot table rolled once to decide what this point spawns
+    public F_LootTable spawnLootTable;
 
     private void Start()
     {
         // F_Point runs in edit mode, so only spawn while the game is running
         if (Application.isPlaying)
         {
-            SpawnFromList();
+            SpawnFromLootTable();
         }
     }
 
-    private void OnValidate()
-    {
-        foreach (F_Point_SpawnEntry spawnEntry in spawnList)
-        {
-            spawnEntry?.ValidateSpawnCounts();
-        }
-    }
-
-    /// <summary>Rolls the spawn chance, picks a weighted entry, rolls its count and spawns it at this point, in this point's scene.</summary>
-    /// <returns>Every object spawned; empty when nothing was spawned.</returns>
-    public List<GameObject> SpawnFromList()
+    /// <summary>Rolls this point's loot table and spawns the result at this point, in this point's scene.</summary>
+    /// <returns>Every object spawned (more than one only when an item count is split into stacks); empty when nothing was spawned.</returns>
+    public List<GameObject> SpawnFromLootTable()
     {
         List<GameObject> spawnedObjects = new List<GameObject>();
-        if (spawnChance <= spawnChanceMin || Random.value * spawnChanceMax > spawnChance)
+        if (spawnLootTable != null && spawnLootTable.RollLoot(out GameObject lootObject, out int lootCount))
         {
-            return spawnedObjects;
+            SpawnLoot(lootObject, lootCount, spawnedObjects);
         }
 
-        F_Point_SpawnEntry spawnEntry = PickWeightedSpawnEntry();
-        if (spawnEntry == null)
-        {
-            return spawnedObjects;
-        }
+        return spawnedObjects;
+    }
 
-        int remainingCount = spawnEntry.RollSpawnCount();
-        F_Item templateItem = spawnEntry.spawnObject.GetComponent<F_Item>();
+    // Spawns the rolled count of a template, splitting items into stacks no larger than their max count
+    private void SpawnLoot(GameObject lootObject, int lootCount, List<GameObject> spawnedObjects)
+    {
+        F_Item templateItem = lootObject.GetComponent<F_Item>();
         int countPerInstance = templateItem != null ? Mathf.Max(1, templateItem.ItemCountMaxValue) : 1;
+        int remainingCount = lootCount;
 
         while (remainingCount > 0)
         {
             int instanceCount = Mathf.Min(remainingCount, countPerInstance);
-            GameObject spawnedObject = SpawnInstance(spawnEntry.spawnObject);
+            GameObject spawnedObject = SpawnInstance(lootObject);
             if (templateItem != null)
             {
                 spawnedObject.GetComponent<F_Item>().itemCount = instanceCount;
@@ -68,8 +53,6 @@ public class F_Point_Spawn : F_Point
             spawnedObjects.Add(spawnedObject);
             remainingCount -= instanceCount;
         }
-
-        return spawnedObjects;
     }
 
     // Creates one copy of the template at this point, keeping it in this point's scene
@@ -81,43 +64,5 @@ public class F_Point_Spawn : F_Point
             transform.rotation * spawnTemplate.transform.rotation);
         SceneManager.MoveGameObjectToScene(spawnedObject, gameObject.scene);
         return spawnedObject;
-    }
-
-    // Picks one spawnable entry with probability proportional to its weight
-    private F_Point_SpawnEntry PickWeightedSpawnEntry()
-    {
-        float totalWeight = 0f;
-        foreach (F_Point_SpawnEntry spawnEntry in spawnList)
-        {
-            if (spawnEntry != null && spawnEntry.IsSpawnable)
-            {
-                totalWeight += spawnEntry.spawnWeight;
-            }
-        }
-
-        if (totalWeight <= 0f)
-        {
-            return null;
-        }
-
-        float weightRoll = Random.value * totalWeight;
-        F_Point_SpawnEntry lastSpawnableEntry = null;
-        foreach (F_Point_SpawnEntry spawnEntry in spawnList)
-        {
-            if (spawnEntry == null || !spawnEntry.IsSpawnable)
-            {
-                continue;
-            }
-
-            lastSpawnableEntry = spawnEntry;
-            weightRoll -= spawnEntry.spawnWeight;
-            if (weightRoll < 0f)
-            {
-                return lastSpawnableEntry;
-            }
-        }
-
-        // Random.value can return exactly 1, which lands on the end of the final entry
-        return lastSpawnableEntry;
     }
 }
