@@ -16,6 +16,14 @@ public enum enumMaterialType
     Air
 }
 
+// Environment type of a scene; each value maps to a ground sprite in F_Scene_Settings
+public enum enumBiome
+{
+    Grass,
+    Snow,
+    Desert
+}
+
 // Outline and collision shape of a world object; each value maps to a sprite in OB_Config_WorldShapes
 public enum enumWorldShape
 {
