@@ -46,7 +46,7 @@ public class F_GUI_Inventory_Slot : MonoBehaviour, IPointerClickHandler, IPointe
     private bool slotContainerTakeOnly;
     private F_Logic_Controls controlsObj;
 
-    /// <summary>Handles cursor item movement, stack merging, compatible slot swaps, and the right-click context menu.</summary>
+    /// <summary>Handles cursor item movement, Alt-click quick transfers, stack merging, compatible slot swaps, and the right-click context menu.</summary>
     public void OnPointerClick(PointerEventData eventData)
     {
         if (isSlotLocked || cursorObj == null)
@@ -58,6 +58,43 @@ public class F_GUI_Inventory_Slot : MonoBehaviour, IPointerClickHandler, IPointe
         {
             ShowItemContextMenu(eventData);
             return;
+        }
+
+        if (eventData.button == PointerEventData.InputButton.Left &&
+            slotItemObj != null &&
+            cursorObj.controls != null &&
+            cursorObj.controls.IsAltModifierHeld())
+        {
+            F_PlayerController playerController = cursorObj.playerController;
+            F_PlayerInventory playerInventory = playerController != null
+                ? playerController.playerInventory
+                : null;
+            F_GUI_CharacterScreen_Manager screenManager = playerController != null
+                ? playerController.characterScreenManager
+                : null;
+
+            bool isContainerSlot = playerInventory != null && playerInventory.invSlotContainer != null &&
+                                   playerInventory.invSlotContainer.Contains(this);
+            if (playerInventory != null && screenManager != null && screenManager.isMenuOpen)
+            {
+                if (isContainerSlot)
+                {
+                    F_Utility_Helper_Inventory.MoveItemFromContainerToInventory(
+                        slotItemObj,
+                        this,
+                        playerInventory);
+                    SetSlotLocked(slotContainerTakeOnly && slotItemObj == null);
+                    return;
+                }
+
+                F_Utility_Helper_Inventory.MoveItemToContainerOrDrop(
+                    slotItemObj,
+                    this,
+                    playerInventory,
+                    screenManager.containerScreen);
+                SetSlotLocked(slotContainerTakeOnly && slotItemObj == null);
+                return;
+            }
         }
 
         if (slotContainerTakeOnly && cursorObj.cursorHeldItemObj != null)

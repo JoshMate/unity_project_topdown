@@ -415,6 +415,84 @@ public static class F_Utility_Helper_Inventory
         return true;
     }
 
+    /// <summary>Moves an inventory item into the first eligible open-container slot, or drops it when no destination is available.</summary>
+    /// <param name="itemToMove">The existing item instance to move.</param>
+    /// <param name="sourceSlot">The inventory slot currently holding the item.</param>
+    /// <param name="playerInventory">The inventory whose item references should be updated.</param>
+    /// <param name="containerScreen">The screen that may have an open destination container.</param>
+    /// <returns>True when the item was moved or dropped.</returns>
+    public static bool MoveItemToContainerOrDrop(
+        F_Item itemToMove,
+        F_GUI_Inventory_Slot sourceSlot,
+        F_PlayerInventory playerInventory,
+        F_GUI_Container containerScreen)
+    {
+        if (itemToMove == null || sourceSlot == null || playerInventory == null ||
+            sourceSlot.slotItemObj != itemToMove || itemToMove.itemCount <= 0)
+        {
+            return false;
+        }
+
+        if (containerScreen != null && containerScreen.IsOpen &&
+            containerScreen.OpenedContainer != null && playerInventory.invSlotContainer != null)
+        {
+            List<F_GUI_Inventory_Slot> containerSlots = playerInventory.invSlotContainer;
+            for (int slotIndex = 0; slotIndex < containerSlots.Count; slotIndex++)
+            {
+                F_GUI_Inventory_Slot destinationSlot = containerSlots[slotIndex];
+                if (destinationSlot == null || destinationSlot == sourceSlot || destinationSlot.isSlotLocked ||
+                    destinationSlot.slotItemObj != null || !CheckIfItemTypeMatchesSlotType(destinationSlot, itemToMove))
+                {
+                    continue;
+                }
+
+                sourceSlot.slotItemObj = null;
+                destinationSlot.slotItemObj = itemToMove;
+                itemToMove.SetInventoryStoredState(true);
+                return true;
+            }
+        }
+
+        return DropItemFromInventory(itemToMove, playerInventory);
+    }
+
+    /// <summary>Moves an item from an open container into the first compatible empty player inventory slot.</summary>
+    /// <param name="itemToMove">The existing item instance to move.</param>
+    /// <param name="sourceSlot">The container slot currently holding the item.</param>
+    /// <param name="playerInventory">The inventory that receives the item.</param>
+    /// <returns>True if the item moved; otherwise false, leaving it in the container.</returns>
+    public static bool MoveItemFromContainerToInventory(
+        F_Item itemToMove,
+        F_GUI_Inventory_Slot sourceSlot,
+        F_PlayerInventory playerInventory)
+    {
+        if (itemToMove == null || sourceSlot == null || playerInventory == null ||
+            sourceSlot.slotItemObj != itemToMove || itemToMove.itemCount <= 0 ||
+            playerInventory.invSlotContainer == null || !playerInventory.invSlotContainer.Contains(sourceSlot) ||
+            playerInventory.invSlotInventory == null)
+        {
+            return false;
+        }
+
+        List<F_GUI_Inventory_Slot> inventorySlots = playerInventory.invSlotInventory;
+        for (int slotIndex = 0; slotIndex < inventorySlots.Count; slotIndex++)
+        {
+            F_GUI_Inventory_Slot destinationSlot = inventorySlots[slotIndex];
+            if (destinationSlot == null || destinationSlot.isSlotLocked || destinationSlot.slotItemObj != null ||
+                !CheckIfItemTypeMatchesSlotType(destinationSlot, itemToMove))
+            {
+                continue;
+            }
+
+            sourceSlot.slotItemObj = null;
+            destinationSlot.slotItemObj = itemToMove;
+            itemToMove.SetInventoryStoredState(true);
+            return true;
+        }
+
+        return false;
+    }
+
     /// <summary>Drops an inventory item at the cursor position, or beneath the player when no position is provided.</summary>
     /// <param name="itemToDrop">The existing item instance to drop.</param>
     /// <param name="playerInventory">The inventory whose references should be cleared.</param>
