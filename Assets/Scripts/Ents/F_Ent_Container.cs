@@ -29,6 +29,8 @@ public class F_Ent_Container : F_Ent
     // When true, the container grows and shrinks in rows as items are added or removed
     [InspectorName("Container Is Infinite Size")]
     public bool containerIsInfiniteSize = false;
+    // When true, the player can take items but cannot place items into this container
+    public bool containerTakeOnly = false;
 
     [Header("Container Art")]
     // Played when the container is opened; defaults to SD_Container_Open when left empty

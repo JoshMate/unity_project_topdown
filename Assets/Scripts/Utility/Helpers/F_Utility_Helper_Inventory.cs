@@ -268,7 +268,54 @@ public static class F_Utility_Helper_Inventory
         return unloadedAmmo;
     }
 
-    /// <summary>Moves an existing floor item into the player's inventory, stacking it or dropping it under the player if no slot accepts it.</summary>
+    /// <summary>Returns how many items from a stack can fit in unlocked inventory slots without dropping any remainder.</summary>
+    /// <param name="itemTemplate">The item definition used to check stack and slot compatibility.</param>
+    /// <param name="playerInventory">The inventory that would receive the items.</param>
+    /// <param name="requestedCount">The maximum number of items to fit.</param>
+    /// <returns>The number of items that can be added safely.</returns>
+    public static int GetInventoryItemCapacity(F_Item itemTemplate, F_PlayerInventory playerInventory, int requestedCount)
+    {
+        if (itemTemplate == null || playerInventory == null || playerInventory.invSlotInventory == null || requestedCount <= 0)
+        {
+            return 0;
+        }
+
+        int remainingCapacity = requestedCount;
+        List<F_GUI_Inventory_Slot> inventorySlots = playerInventory.invSlotInventory;
+        for (int slotIndex = 0; slotIndex < inventorySlots.Count && remainingCapacity > 0; slotIndex++)
+        {
+            F_GUI_Inventory_Slot slot = inventorySlots[slotIndex];
+            if (slot == null || slot.isSlotLocked || !AreStackCompatible(itemTemplate, slot.slotItemObj))
+            {
+                continue;
+            }
+
+            int availableStackSpace = Mathf.Max(0, slot.slotItemObj.ItemCountMaxValue - slot.slotItemObj.itemCount);
+            remainingCapacity -= Mathf.Min(remainingCapacity, availableStackSpace);
+        }
+
+        if (remainingCapacity <= 0)
+        {
+            return requestedCount;
+        }
+
+        int maximumStackCount = Mathf.Max(1, itemTemplate.ItemCountMaxValue);
+        for (int slotIndex = 0; slotIndex < inventorySlots.Count && remainingCapacity > 0; slotIndex++)
+        {
+            F_GUI_Inventory_Slot slot = inventorySlots[slotIndex];
+            if (slot == null || slot.isSlotLocked || slot.slotItemObj != null ||
+                !CheckIfItemTypeMatchesSlotType(slot, itemTemplate))
+            {
+                continue;
+            }
+
+            remainingCapacity -= Mathf.Min(remainingCapacity, maximumStackCount);
+        }
+
+        return requestedCount - remainingCapacity;
+    }
+
+    /// <summary>Moves an existing item into the player's inventory, stacking it or dropping it under the player if no slot accepts it.</summary>
     /// <param name="itemToMove">The existing item instance to move.</param>
     /// <param name="playerInventory">The inventory that receives the item.</param>
     /// <returns>True when the item was already stored, moved, merged, or dropped as a fallback.</returns>

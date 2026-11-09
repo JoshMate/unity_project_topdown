@@ -43,6 +43,7 @@ public class F_GUI_Inventory_Slot : MonoBehaviour, IPointerClickHandler, IPointe
     private CanvasGroup slotCanvasGroup;
     [SerializeField] private enumInventorySlotHotkeyGroup slotHotkeyGroup;
     [SerializeField] private int slotHotkeyIndex = -1;
+    private bool slotContainerTakeOnly;
     private F_Logic_Controls controlsObj;
 
     /// <summary>Handles cursor item movement, stack merging, compatible slot swaps, and the right-click context menu.</summary>
@@ -59,11 +60,17 @@ public class F_GUI_Inventory_Slot : MonoBehaviour, IPointerClickHandler, IPointe
             return;
         }
 
+        if (slotContainerTakeOnly && cursorObj.cursorHeldItemObj != null)
+        {
+            return;
+        }
+
         bool isRepeatSinglePickup = cursorObj.cursorModifierPickupSlot == this &&
                                     cursorObj.controls != null && cursorObj.controls.IsControlModifierHeld();
         if (isRepeatSinglePickup && cursorObj.cursorHeldItemObj != null &&
             F_Utility_Helper_Inventory.TryTakeOneFromSlotToCursorStack(this, cursorObj))
         {
+            SetSlotLocked(slotContainerTakeOnly && slotItemObj == null);
             return;
         }
 
@@ -97,6 +104,8 @@ public class F_GUI_Inventory_Slot : MonoBehaviour, IPointerClickHandler, IPointe
                 cursorObj.cursorModifierPickupSlot = this;
             }
         }
+
+        SetSlotLocked(slotContainerTakeOnly && slotItemObj == null);
     }
 
     /// <summary>Opens the shared item context menu with the actions exposed by this slot's item.</summary>
@@ -149,12 +158,26 @@ public class F_GUI_Inventory_Slot : MonoBehaviour, IPointerClickHandler, IPointe
         isSlotHovered = false;
     }
 
-    /// <summary>Sets whether this slot is locked and immediately updates its input and border state.</summary>
+    /// <summary>Sets whether this slot is locked and immediately updates its input, border, and icon state.</summary>
     /// <param name="locked">True to prevent interaction with the slot.</param>
     public void SetSlotLocked(bool locked)
     {
+        if (isSlotLocked == locked)
+        {
+            return;
+        }
+
         isSlotLocked = locked;
         ApplySlotLockState();
+        DrawSlotIcon();
+    }
+
+    /// <summary>Configures this container slot to allow taking items but prevent placing items when take-only is enabled.</summary>
+    /// <param name="takeOnly">True to prevent items being placed into the slot.</param>
+    public void SetContainerTakeOnly(bool takeOnly)
+    {
+        slotContainerTakeOnly = takeOnly;
+        SetSlotLocked(takeOnly && slotItemObj == null);
     }
 
     private void ApplySlotLockState()
@@ -241,14 +264,14 @@ public class F_GUI_Inventory_Slot : MonoBehaviour, IPointerClickHandler, IPointe
 
     private void DrawSlotIcon()
     {
-        Sprite slotIconToDraw = isSlotLocked
-            ? slotIconLocked
-            : slotItemObj != null ? slotItemObj.ItemSprite : slotIconPlaceHolder;
-
-        if (slotIconToDraw == null || slotDrawItemObj == null)
+        if (slotDrawItemObj == null)
         {
             return;
         }
+
+        Sprite slotIconToDraw = isSlotLocked
+            ? slotIconLocked
+            : slotItemObj != null ? slotItemObj.ItemSprite : slotIconPlaceHolder;
 
         slotDrawItemObj.sprite = slotIconToDraw;
         slotDrawItemObj.preserveAspect = true;

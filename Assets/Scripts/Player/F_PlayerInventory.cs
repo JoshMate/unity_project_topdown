@@ -89,6 +89,26 @@ public class F_PlayerInventory : MonoBehaviour
         return invSlotWeapons[slotIndex];
     }
 
+    /// <summary>Calculates the total weight of a list of items using the same item and loaded-ammunition rules as carried weight.</summary>
+    /// <param name="items">The item instances whose weight should be calculated.</param>
+    /// <returns>The sum of each distinct item's stack weight and loaded ammunition weight.</returns>
+    public float CalculateWeightForItems(IEnumerable<F_Item> items)
+    {
+        visitedWeightItems.Clear();
+        if (items == null)
+        {
+            return 0f;
+        }
+
+        float totalWeight = 0f;
+        foreach (F_Item item in items)
+        {
+            totalWeight += GetItemWeight(item);
+        }
+
+        return totalWeight;
+    }
+
     /// <summary>Calculates the total weight of items held in every inventory and equipment slot.</summary>
     /// <returns>The sum of each occupied stack's item weight multiplied by its item count.</returns>
     public float CalculateCurrentWeight()

@@ -184,4 +184,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 5deab0558142f2f43bd9e9babcbe9644, type: 2}
   - {fileID: 11400000, guid: 7b17bb16c8e88364795a02a7a1696156, type: 2}
   containerDestroyWhenEmpty: 1
+  containerIsInfiniteSize: 1
+  containerTakeOnly: 1
   containerSoundOpen: {fileID: 8300000, guid: 7e21bccbe8eb9b74d852ac1cfadff1e6, type: 3}
