@@ -11,7 +11,7 @@ using UnityEngine.UI;
 public class F_GUI_Container : MonoBehaviour
 {
     [Header("Constants Private")]
-    private const int containerGuiColumnCount = 6;
+    private const int containerGuiColumnCount = F_Ent_Container.containerSlotsPerRow;
     private const string containerGuiSlotNamePrefix = "Inventory_Slot_Container_";
 
     [Header("Object Refs")]
@@ -25,6 +25,7 @@ public class F_GUI_Container : MonoBehaviour
     [Header("Privates")]
     private readonly List<F_GUI_Inventory_Slot> containerGuiSlots = new List<F_GUI_Inventory_Slot>();
     private F_Ent_Container containerGuiOpenContainer;
+    private int containerGuiBoundSlotCount;
 
     /// <summary>Whether a container is currently shown.</summary>
     public bool IsOpen => containerGuiOpenContainer != null;
@@ -49,23 +50,11 @@ public class F_GUI_Container : MonoBehaviour
         CloseContainer();
         containerGuiOpenContainer = container;
         containerGuiOpenContainer.OnDied += HandleOpenContainerDied;
+        UpdateInfiniteSlotRows();
 
         List<F_Item> containerItems = container.ContainerItems;
         EnsureSlotCount(containerItems.Count);
-        F_PlayerInventory playerInventory = GetPlayerInventory();
-        playerInventory?.invSlotContainer.Clear();
-
-        for (int slotIndex = 0; slotIndex < containerGuiSlots.Count; slotIndex++)
-        {
-            F_GUI_Inventory_Slot slot = containerGuiSlots[slotIndex];
-            bool isUsed = slotIndex < containerItems.Count;
-            slot.slotItemObj = isUsed ? containerItems[slotIndex] : null;
-            slot.gameObject.SetActive(isUsed);
-            if (isUsed)
-            {
-                playerInventory?.invSlotContainer.Add(slot);
-            }
-        }
+        RefreshContainerSlots(containerItems);
 
         if (containerGuiTitleText != null)
         {
@@ -86,6 +75,7 @@ public class F_GUI_Container : MonoBehaviour
         }
 
         containerGuiOpenContainer = null;
+        containerGuiBoundSlotCount = 0;
         foreach (F_GUI_Inventory_Slot slot in containerGuiSlots)
         {
             slot.slotItemObj = null;
@@ -117,6 +107,16 @@ public class F_GUI_Container : MonoBehaviour
     private void LateUpdate()
     {
         SyncSlotsToContainer();
+        if (containerGuiOpenContainer != null)
+        {
+            bool slotRowsChanged = UpdateInfiniteSlotRows();
+            List<F_Item> containerItems = containerGuiOpenContainer.ContainerItems;
+            if (slotRowsChanged || containerGuiBoundSlotCount != containerItems.Count)
+            {
+                RefreshContainerSlots(containerItems);
+            }
+        }
+
         if (containerGuiOpenContainer != null && containerGuiOpenContainer.TryDestroyWhenEmpty())
         {
             CloseContainer();
@@ -149,6 +149,122 @@ public class F_GUI_Container : MonoBehaviour
         {
             containerItems[slotIndex] = containerGuiSlots[slotIndex].slotItemObj;
         }
+    }
+
+    private bool UpdateInfiniteSlotRows()
+    {
+        if (containerGuiOpenContainer == null || !containerGuiOpenContainer.containerIsInfiniteSize)
+        {
+            return false;
+        }
+
+        List<F_Item> containerItems = containerGuiOpenContainer.ContainerItems;
+        bool slotCountChanged = containerItems.Count < containerGuiColumnCount;
+        containerGuiOpenContainer.EnsureContainerSlotCount(containerGuiColumnCount);
+
+        int rowCount;
+        bool rowRemoved;
+        do
+        {
+            rowRemoved = false;
+            rowCount = containerItems.Count / containerGuiColumnCount;
+            for (int rowIndex = rowCount - 1; rowIndex > 0; rowIndex--)
+            {
+                if (!IsContainerSlotRowEmpty(containerItems, rowIndex))
+                {
+                    continue;
+                }
+
+                bool isTrailingRow = rowIndex == rowCount - 1;
+                int rowStartIndex = rowIndex * containerGuiColumnCount;
+                if (isTrailingRow && AreContainerSlotsFilledBeforeIndex(containerItems, rowStartIndex))
+                {
+                    continue;
+                }
+
+                if (containerGuiOpenContainer.RemoveEmptyContainerSlotRow(containerGuiColumnCount, rowIndex))
+                {
+                    slotCountChanged = true;
+                    rowRemoved = true;
+                    break;
+                }
+            }
+        }
+        while (rowRemoved);
+
+        if (AreAllContainerSlotsFilled(containerItems))
+        {
+            containerGuiOpenContainer.EnsureContainerSlotCount(containerItems.Count + containerGuiColumnCount);
+            slotCountChanged = true;
+        }
+
+        return slotCountChanged;
+    }
+
+    private bool AreAllContainerSlotsFilled(List<F_Item> containerItems)
+    {
+        if (containerItems.Count == 0)
+        {
+            return false;
+        }
+
+        foreach (F_Item containerItem in containerItems)
+        {
+            if (containerItem == null)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private bool IsContainerSlotRowEmpty(List<F_Item> containerItems, int rowIndex)
+    {
+        int rowStartIndex = rowIndex * containerGuiColumnCount;
+        for (int slotIndex = rowStartIndex; slotIndex < rowStartIndex + containerGuiColumnCount; slotIndex++)
+        {
+            if (containerItems[slotIndex] != null)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private bool AreContainerSlotsFilledBeforeIndex(List<F_Item> containerItems, int endIndex)
+    {
+        for (int slotIndex = 0; slotIndex < endIndex; slotIndex++)
+        {
+            if (containerItems[slotIndex] == null)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private void RefreshContainerSlots(List<F_Item> containerItems)
+    {
+        EnsureSlotCount(containerItems.Count);
+        F_PlayerInventory playerInventory = GetPlayerInventory();
+        playerInventory?.invSlotContainer.Clear();
+
+        for (int slotIndex = 0; slotIndex < containerGuiSlots.Count; slotIndex++)
+        {
+            F_GUI_Inventory_Slot slot = containerGuiSlots[slotIndex];
+            bool isUsed = slotIndex < containerItems.Count;
+            slot.slotItemObj = isUsed ? containerItems[slotIndex] : null;
+            slot.gameObject.SetActive(isUsed);
+            if (isUsed)
+            {
+                playerInventory?.invSlotContainer.Add(slot);
+            }
+        }
+
+        containerGuiBoundSlotCount = containerItems.Count;
     }
 
     // Closes before the container drops its items, so the drop sees every item the player left inside

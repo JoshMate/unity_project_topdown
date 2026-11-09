@@ -1717,9 +1717,65 @@ PrefabInstance:
       value: OB_Ent_Container_Sack
       objectReference: {fileID: 0}
     - target: {fileID: 7972769976998930984, guid: e19d49a5475601b4e8009eedbb74305c, type: 3}
-      propertyPath: containerDestroyWhenEmpty
-      value: 0
+      propertyPath: containerIsInfiniteSize
+      value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7972769976998930984, guid: e19d49a5475601b4e8009eedbb74305c, type: 3}
+      propertyPath: containerDestroyWhenEmpty
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7972769976998930984, guid: e19d49a5475601b4e8009eedbb74305c, type: 3}
+      propertyPath: containerLootTables.Array.size
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 7972769976998930984, guid: e19d49a5475601b4e8009eedbb74305c, type: 3}
+      propertyPath: 'containerLootTables.Array.data[3]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 7b17bb16c8e88364795a02a7a1696156, type: 2}
+    - target: {fileID: 7972769976998930984, guid: e19d49a5475601b4e8009eedbb74305c, type: 3}
+      propertyPath: 'containerLootTables.Array.data[4]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 7b17bb16c8e88364795a02a7a1696156, type: 2}
+    - target: {fileID: 7972769976998930984, guid: e19d49a5475601b4e8009eedbb74305c, type: 3}
+      propertyPath: 'containerLootTables.Array.data[5]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 7b17bb16c8e88364795a02a7a1696156, type: 2}
+    - target: {fileID: 7972769976998930984, guid: e19d49a5475601b4e8009eedbb74305c, type: 3}
+      propertyPath: 'containerLootTables.Array.data[6]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 7b17bb16c8e88364795a02a7a1696156, type: 2}
+    - target: {fileID: 7972769976998930984, guid: e19d49a5475601b4e8009eedbb74305c, type: 3}
+      propertyPath: 'containerLootTables.Array.data[7]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 7b17bb16c8e88364795a02a7a1696156, type: 2}
+    - target: {fileID: 7972769976998930984, guid: e19d49a5475601b4e8009eedbb74305c, type: 3}
+      propertyPath: 'containerLootTables.Array.data[8]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 7b17bb16c8e88364795a02a7a1696156, type: 2}
+    - target: {fileID: 7972769976998930984, guid: e19d49a5475601b4e8009eedbb74305c, type: 3}
+      propertyPath: 'containerLootTables.Array.data[9]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 7b17bb16c8e88364795a02a7a1696156, type: 2}
+    - target: {fileID: 7972769976998930984, guid: e19d49a5475601b4e8009eedbb74305c, type: 3}
+      propertyPath: 'containerLootTables.Array.data[10]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 7b17bb16c8e88364795a02a7a1696156, type: 2}
+    - target: {fileID: 7972769976998930984, guid: e19d49a5475601b4e8009eedbb74305c, type: 3}
+      propertyPath: 'containerLootTables.Array.data[11]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 7b17bb16c8e88364795a02a7a1696156, type: 2}
+    - target: {fileID: 7972769976998930984, guid: e19d49a5475601b4e8009eedbb74305c, type: 3}
+      propertyPath: 'containerLootTables.Array.data[12]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 7b17bb16c8e88364795a02a7a1696156, type: 2}
+    - target: {fileID: 7972769976998930984, guid: e19d49a5475601b4e8009eedbb74305c, type: 3}
+      propertyPath: 'containerLootTables.Array.data[13]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 7b17bb16c8e88364795a02a7a1696156, type: 2}
+    - target: {fileID: 7972769976998930984, guid: e19d49a5475601b4e8009eedbb74305c, type: 3}
+      propertyPath: 'containerLootTables.Array.data[14]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 7b17bb16c8e88364795a02a7a1696156, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

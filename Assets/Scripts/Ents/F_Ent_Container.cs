@@ -2,13 +2,15 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// An ent that stores items in a configurable number of slots. When the game starts it rolls each of its loot tables
-/// and keeps whatever fits; anything left over is ignored. The player opens it with the interact key to move items in and out,
-/// and it drops all held items onto free grid cells around it when destroyed.
+/// An ent that stores items in a configurable number of slots, or grows by rows when infinite size is enabled. At start it rolls each loot table,
+/// keeping whatever fits in finite containers, and drops all held items onto free grid cells around it when destroyed.
 /// </summary>
 [RequireComponent(typeof(SpriteRenderer), typeof(PolygonCollider2D))]
 public class F_Ent_Container : F_Ent
 {
+    [Header("Constants Public")]
+    public const int containerSlotsPerRow = 6;
+
     [Header("Constants Private")]
     private const int containerSlotCountMin = 1;
     // How many rings of grid cells around the container are searched for free space when it drops its items
@@ -17,13 +19,16 @@ public class F_Ent_Container : F_Ent
     private const float containerSoundVolume = 100f;
 
     [Header("Container Settings")]
-    // Number of item slots this container has
+    // Number of item slots this container has when infinite size is disabled
     [Min(containerSlotCountMin)]
     public int containerSlotCount = 8;
     // Each table is rolled once when the game starts; results that do not fit in the remaining slots are ignored
     public List<F_LootTable> containerLootTables = new List<F_LootTable>();
     // When true, the container is removed once the last item is taken out of it
     public bool containerDestroyWhenEmpty = false;
+    // When true, the container grows and shrinks in rows as items are added or removed
+    [InspectorName("Container Is Infinite Size")]
+    public bool containerIsInfiniteSize = false;
 
     [Header("Container Art")]
     // Played when the container is opened; defaults to SD_Container_Open when left empty
@@ -89,7 +94,7 @@ public class F_Ent_Container : F_Ent
         FillFromLootTables();
     }
 
-    // Rolls every loot table in order and adds each item result; the helper discards whatever no longer fits
+    // Rolls every loot table in order and adds each item result; finite containers discard anything that does not fit
     private void FillFromLootTables()
     {
         foreach (F_LootTable containerLootTable in containerLootTables)
@@ -110,14 +115,48 @@ public class F_Ent_Container : F_Ent
         TryDestroyWhenEmpty();
     }
 
-    // Keeps one list entry per slot so items can be addressed by slot index
-    private void ResizeContainerSlots()
+    /// <summary>Ensures the container has at least the requested number of slots.</summary>
+    /// <param name="slotCount">The minimum slot count to provide.</param>
+    public void EnsureContainerSlotCount(int slotCount)
     {
-        int slotCount = Mathf.Max(containerSlotCountMin, containerSlotCount);
-        while (containerItems.Count < slotCount)
+        int targetSlotCount = Mathf.Max(containerSlotCountMin, slotCount);
+        while (containerItems.Count < targetSlotCount)
         {
             containerItems.Add(null);
         }
+    }
+
+    /// <summary>Removes the specified row when every slot in it is empty, keeping the first row intact.</summary>
+    /// <param name="rowSize">The number of slots in a row.</param>
+    /// <param name="rowIndex">The zero-based row to remove.</param>
+    /// <returns>True when an empty row was removed.</returns>
+    public bool RemoveEmptyContainerSlotRow(int rowSize, int rowIndex)
+    {
+        int rowStartIndex = rowIndex * rowSize;
+        if (rowSize <= 0 || rowIndex <= 0 || rowStartIndex + rowSize > containerItems.Count)
+        {
+            return false;
+        }
+
+        for (int slotIndex = rowStartIndex; slotIndex < rowStartIndex + rowSize; slotIndex++)
+        {
+            if (containerItems[slotIndex] != null)
+            {
+                return false;
+            }
+        }
+
+        containerItems.RemoveRange(rowStartIndex, rowSize);
+        return true;
+    }
+
+    // Keeps one list entry per slot so items can be addressed by slot index
+    private void ResizeContainerSlots()
+    {
+        int slotCount = containerIsInfiniteSize
+            ? containerSlotsPerRow
+            : Mathf.Max(containerSlotCountMin, containerSlotCount);
+        EnsureContainerSlotCount(slotCount);
 
         if (containerItems.Count > slotCount)
         {

@@ -150,7 +150,7 @@ public static class F_Utility_Helper_Inventory
         return true;
     }
 
-    /// <summary>Creates new item instances inside a container, stacking onto compatible items first and then filling empty slots. Anything that does not fit is discarded.</summary>
+    /// <summary>Creates new item instances inside a container, stacking onto compatible items first and then filling empty slots. Anything that does not fit in a finite container is discarded.</summary>
     /// <param name="itemTemplate">The item prefab used as the instance template.</param>
     /// <param name="count">The number of items to add.</param>
     /// <param name="container">The container that receives the new item instances.</param>
@@ -174,26 +174,38 @@ public static class F_Utility_Helper_Inventory
         }
 
         int maximumStackCount = Mathf.Max(1, itemTemplate.ItemCountMaxValue);
-        for (int slotIndex = 0; slotIndex < containerItems.Count && remainingCount > 0; slotIndex++)
+        int nextSlotIndex = 0;
+        while (remainingCount > 0)
         {
-            if (containerItems[slotIndex] != null)
+            while (nextSlotIndex < containerItems.Count && remainingCount > 0)
             {
-                continue;
+                int slotIndex = nextSlotIndex++;
+                if (containerItems[slotIndex] != null)
+                {
+                    continue;
+                }
+
+                int stackCount = Mathf.Min(remainingCount, maximumStackCount);
+                F_Item newItem = CreateItemInstance(itemTemplate, container.transform.position, stackCount);
+                if (newItem == null)
+                {
+                    return count - remainingCount;
+                }
+
+                // Containers can fill while their scene is still loading, when another scene is active; keep the item
+                // in the container's scene so it is not destroyed when the active (loading) scene unloads
+                SceneManager.MoveGameObjectToScene(newItem.gameObject, container.gameObject.scene);
+                newItem.SetInventoryStoredState(true);
+                containerItems[slotIndex] = newItem;
+                remainingCount -= stackCount;
             }
 
-            int stackCount = Mathf.Min(remainingCount, maximumStackCount);
-            F_Item newItem = CreateItemInstance(itemTemplate, container.transform.position, stackCount);
-            if (newItem == null)
+            if (remainingCount <= 0 || !container.containerIsInfiniteSize)
             {
                 break;
             }
 
-            // Containers can fill while their scene is still loading, when another scene is active; keep the item
-            // in the container's scene so it is not destroyed when the active (loading) scene unloads
-            SceneManager.MoveGameObjectToScene(newItem.gameObject, container.gameObject.scene);
-            newItem.SetInventoryStoredState(true);
-            containerItems[slotIndex] = newItem;
-            remainingCount -= stackCount;
+            container.EnsureContainerSlotCount(containerItems.Count + F_Ent_Container.containerSlotsPerRow);
         }
 
         return count - remainingCount;
