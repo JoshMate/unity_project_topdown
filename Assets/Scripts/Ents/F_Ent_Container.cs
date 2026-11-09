@@ -22,15 +22,16 @@ public class F_Ent_Container : F_Ent
     // Number of item slots this container has when infinite size is disabled
     [Min(containerSlotCountMin)]
     public int containerSlotCount = 8;
-    // Each table is rolled once when the game starts; results that do not fit in the remaining slots are ignored
-    public List<F_LootTable> containerLootTables = new List<F_LootTable>();
     // When true, the container is removed once the last item is taken out of it
     public bool containerDestroyWhenEmpty = false;
     // When true, the container grows and shrinks in rows as items are added or removed
-    [InspectorName("Container Is Infinite Size")]
     public bool containerIsInfiniteSize = false;
     // When true, the player can take items but cannot place items into this container
     public bool containerTakeOnly = false;
+    
+    [Header("Container Loot")]
+    // Each table is rolled once when the game starts; results that do not fit in the remaining slots are ignored
+    public List<F_LootTable> containerLootTables = new List<F_LootTable>();
 
     [Header("Container Art")]
     // Played when the container is opened; defaults to SD_Container_Open when left empty

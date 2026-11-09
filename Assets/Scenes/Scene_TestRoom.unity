@@ -1553,11 +1553,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2018382029604916726, guid: e19d49a5475601b4e8009eedbb74305c, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -3
+      value: -2
       objectReference: {fileID: 0}
     - target: {fileID: 2018382029604916726, guid: e19d49a5475601b4e8009eedbb74305c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2018382029604916726, guid: e19d49a5475601b4e8009eedbb74305c, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1596,6 +1596,10 @@ PrefabInstance:
       value: OB_Ent_Container_Sack
       objectReference: {fileID: 0}
     - target: {fileID: 7972769976998930984, guid: e19d49a5475601b4e8009eedbb74305c, type: 3}
+      propertyPath: entFeatureMaterial
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7972769976998930984, guid: e19d49a5475601b4e8009eedbb74305c, type: 3}
       propertyPath: containerIsInfiniteSize
       value: 1
       objectReference: {fileID: 0}
@@ -1605,20 +1609,24 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7972769976998930984, guid: e19d49a5475601b4e8009eedbb74305c, type: 3}
       propertyPath: containerLootTables.Array.size
-      value: 15
+      value: 10
       objectReference: {fileID: 0}
+    - target: {fileID: 7972769976998930984, guid: e19d49a5475601b4e8009eedbb74305c, type: 3}
+      propertyPath: 'containerLootTables.Array.data[2]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 5deab0558142f2f43bd9e9babcbe9644, type: 2}
     - target: {fileID: 7972769976998930984, guid: e19d49a5475601b4e8009eedbb74305c, type: 3}
       propertyPath: 'containerLootTables.Array.data[3]'
       value: 
-      objectReference: {fileID: 11400000, guid: 7b17bb16c8e88364795a02a7a1696156, type: 2}
+      objectReference: {fileID: 11400000, guid: 5deab0558142f2f43bd9e9babcbe9644, type: 2}
     - target: {fileID: 7972769976998930984, guid: e19d49a5475601b4e8009eedbb74305c, type: 3}
       propertyPath: 'containerLootTables.Array.data[4]'
       value: 
-      objectReference: {fileID: 11400000, guid: 7b17bb16c8e88364795a02a7a1696156, type: 2}
+      objectReference: {fileID: 11400000, guid: 5deab0558142f2f43bd9e9babcbe9644, type: 2}
     - target: {fileID: 7972769976998930984, guid: e19d49a5475601b4e8009eedbb74305c, type: 3}
       propertyPath: 'containerLootTables.Array.data[5]'
       value: 
-      objectReference: {fileID: 11400000, guid: 7b17bb16c8e88364795a02a7a1696156, type: 2}
+      objectReference: {fileID: 11400000, guid: 5deab0558142f2f43bd9e9babcbe9644, type: 2}
     - target: {fileID: 7972769976998930984, guid: e19d49a5475601b4e8009eedbb74305c, type: 3}
       propertyPath: 'containerLootTables.Array.data[6]'
       value: 
