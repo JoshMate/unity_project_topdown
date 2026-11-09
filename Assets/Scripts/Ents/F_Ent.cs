@@ -26,17 +26,17 @@ public class F_Ent : MonoBehaviour
 
     [Header("Ent Resistance Stats")]
     // How much to reduce incoming damage of this type by 1.0 fully immune. 0.0 takes full damge.
-    public float entResistanceMelee = 0.0f;
+    [Range(entResistanceMin, entResistanceMax)] public float entResistanceMelee = 0.0f;
     // How much to reduce incoming damage of this type by 1.0 fully immune. 0.0 takes full damge.
-    public float entResistanceBullet = 0.0f;
+    [Range(entResistanceMin, entResistanceMax)] public float entResistanceBullet = 0.0f;
     // How much to reduce incoming damage of this type by 1.0 fully immune. 0.0 takes full damge.
-    public float entResistanceEnergy = 0.0f;
+    [Range(entResistanceMin, entResistanceMax)] public float entResistanceEnergy = 0.0f;
     // How much to reduce incoming damage of this type by 1.0 fully immune. 0.0 takes full damge.
-    public float entResistanceFire = 0.0f;
+    [Range(entResistanceMin, entResistanceMax)] public float entResistanceFire = 0.0f;
     // How much to reduce incoming damage of this type by 1.0 fully immune. 0.0 takes full damge.
-    public float entResistanceExplosive = 0.0f;
+    [Range(entResistanceMin, entResistanceMax)] public float entResistanceExplosive = 0.0f;
     // How much to reduce incoming damage of this type by 1.0 fully immune. 0.0 takes full damge.
-    public float entResistanceToxic = 0.0f;
+    [Range(entResistanceMin, entResistanceMax)] public float entResistanceToxic = 0.0f;
 
     [Header("Ent Features")]
     // Whether or not this ent blocks npcs vision (reserved for NPC vision)
@@ -68,6 +68,8 @@ public class F_Ent : MonoBehaviour
 
     [Header("Constants Private")]
     private const float entHealthFloor = 0f;
+    private const float entResistanceMin = 0f;
+    private const float entResistanceMax = 1f;
     private const float entSoundVolume = 100f;
 
     [Header("Privates")]
