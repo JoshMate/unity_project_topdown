@@ -41,6 +41,8 @@ public class F_Ent : MonoBehaviour
     [Header("Ent Features")]
     // Whether or not this ent blocks npcs vision (reserved for NPC vision)
     public bool entFeatureCanSeeThrough = false;
+    // When enabled, this ent uses its prefab health and resistance values instead of its material settings.
+    public bool entFeatureOverrideMaterialStats = false;
     // Whether or not movers (player, npcs) pass freely through this ent
     public bool entFeatureCanWalkThrough = false;
     // Whether or not projectiles and bullets pass freely over this ent

@@ -6,12 +6,9 @@ public class F_World : F_Ent
     [Header("World Features")]
     // Outline and collision shape; the sprite for each shape is set in OB_Config_WorldShapes
     public enumWorldShape worldShape = enumWorldShape.WallSquare;
-    // When enabled, health and resistances come from the material's entry in OB_Config_EntMaterials; disable to use this object's own values
-    public bool worldUseMaterialStats = true;
-
     protected override void Awake()
     {
-        if (worldUseMaterialStats)
+        if (!entFeatureOverrideMaterialStats)
         {
             ApplyMaterialStats();
         }

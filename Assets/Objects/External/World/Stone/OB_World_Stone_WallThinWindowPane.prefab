@@ -116,6 +116,10 @@ PrefabInstance:
       propertyPath: entFeatureMaterial
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 7413522968095097262, guid: 8a248399f9e1f50468d4d578a14884bf, type: 3}
+      propertyPath: entFeatureOverrideMaterialStats
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
