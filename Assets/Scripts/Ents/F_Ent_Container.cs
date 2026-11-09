@@ -18,6 +18,10 @@ public class F_Ent_Container : F_Ent
     private const string containerDefaultOpenSoundAssetPath = "Assets/Sound/Ents/Container/SD_Container_Open.ogg";
     private const float containerSoundVolume = 100f;
 
+    [Header("Container Art")]
+    // Played when the container is opened; defaults to SD_Container_Open when left empty
+    public AudioClip containerSoundOpen;
+
     [Header("Container Settings")]
     // Number of item slots this container has when infinite size is disabled
     [Min(containerSlotCountMin)]
@@ -32,10 +36,6 @@ public class F_Ent_Container : F_Ent
     [Header("Container Loot")]
     // Each table is rolled once when the game starts; results that do not fit in the remaining slots are ignored
     public List<F_LootTable> containerLootTables = new List<F_LootTable>();
-
-    [Header("Container Art")]
-    // Played when the container is opened; defaults to SD_Container_Open when left empty
-    public AudioClip containerSoundOpen;
 
     [Header("Privates")]
     private readonly List<F_Item> containerItems = new List<F_Item>();
@@ -52,6 +52,10 @@ public class F_Ent_Container : F_Ent
             containerSoundOpen = UnityEditor.AssetDatabase.LoadAssetAtPath<AudioClip>(containerDefaultOpenSoundAssetPath);
         }
 #endif
+        SpriteRenderer containerSpriteRenderer = GetComponent<SpriteRenderer>();
+        F_Utility_Helper_Sprite.ApplyPhysicsShape(
+            GetComponent<PolygonCollider2D>(),
+            containerSpriteRenderer != null ? containerSpriteRenderer.sprite : null);
     }
 
     /// <summary>Plays this container's open sound at its position.</summary>

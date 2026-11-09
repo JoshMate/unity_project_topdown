@@ -23,6 +23,38 @@ public static class F_Utility_Helper_Sprite
             return false;
         }
 
+        bool colliderShapeMatches = polygonCollider.pathCount == physicsShapeCount && polygonCollider.useDelaunayMesh;
+        for (int shapeIndex = 0; shapeIndex < physicsShapeCount; shapeIndex++)
+        {
+            spritePhysicsShapeBuffer.Clear();
+            sprite.GetPhysicsShape(shapeIndex, spritePhysicsShapeBuffer);
+            if (!colliderShapeMatches)
+            {
+                continue;
+            }
+
+            Vector2[] existingPath = polygonCollider.GetPath(shapeIndex);
+            if (existingPath.Length != spritePhysicsShapeBuffer.Count)
+            {
+                colliderShapeMatches = false;
+                continue;
+            }
+
+            for (int pointIndex = 0; pointIndex < existingPath.Length; pointIndex++)
+            {
+                if (existingPath[pointIndex] != spritePhysicsShapeBuffer[pointIndex])
+                {
+                    colliderShapeMatches = false;
+                    break;
+                }
+            }
+        }
+
+        if (colliderShapeMatches)
+        {
+            return true;
+        }
+
         polygonCollider.pathCount = physicsShapeCount;
         for (int shapeIndex = 0; shapeIndex < physicsShapeCount; shapeIndex++)
         {
@@ -32,6 +64,13 @@ public static class F_Utility_Helper_Sprite
         }
 
         polygonCollider.useDelaunayMesh = true;
+#if UNITY_EDITOR
+        if (!Application.isPlaying)
+        {
+            UnityEditor.EditorUtility.SetDirty(polygonCollider);
+            UnityEditor.PrefabUtility.RecordPrefabInstancePropertyModifications(polygonCollider);
+        }
+#endif
         return true;
     }
 }

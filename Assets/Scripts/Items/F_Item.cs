@@ -61,6 +61,7 @@ public class F_Item : MonoBehaviour
     {
         EnsureDefaultItemAssets();
         EnsureSpriteRendererReference();
+        ConfigurePickupCollider();
     }
 
     /// <summary>Assigns default assets to any empty item references; subclasses extend this with their own defaults.</summary>
