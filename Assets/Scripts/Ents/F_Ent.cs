@@ -91,6 +91,11 @@ public class F_Ent : MonoBehaviour
 
     protected virtual void Awake()
     {
+        if (!entFeatureOverrideMaterialStats)
+        {
+            ApplyMaterialStats();
+        }
+
         entStatHealth = Mathf.Clamp(entStatHealth, entHealthFloor, entStatHealthMax);
         ApplyMaterialConfig();
         if (IsMover)
@@ -102,6 +107,25 @@ public class F_Ent : MonoBehaviour
         {
             gameObject.AddComponent<F_Ent_HealthBar>();
         }
+    }
+
+    /// <summary>Copies the health maximum and resistances configured for this ent's material, and starts it at full health.</summary>
+    public void ApplyMaterialStats()
+    {
+        F_Ent_MaterialSettings settings = F_Logic_Globals.GetEntMaterialSettings(entFeatureMaterial);
+        if (settings == null)
+        {
+            return;
+        }
+
+        entStatHealthMax = settings.materialHealthMax;
+        entStatHealth = settings.materialHealthMax;
+        entResistanceMelee = settings.materialResistanceMelee;
+        entResistanceBullet = settings.materialResistanceBullet;
+        entResistanceEnergy = settings.materialResistanceEnergy;
+        entResistanceFire = settings.materialResistanceFire;
+        entResistanceExplosive = settings.materialResistanceExplosive;
+        entResistanceToxic = settings.materialResistanceToxic;
     }
 
     /// <summary>Copies the hit sound, death sound and blood colour configured for this ent's material.</summary>

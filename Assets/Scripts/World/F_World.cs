@@ -8,31 +8,8 @@ public class F_World : F_Ent
     public enumWorldShape worldShape = enumWorldShape.WallSquare;
     protected override void Awake()
     {
-        if (!entFeatureOverrideMaterialStats)
-        {
-            ApplyMaterialStats();
-        }
         base.Awake();
         ApplyWorldAppearance();
-    }
-
-    /// <summary>Copies the default max health and resistances configured for this object's material, and starts it at full health.</summary>
-    public void ApplyMaterialStats()
-    {
-        F_Ent_MaterialSettings settings = F_Logic_Globals.GetEntMaterialSettings(entFeatureMaterial);
-        if (settings == null)
-        {
-            return;
-        }
-
-        entStatHealthMax = settings.materialHealthMax;
-        entStatHealth = settings.materialHealthMax;
-        entResistanceMelee = settings.materialResistanceMelee;
-        entResistanceBullet = settings.materialResistanceBullet;
-        entResistanceEnergy = settings.materialResistanceEnergy;
-        entResistanceFire = settings.materialResistanceFire;
-        entResistanceExplosive = settings.materialResistanceExplosive;
-        entResistanceToxic = settings.materialResistanceToxic;
     }
 
     // Keeps the editor preview in sync when the shape or material is changed in the Inspector
