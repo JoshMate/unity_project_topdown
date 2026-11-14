@@ -63,38 +63,10 @@ public class F_GUI_Inventory_Slot : MonoBehaviour, IPointerClickHandler, IPointe
         if (eventData.button == PointerEventData.InputButton.Left &&
             slotItemObj != null &&
             cursorObj.controls != null &&
-            cursorObj.controls.IsAltModifierHeld())
+            cursorObj.controls.IsAltModifierHeld() &&
+            TryQuickTransfer())
         {
-            F_PlayerController playerController = cursorObj.playerController;
-            F_PlayerInventory playerInventory = playerController != null
-                ? playerController.playerInventory
-                : null;
-            F_GUI_CharacterScreen_Manager screenManager = playerController != null
-                ? playerController.characterScreenManager
-                : null;
-
-            bool isContainerSlot = playerInventory != null && playerInventory.invSlotContainer != null &&
-                                   playerInventory.invSlotContainer.Contains(this);
-            if (playerInventory != null && screenManager != null && screenManager.isMenuOpen)
-            {
-                if (isContainerSlot)
-                {
-                    F_Utility_Helper_Inventory.MoveItemFromContainerToInventory(
-                        slotItemObj,
-                        this,
-                        playerInventory);
-                    SetSlotLocked(slotContainerTakeOnly && slotItemObj == null);
-                    return;
-                }
-
-                F_Utility_Helper_Inventory.MoveItemToContainerOrDrop(
-                    slotItemObj,
-                    this,
-                    playerInventory,
-                    screenManager.containerScreen);
-                SetSlotLocked(slotContainerTakeOnly && slotItemObj == null);
-                return;
-            }
+            return;
         }
 
         if (slotContainerTakeOnly && cursorObj.cursorHeldItemObj != null)
@@ -116,6 +88,8 @@ public class F_GUI_Inventory_Slot : MonoBehaviour, IPointerClickHandler, IPointe
         {
             F_Item heldItem = cursorObj.cursorHeldItemObj;
             int placeCount = F_Utility_Helper_Inventory.GetModifierTransferCount(cursorObj.controls, heldItem.itemCount);
+
+
             if (!F_Utility_Helper_Inventory.CheckIfItemTypeMatchesSlotType(this, heldItem))
             {
                 Debug.Log("The held item type does not fit in that slot!");
@@ -144,6 +118,51 @@ public class F_GUI_Inventory_Slot : MonoBehaviour, IPointerClickHandler, IPointe
 
         SetSlotLocked(slotContainerTakeOnly && slotItemObj == null);
     }
+
+    /// <summary>Performs the slot's Alt-click quick transfer or drop behaviour.</summary>
+    /// <returns>True when the quick-transfer action was handled.</returns>
+    public bool TryQuickTransfer()
+    {
+        if (isSlotLocked || slotItemObj == null || cursorObj == null)
+        {
+            return false;
+        }
+
+        F_PlayerController playerController = cursorObj.playerController;
+        F_PlayerInventory playerInventory = playerController != null
+            ? playerController.playerInventory
+            : null;
+        F_GUI_CharacterScreen_Manager screenManager = playerController != null
+            ? playerController.characterScreenManager
+            : null;
+
+        if (playerInventory == null || screenManager == null || !screenManager.isMenuOpen)
+        {
+            return false;
+        }
+
+        bool isContainerSlot = playerInventory.invSlotContainer != null &&
+                               playerInventory.invSlotContainer.Contains(this);
+        if (isContainerSlot)
+        {
+            F_Utility_Helper_Inventory.MoveItemFromContainerToInventory(
+                slotItemObj,
+                this,
+                playerInventory);
+        }
+        else
+        {
+            F_Utility_Helper_Inventory.MoveItemToContainerOrDrop(
+                slotItemObj,
+                this,
+                playerInventory,
+                screenManager.containerScreen);
+        }
+
+        SetSlotLocked(slotContainerTakeOnly && slotItemObj == null);
+        return true;
+    }
+
 
     /// <summary>Opens the shared item context menu with the actions exposed by this slot's item.</summary>
     private void ShowItemContextMenu(PointerEventData eventData)

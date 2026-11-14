@@ -46,6 +46,7 @@ public class F_Logic_Cursor : MonoBehaviour
     private F_Ent_Container cursorHoveredContainer;
     // World item under the cursor within interact range; outlined like a usable container
     private F_Item cursorHoveredItem;
+    private F_GUI_Inventory_Slot cursorHoveredInventorySlot;
 
     /// <summary>The furthest distance from the player at which items can be picked up or placed and containers opened.</summary>
     public float CursorInteractMaxDistance => cursorPlaceMaxDistance;
@@ -96,6 +97,7 @@ public class F_Logic_Cursor : MonoBehaviour
     void RayCastCursorToGetHoveredElement()
     {
         F_Item hoveredItem = null;
+        cursorHoveredInventorySlot = null;
         Vector2 pointerScreenPosition = controls.GetMouseScreenPosition();
         itemContextMenu?.CloseIfPointerMovedAway(pointerScreenPosition);
 
@@ -117,6 +119,7 @@ public class F_Logic_Cursor : MonoBehaviour
                     continue;
                 }
 
+                cursorHoveredInventorySlot = hoveredSlot;
                 hoveredItem = hoveredSlot.slotItemObj;
                 break;
             }
@@ -239,6 +242,12 @@ public class F_Logic_Cursor : MonoBehaviour
     {
         if (!controls.IsInteractPressed())
         {
+            return;
+        }
+
+        if (cursorHoveredInventorySlot != null)
+        {
+            cursorHoveredInventorySlot.TryQuickTransfer();
             return;
         }
 

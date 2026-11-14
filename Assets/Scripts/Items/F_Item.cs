@@ -19,8 +19,8 @@ public struct F_ItemTooltipDetail
 public class F_Item : MonoBehaviour
 {
     [Header("Constants Private")]
-    private const string defaultPickupSoundAssetPath = "Assets/Sound/Interface/SD_Interface_PickupItem.ogg";
-    private const string defaultDropSoundAssetPath = "Assets/Sound/Interface/SD_Interface_JUSP_Slide.ogg";
+    private const string defaultPickupSoundAssetPath = "Assets/Sound/Interface/Items/SD_Interface_PickupItem.wav";
+    private const string defaultDropSoundAssetPath = "Assets/Sound/Interface/SD_Interface_DropItem.wav";
 
     [Header("Object Refs")]
     public SpriteRenderer itemSpriteRenderer;
