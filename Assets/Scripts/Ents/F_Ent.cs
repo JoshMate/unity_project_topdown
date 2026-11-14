@@ -188,9 +188,14 @@ public class F_Ent : MonoBehaviour
     // Whether this ent walks or slides around and so passes through walk-through ents; override to true for the player and npcs.
     protected virtual bool IsMover => false;
 
-    // Plays a random non-empty clip from the array, if any.
-    private void PlayEntSound(AudioClip[] sounds)
+    // Plays a random non-empty clip from the array, falling back when no clips are configured.
+    private void PlayEntSound(AudioClip[] sounds, AudioClip[] fallbackSounds = null)
     {
+        if (sounds == null || sounds.Length == 0)
+        {
+            sounds = fallbackSounds;
+        }
+
         if (sounds == null || sounds.Length == 0)
         {
             return;
@@ -298,7 +303,7 @@ public class F_Ent : MonoBehaviour
     {
         entIsDead = true;
         OnDied?.Invoke(this);
-        PlayEntSound(entMaterialDestroySounds);
+        PlayEntSound(entMaterialDestroySounds, entMaterialHitSounds);
         if (entFeatureCreateDecalOnDestroy)
         {
             CreateDestroyDecal();

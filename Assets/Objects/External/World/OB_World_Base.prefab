@@ -146,13 +146,15 @@ MonoBehaviour:
   entResistanceFire: 0
   entResistanceExplosive: 0
   entResistanceToxic: 0
+  entFeatureOverrideMaterialHealth: 0
+  entFeatureOverrideResistances: 0
   entFeatureCanSeeThrough: 0
-  entFeatureOverrideMaterialStats: 0
   entFeatureCanWalkThrough: 0
   entFeatureCanShootOver: 0
   entFeatureShatterOnDeath: 1
   entFeatureCreateBloodOnHit: 1
   entFeatureCreateDecalOnDestroy: 1
+  entFeatureOverrideMaterialStats: 0
   worldShape: 0
 --- !u!60 &3156603666387615710
 PolygonCollider2D:

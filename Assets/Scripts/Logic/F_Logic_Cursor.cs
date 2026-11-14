@@ -248,18 +248,8 @@ public class F_Logic_Cursor : MonoBehaviour
             return;
         }
 
-        if (!characterScreenManager.isMenuOpen || cursorHoveredObject == null)
-        {
-            return;
-        }
-
-        F_Item hoveredItem = cursorHoveredObject.GetComponent<F_Item>();
-        if (hoveredItem == null)
-        {
-            return;
-        }
-
-        if (!IsWithinInteractRange(hoveredItem.transform.position))
+        F_Item hoveredItem = cursorHoveredItem;
+        if (hoveredItem == null || !IsWithinInteractRange(hoveredItem.transform.position))
         {
             return;
         }
@@ -267,6 +257,7 @@ public class F_Logic_Cursor : MonoBehaviour
         if (F_Utility_Helper_Inventory.MoveItemToInventory(hoveredItem, playerController.playerInventory))
         {
             cursorHoveredObject = null;
+            SetHoveredItem(null);
         }
     }
 
