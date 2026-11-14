@@ -176,7 +176,7 @@ MonoBehaviour:
   entFeatureCanSeeThrough: 1
   entFeatureOverrideMaterialStats: 0
   entFeatureCanWalkThrough: 0
-  entFeatureCanShootThrough: 0
+  entFeatureCanShootOver: 0
   entFeatureShatterOnDeath: 1
   entFeatureCreateBloodOnHit: 1
   entFeatureCreateDecalOnDestroy: 1

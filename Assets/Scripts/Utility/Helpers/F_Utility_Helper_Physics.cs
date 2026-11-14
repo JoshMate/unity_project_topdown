@@ -36,7 +36,7 @@ public static class F_Utility_Helper_Physics
         int projectileMask = GetPhysicsLayerMask(F_Utility_Config_Physics.cfgPhysicsLayerProjectile);
 
         int passThroughMask = (ent.entFeatureCanWalkThrough ? moverMask : 0)
-            | (ent.entFeatureCanShootThrough ? projectileMask : 0);
+            | (ent.entFeatureCanShootOver ? projectileMask : 0);
 
         foreach (Collider2D collider in ent.GetComponentsInChildren<Collider2D>(true))
         {

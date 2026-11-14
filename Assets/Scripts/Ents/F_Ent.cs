@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
+
 
 public class F_Ent : MonoBehaviour
 {
@@ -38,16 +38,19 @@ public class F_Ent : MonoBehaviour
     // How much to reduce incoming damage of this type by 1.0 fully immune. 0.0 takes full damge.
     [Range(entResistanceMin, entResistanceMax)] public float entResistanceToxic = 0.0f;
 
+    [Header("Ent Overrides")]
+    // When enabled, this ent uses its prefab health values instead of its material health settings.
+    public bool entFeatureOverrideMaterialHealth = false;
+    // When enabled, this ent uses its prefab resistance values instead of its material resistance settings.
+    public bool entFeatureOverrideResistances = false;
+
     [Header("Ent Features")]
     // Whether or not this ent blocks npcs vision (reserved for NPC vision)
     public bool entFeatureCanSeeThrough = false;
-    // When enabled, this ent uses its prefab health and resistance values instead of its material settings.
-    public bool entFeatureOverrideMaterialStats = false;
     // Whether or not movers (player, npcs) pass freely through this ent
     public bool entFeatureCanWalkThrough = false;
     // Whether or not projectiles and bullets pass freely over this ent
-    [FormerlySerializedAs("entFeatureCanShootOver")]
-    public bool entFeatureCanShootThrough = false;
+    public bool entFeatureCanShootOver = false;
     // Whether this ent's sprites shatter into pieces when it dies
     public bool entFeatureShatterOnDeath = true;
     // Whether this ent emits blood particles when hit
@@ -73,6 +76,8 @@ public class F_Ent : MonoBehaviour
     private const float entSoundVolume = 100f;
 
     [Header("Privates")]
+    // Kept hidden so existing prefabs retain the previous override-both behaviour after the split.
+    [SerializeField, HideInInspector] private bool entFeatureOverrideMaterialStats = false;
     private bool entIsDead = false;
 
     // Events (Header attributes are not valid on events)
@@ -93,9 +98,20 @@ public class F_Ent : MonoBehaviour
 
     protected virtual void Awake()
     {
-        if (!entFeatureOverrideMaterialStats)
+        // Preserve the old combined setting on existing prefab and scene data.
+        if (entFeatureOverrideMaterialStats)
         {
-            ApplyMaterialStats();
+            entFeatureOverrideMaterialHealth = true;
+            entFeatureOverrideResistances = true;
+        }
+
+        if (!entFeatureOverrideMaterialHealth)
+        {
+            ApplyMaterialHealthStats();
+        }
+        if (!entFeatureOverrideResistances)
+        {
+            ApplyMaterialResistanceStats();
         }
 
         entStatHealth = Mathf.Clamp(entStatHealth, entHealthFloor, entStatHealthMax);
@@ -111,8 +127,8 @@ public class F_Ent : MonoBehaviour
         }
     }
 
-    /// <summary>Copies the health maximum and resistances configured for this ent's material, and starts it at full health.</summary>
-    public void ApplyMaterialStats()
+    /// <summary>Copies the health maximum configured for this ent's material, and starts it at full health.</summary>
+    public void ApplyMaterialHealthStats()
     {
         F_Ent_MaterialSettings settings = F_Logic_Globals.GetEntMaterialSettings(entFeatureMaterial);
         if (settings == null)
@@ -122,12 +138,30 @@ public class F_Ent : MonoBehaviour
 
         entStatHealthMax = settings.materialHealthMax;
         entStatHealth = settings.materialHealthMax;
+    }
+
+    /// <summary>Copies the resistances configured for this ent's material.</summary>
+    public void ApplyMaterialResistanceStats()
+    {
+        F_Ent_MaterialSettings settings = F_Logic_Globals.GetEntMaterialSettings(entFeatureMaterial);
+        if (settings == null)
+        {
+            return;
+        }
+
         entResistanceMelee = settings.materialResistanceMelee;
         entResistanceBullet = settings.materialResistanceBullet;
         entResistanceEnergy = settings.materialResistanceEnergy;
         entResistanceFire = settings.materialResistanceFire;
         entResistanceExplosive = settings.materialResistanceExplosive;
         entResistanceToxic = settings.materialResistanceToxic;
+    }
+
+    /// <summary>Copies the health maximum and resistances configured for this ent's material.</summary>
+    public void ApplyMaterialStats()
+    {
+        ApplyMaterialHealthStats();
+        ApplyMaterialResistanceStats();
     }
 
     /// <summary>Copies the hit sound, death sound and blood colour configured for this ent's material.</summary>

@@ -174,7 +174,7 @@ MonoBehaviour:
   entResistanceToxic: 0
   entFeatureCanSeeThrough: 1
   entFeatureCanWalkThrough: 1
-  entFeatureCanShootThrough: 1
+  entFeatureCanShootOver: 1
   entFeatureShatterOnDeath: 1
   entFeatureCreateBloodOnHit: 1
   entFeatureCreateDecalOnDestroy: 1

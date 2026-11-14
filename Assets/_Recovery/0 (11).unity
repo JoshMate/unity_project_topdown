@@ -3923,7 +3923,7 @@ MonoBehaviour:
   entFeatureMaterial: 0
   entFeatureCanSeeThrough: 0
   entFeatureCanWalkThrough: 0
-  entFeatureCanShootThrough: 0
+  entFeatureCanShootOver: 0
   entFeatureShatterOnDeath: 1
   entMaterialHitSounds: []
   entMaterialDeathSounds: []
