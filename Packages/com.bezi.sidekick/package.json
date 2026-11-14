@@ -14,7 +14,7 @@
     "bezi3d"
   ],
   "unity": "2021.3",
-  "version": "0.136.1",
+  "version": "0.144.2",
   "type": "library",
   "hideInEditor": false,
   "dependencies": {
