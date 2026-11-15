@@ -24,6 +24,10 @@ public class F_Scene_Settings : MonoBehaviour
     {
         F_Utility_Config_Biomes.OnConfigChanged += ApplyGround;
         ApplyGround();
+
+#if UNITY_EDITOR
+        UnityEditor.SceneVisibilityManager.instance.DisablePicking(gameObject, false);
+#endif
     }
 
     private void OnDisable()
