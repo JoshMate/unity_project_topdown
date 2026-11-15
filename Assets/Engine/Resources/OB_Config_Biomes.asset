@@ -15,7 +15,10 @@ MonoBehaviour:
   cfgBiomeGrounds:
   - biome: 0
     groundSprite: {fileID: 21300000, guid: 3abae725f7740b642aa877cda42f4d1b, type: 3}
+    groundMaterial: 3
   - biome: 1
     groundSprite: {fileID: 21300000, guid: c2ac448575f200745a0b1ce2936c2849, type: 3}
+    groundMaterial: 2
   - biome: 2
     groundSprite: {fileID: 21300000, guid: 6d89ab4d7b4e3c34ea3deca37a72dafa, type: 3}
+    groundMaterial: 1

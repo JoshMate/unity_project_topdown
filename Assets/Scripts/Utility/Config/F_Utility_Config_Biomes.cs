@@ -9,12 +9,13 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "OB_Config_Biomes", menuName = "Config/Biomes")]
 public class F_Utility_Config_Biomes : ScriptableObject
 {
-    /// <summary>Links a biome to the ground sprite tiled when that biome is active.</summary>
+    /// <summary>Links a biome to its tiled ground sprite and associated material type.</summary>
     [Serializable]
     public class BiomeGround
     {
         public enumBiome biome;
         public Sprite groundSprite;
+        public enumMaterialType groundMaterial;
     }
 
     [Header("Constants Private")]
@@ -74,5 +75,19 @@ public class F_Utility_Config_Biomes : ScriptableObject
             ? null
             : config.cfgBiomeGrounds.Find(ground => ground != null && ground.biome == biome);
         return entry?.groundSprite;
+    }
+
+    /// <summary>Finds the configured ground material for a biome.</summary>
+    /// <param name="biome">The biome to look up.</param>
+    /// <param name="groundMaterial">The ground material when an entry exists.</param>
+    /// <returns>True when the biome has a configured entry.</returns>
+    public static bool TryGetGroundMaterial(enumBiome biome, out enumMaterialType groundMaterial)
+    {
+        F_Utility_Config_Biomes config = Get();
+        BiomeGround entry = config == null
+            ? null
+            : config.cfgBiomeGrounds.Find(ground => ground != null && ground.biome == biome);
+        groundMaterial = entry != null ? entry.groundMaterial : default;
+        return entry != null;
     }
 }
