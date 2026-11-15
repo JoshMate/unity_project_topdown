@@ -6,12 +6,8 @@ using UnityEngine;
 /// </summary>
 public class F_Ent_Footsteps : MonoBehaviour
 {
-    [Header("Footstep Config")]
-    // Movement speed at which playback volume reaches 100% and the sound rate reaches its cap.
-    [Min(minimumFootstepsMaxRate)] public float footstepsMaxRate = defaultFootstepsMaxRate;
-
     [Header("Constants Private")]
-    private const float defaultFootstepsMaxRate = 10f;
+    private const float defaultFootstepsMaxRate = 7f;
     private const float minimumFootstepsMaxRate = 0.01f;
     private const float cfgFootstepMaximumSoundsPerSecond = 5f;
     private const float cfgFootstepSneakLoudnessMaxSpeedRatio = 0.33f;
@@ -19,6 +15,7 @@ public class F_Ent_Footsteps : MonoBehaviour
     private const float maximumFootstepVolume = 100f;
 
     [Header("Privates")]
+    [SerializeField, Min(0f)] private float footstepFrequencyCoefficient = 2f;
     private Rigidbody2D movementRigidbody;
     private Vector2 lastPosition;
     private float footstepRateAccumulator;
@@ -37,7 +34,7 @@ public class F_Ent_Footsteps : MonoBehaviour
     private void Update()
     {
         float deltaTime = Time.deltaTime;
-        if (deltaTime <= 0f || footstepsMaxRate < minimumFootstepsMaxRate)
+        if (deltaTime <= 0f || defaultFootstepsMaxRate < minimumFootstepsMaxRate)
         {
             lastPosition = transform.position;
             footstepRateAccumulator = 0f;
@@ -57,9 +54,9 @@ public class F_Ent_Footsteps : MonoBehaviour
             return;
         }
 
-        float cappedSpeed = Mathf.Min(currentSpeed, footstepsMaxRate);
-        float speedRatio = cappedSpeed / footstepsMaxRate;
-        float soundsPerSecond = speedRatio * cfgFootstepMaximumSoundsPerSecond;
+        float cappedSpeed = Mathf.Min(currentSpeed, defaultFootstepsMaxRate);
+        float speedRatio = cappedSpeed / defaultFootstepsMaxRate;
+        float soundsPerSecond = speedRatio * cfgFootstepMaximumSoundsPerSecond * footstepFrequencyCoefficient;
         footstepRateAccumulator += soundsPerSecond * deltaTime;
         while (footstepRateAccumulator >= 1f)
         {

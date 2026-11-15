@@ -665,8 +665,8 @@ MonoBehaviour:
   thirst: 100
   thirstMax: 100
   thirstDrainRateDelay: 15
-  speedMove: 3
-  speedSprint: 6
+  speedMove: 2
+  speedSprint: 4
   weight: 0
   weightMax: 50
   weightClass: 0

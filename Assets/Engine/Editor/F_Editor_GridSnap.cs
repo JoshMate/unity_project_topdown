@@ -2,7 +2,7 @@ using UnityEditor;
 using UnityEngine;
 
 /// <summary>
-/// Snaps objects to the world grid whenever they are created (prefab drag and drop, duplicate, paste) or moved in edit mode.
+/// Snaps objects to the world grid whenever they are created (prefab drag and drop, duplicate, paste) or moved/resized in edit mode.
 /// Grid values live in F_Utility_Config_Editor; toggle with Tools > Snap To Grid.
 /// </summary>
 [InitializeOnLoad]
@@ -27,7 +27,7 @@ public static class F_Editor_GridSnap
         Menu.SetChecked(snapMenuPath, snapEnabled);
     }
 
-    /// <summary>Returns the world position snapped to the nearest grid cell on X and Y, keeping Z unchanged.</summary>
+    /// <summary>Returns the world position snapped to whole-number grid units on X and Y, keeping Z unchanged.</summary>
     public static Vector3 GetSnappedPosition(Vector3 position)
     {
         return new Vector3(SnapAxis(position.x), SnapAxis(position.y), position.z);
@@ -42,7 +42,17 @@ public static class F_Editor_GridSnap
     {
         float cellSize = F_Utility_Config_Editor.cfgEditorSnapCellSize;
         float cellOffset = F_Utility_Config_Editor.cfgEditorSnapCellOffset;
-        return Mathf.Round((value - cellOffset) / cellSize) * cellSize + cellOffset;
+        float gridSnappedValue = Mathf.Round((value - cellOffset) / cellSize) * cellSize + cellOffset;
+        return Mathf.RoundToInt(gridSnappedValue);
+    }
+    // An even cell count needs a half-cell centre offset so both edges remain on cell boundaries.
+    private static float SnapAxisForScale(float value, float scale)
+    {
+        float cellSize = F_Utility_Config_Editor.cfgEditorSnapCellSize;
+        float cellOffset = F_Utility_Config_Editor.cfgEditorSnapCellOffset;
+        int scaleInCells = Mathf.RoundToInt(Mathf.Abs(scale) / cellSize);
+        float centreOffset = (scaleInCells > 0 && scaleInCells % 2 == 0) ? cellSize * 0.5f : 0f;
+        return Mathf.Round((value - cellOffset - centreOffset) / cellSize) * cellSize + cellOffset + centreOffset;
     }
 
     // Reacts only to new hierarchies (snapping their root, so prefab internals keep their offsets) and Transform edits
@@ -84,13 +94,31 @@ public static class F_Editor_GridSnap
             return;
         }
 
-        Vector3 snappedPosition = GetSnappedPosition(targetTransform.position);
-        if (snappedPosition == targetTransform.position)
+        Vector3 currentPosition = targetTransform.position;
+        Vector3 currentScale = targetTransform.localScale;
+        Vector3 snappedScale = new Vector3(Mathf.RoundToInt(currentScale.x), Mathf.RoundToInt(currentScale.y), currentScale.z);
+        Vector3 snappedPosition = new Vector3(
+            SnapAxisForScale(currentPosition.x, snappedScale.x),
+            SnapAxisForScale(currentPosition.y, snappedScale.y),
+            currentPosition.z);
+
+        bool positionChanged = snappedPosition.x != currentPosition.x || snappedPosition.y != currentPosition.y;
+        bool scaleChanged = snappedScale.x != currentScale.x || snappedScale.y != currentScale.y;
+        if (!positionChanged && !scaleChanged)
         {
             return;
         }
 
         Undo.RecordObject(targetTransform, snapUndoName);
-        targetTransform.position = snappedPosition;
+
+        if (positionChanged)
+        {
+            targetTransform.position = snappedPosition;
+        }
+
+        if (scaleChanged)
+        {
+            targetTransform.localScale = snappedScale;
+        }
     }
 }
