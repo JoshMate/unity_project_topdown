@@ -1,24 +1,41 @@
 using System;
 using UnityEditor;
 using UnityEditor.Presets;
+using UnityEditor.U2D.Sprites;
 using UnityEngine;
 
 /// <summary>Applies the project sprite import preset to images imported beneath Assets/Art.</summary>
 public sealed class JMSpriteImportPostprocessor : AssetPostprocessor
 {
     [Header("Constants Private")]
-    private const string spriteArtFolder = "Assets/Art/";
+    private const string cfgSpriteArtFolder = "Assets/Art/";
     private const string spritePresetPath = "Assets/Engine/Editor/JMSpriteImport.preset";
-    // Point markers are mostly hollow frames; a full-rect mesh makes the whole square clickable in the Scene view
-    private const string spritePointArtFolder = "Assets/Art/Points/";
+    // Point sprites get a full-rect mesh so their whole area remains clickable in the Scene view.
+    private const string cfgSpritePointArtFolder = "Assets/Art/Points/";
+    private const float cfgSpriteMeshTessellationDetail = 1f;
+    private const float cfgSpritePhysicsTessellationDetail = 1f;
 
     [Header("Privates")]
     private static Preset cachedSpritePreset;
     private static bool hasAttemptedPresetLoad;
+    private void OnPostprocessSprites(Texture2D texture, Sprite[] sprites)
+    {
+        if (sprites == null || sprites.Length == 0 ||
+            !assetPath.StartsWith(cfgSpriteArtFolder, StringComparison.Ordinal))
+        {
+            return;
+        }
+
+        string importedAssetPath = assetPath;
+        EditorApplication.delayCall += () =>
+            JMSpriteColliderMigrationActions.EnsureAlphaPhysicsShapesForTexture(importedAssetPath);
+    }
+
+
 
     private void OnPreprocessTexture()
     {
-        if (!assetPath.StartsWith(spriteArtFolder, StringComparison.Ordinal))
+        if (!assetPath.StartsWith(cfgSpriteArtFolder, StringComparison.Ordinal))
         {
             return;
         }
@@ -77,11 +94,53 @@ public sealed class JMSpriteImportPostprocessor : AssetPostprocessor
     {
         TextureImporterSettings importSettings = new TextureImporterSettings();
         textureImporter.ReadTextureSettings(importSettings);
-        importSettings.spriteMeshType = assetPath.StartsWith(spritePointArtFolder, StringComparison.Ordinal)
+        importSettings.spriteMeshType = assetPath.StartsWith(cfgSpritePointArtFolder, StringComparison.Ordinal)
             ? SpriteMeshType.FullRect
             : SpriteMeshType.Tight;
         importSettings.spriteGenerateFallbackPhysicsShape = true;
+        importSettings.spriteTessellationDetail = cfgSpriteMeshTessellationDetail;
         textureImporter.SetTextureSettings(importSettings);
+        ApplySpritePhysicsTessellationDetail(textureImporter);
+    }
+
+    private static void ApplySpritePhysicsTessellationDetail(TextureImporter textureImporter)
+    {
+        SpriteDataProviderFactories spriteDataProviderFactories = new SpriteDataProviderFactories();
+        spriteDataProviderFactories.Init();
+
+        ISpriteEditorDataProvider spriteEditorDataProvider =
+            spriteDataProviderFactories.GetSpriteEditorDataProviderFromObject(textureImporter);
+        if (spriteEditorDataProvider == null)
+        {
+            return;
+        }
+
+        spriteEditorDataProvider.InitSpriteEditorDataProvider();
+        ISpritePhysicsOutlineDataProvider physicsOutlineDataProvider =
+            spriteEditorDataProvider.GetDataProvider<ISpritePhysicsOutlineDataProvider>();
+        if (physicsOutlineDataProvider == null)
+        {
+            return;
+        }
+
+        bool hasUpdatedPhysicsDetail = false;
+        SpriteRect[] spriteRects = spriteEditorDataProvider.GetSpriteRects();
+        foreach (SpriteRect spriteRect in spriteRects)
+        {
+            float currentDetail = physicsOutlineDataProvider.GetTessellationDetail(spriteRect.spriteID);
+            if (Mathf.Approximately(currentDetail, cfgSpritePhysicsTessellationDetail))
+            {
+                continue;
+            }
+
+            physicsOutlineDataProvider.SetTessellationDetail(spriteRect.spriteID, cfgSpritePhysicsTessellationDetail);
+            hasUpdatedPhysicsDetail = true;
+        }
+
+        if (hasUpdatedPhysicsDetail)
+        {
+            spriteEditorDataProvider.Apply();
+        }
     }
 
     private static Preset GetSpritePreset()

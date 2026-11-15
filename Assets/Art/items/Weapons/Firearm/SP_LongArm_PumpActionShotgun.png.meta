@@ -46,7 +46,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -56,7 +56,7 @@ TextureImporter:
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
   alphaIsTransparency: 1
-  spriteTessellationDetail: -1
+  spriteTessellationDetail: 1
   textureType: 8
   textureShape: 1
   singleChannelComponent: 0
@@ -101,7 +101,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -111,35 +111,38 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites:
-    - serializedVersion: 2
-      name: SP_LongArm_PumpActionShotgun
-      rect:
-        serializedVersion: 2
-        x: 11
-        y: 5
-        width: 43
-        height: 52
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 11ff66dfa06708a00800000000000000
-      internalID: 756734526971379473
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
+    sprites: []
     outline: []
     customData: 
-    physicsShape: []
+    physicsShape:
+    - - {x: -2, y: -9}
+      - {x: 0, y: -7}
+      - {x: -1, y: -4}
+      - {x: 5, y: 2}
+      - {x: 6, y: 5}
+      - {x: 10, y: 5}
+      - {x: 16, y: 11}
+      - {x: 16, y: 14}
+      - {x: 15, y: 16}
+      - {x: 21, y: 22}
+      - {x: 21, y: 23}
+      - {x: 20, y: 24}
+      - {x: 17, y: 23}
+      - {x: 17, y: 22}
+      - {x: -7, y: -2}
+      - {x: -9, y: -3}
+      - {x: -11, y: -7}
+      - {x: -11, y: -9}
+      - {x: -20, y: -18}
+      - {x: -20, y: -19}
+      - {x: -13, y: -26}
+      - {x: -11, y: -25}
+      - {x: -8, y: -13}
+      - {x: -5, y: -8}
+      - {x: -4, y: -9}
     bones: []
-    spriteID: 
-    internalID: 0
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 1537655665
     vertices: []
     indices: 
     edges: []
@@ -147,9 +150,7 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable:
-      SP_LongArm_PumpActionShotgun: 756734526971379473
-      SP_LongArm_PumpActionShotgun_0: 756734526971379473
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

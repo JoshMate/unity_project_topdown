@@ -139,14 +139,10 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: -0.453125, y: 0.484375}
-      - {x: -0.484375, y: 0.453125}
-      - {x: -0.484375, y: -0.453125}
-      - {x: -0.453125, y: -0.484375}
-      - {x: 0.453125, y: -0.484375}
-      - {x: 0.484375, y: -0.453125}
-      - {x: 0.484375, y: 0.453125}
-      - {x: 0.453125, y: 0.484375}
+    - - {x: 0.453125, y: -0.453125}
+      - {x: 0.453125, y: 0.453125}
+      - {x: -0.453125, y: 0.453125}
+      - {x: -0.453125, y: -0.453125}
   m_UseDelaunayMesh: 1
 --- !u!114 &7972769976998930984
 MonoBehaviour:
@@ -173,13 +169,15 @@ MonoBehaviour:
   entResistanceFire: 0
   entResistanceExplosive: 0
   entResistanceToxic: 0
+  entFeatureOverrideMaterialHealth: 0
+  entFeatureOverrideResistances: 0
   entFeatureCanSeeThrough: 1
-  entFeatureOverrideMaterialStats: 0
   entFeatureCanWalkThrough: 0
   entFeatureCanShootOver: 0
   entFeatureShatterOnDeath: 1
   entFeatureCreateBloodOnHit: 1
   entFeatureCreateDecalOnDestroy: 1
+  entFeatureOverrideMaterialStats: 0
   containerSoundOpen: {fileID: 8300000, guid: f36f842deb493d54e8d72766706e74f5, type: 3}
   containerSlotCount: 10
   containerDestroyWhenEmpty: 0

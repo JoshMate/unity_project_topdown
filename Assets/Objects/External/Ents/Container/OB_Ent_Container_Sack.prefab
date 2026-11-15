@@ -139,13 +139,37 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: -0.203125, y: 0.328125}
-      - {x: -0.28125, y: 0.296875}
-      - {x: -0.28125, y: -0.1875}
-      - {x: -0.1875, y: -0.28125}
-      - {x: 0.1875, y: -0.28125}
-      - {x: 0.28125, y: -0.25}
-      - {x: 0.28125, y: 0.328125}
+    - - {x: 0.25, y: -0.109375}
+      - {x: 0.25, y: -0.03125}
+      - {x: 0.234375, y: 0}
+      - {x: 0.171875, y: 0.0625}
+      - {x: 0.171875, y: 0.234375}
+      - {x: 0.1875, y: 0.265625}
+      - {x: 0.15625, y: 0.296875}
+      - {x: 0.09375, y: 0.28125}
+      - {x: 0.078125, y: 0.296875}
+      - {x: -0.015625, y: 0.28125}
+      - {x: -0.03125, y: 0.296875}
+      - {x: -0.09375, y: 0.296875}
+      - {x: -0.125, y: 0.28125}
+      - {x: -0.140625, y: 0.296875}
+      - {x: -0.171875, y: 0.296875}
+      - {x: -0.203125, y: 0.265625}
+      - {x: -0.203125, y: 0.25}
+      - {x: -0.171875, y: 0.21875}
+      - {x: -0.171875, y: 0.0625}
+      - {x: -0.234375, y: 0}
+      - {x: -0.25, y: -0.03125}
+      - {x: -0.25, y: -0.109375}
+      - {x: -0.234375, y: -0.140625}
+      - {x: -0.15625, y: -0.21875}
+      - {x: -0.125, y: -0.234375}
+      - {x: -0.078125, y: -0.234375}
+      - {x: -0.0625, y: -0.25}
+      - {x: 0.0625, y: -0.25}
+      - {x: 0.125, y: -0.234375}
+      - {x: 0.15625, y: -0.21875}
+      - {x: 0.234375, y: -0.140625}
   m_UseDelaunayMesh: 1
 --- !u!114 &7972769976998930984
 MonoBehaviour:
@@ -172,12 +196,16 @@ MonoBehaviour:
   entResistanceFire: 0
   entResistanceExplosive: 0
   entResistanceToxic: 0
+  entFeatureOverrideMaterialHealth: 0
+  entFeatureOverrideResistances: 0
   entFeatureCanSeeThrough: 1
   entFeatureCanWalkThrough: 1
   entFeatureCanShootOver: 1
   entFeatureShatterOnDeath: 1
   entFeatureCreateBloodOnHit: 1
   entFeatureCreateDecalOnDestroy: 1
+  entFeatureOverrideMaterialStats: 0
+  containerSoundOpen: {fileID: 8300000, guid: 7e21bccbe8eb9b74d852ac1cfadff1e6, type: 3}
   containerSlotCount: 10
   containerDestroyWhenEmpty: 1
   containerIsInfiniteSize: 1
@@ -186,4 +214,3 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 5deab0558142f2f43bd9e9babcbe9644, type: 2}
   - {fileID: 11400000, guid: 5deab0558142f2f43bd9e9babcbe9644, type: 2}
   - {fileID: 11400000, guid: 7b17bb16c8e88364795a02a7a1696156, type: 2}
-  containerSoundOpen: {fileID: 8300000, guid: 7e21bccbe8eb9b74d852ac1cfadff1e6, type: 3}

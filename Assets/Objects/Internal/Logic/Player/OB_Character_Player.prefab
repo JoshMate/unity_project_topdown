@@ -773,7 +773,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c26fc3d2f5e1f1e45a0360d146ef782f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::F_Ent_Footsteps
-  footstepsMaxRate: 10
+  footstepFrequencyCoefficient: 2
 --- !u!1 &4067640359507843522
 GameObject:
   m_ObjectHideFlags: 0
