@@ -9,6 +9,7 @@ Shader "TopDown/World Texture"
         [PerRendererData] _MainTex ("Shape Sprite", 2D) = "white" {}
         _WorldTex ("World Texture", 2D) = "white" {}
         _WorldTexPixelsPerUnit ("World Texture Pixels Per Unit", Float) = 64
+        _WorldTexGridOffset ("World Texture Grid Offset", Vector) = (0.5, 0.5, 0, 0)
         [Toggle] _WorldTexUseMeshCoords ("Use Mesh UV0.zw As World Coordinates", Float) = 0
         _Color ("Tint", Color) = (1, 1, 1, 1)
     }
@@ -40,6 +41,7 @@ Shader "TopDown/World Texture"
             sampler2D _WorldTex;
             float4 _WorldTex_TexelSize;
             float _WorldTexPixelsPerUnit;
+            float4 _WorldTexGridOffset;
             float _WorldTexUseMeshCoords;
             fixed4 _Color;
 
@@ -68,6 +70,7 @@ Shader "TopDown/World Texture"
 
                 float2 worldCoords = mul(unity_ObjectToWorld, input.vertex).xy;
                 worldCoords = lerp(worldCoords, input.shapeUv.zw, _WorldTexUseMeshCoords);
+                worldCoords += _WorldTexGridOffset.xy;
                 output.worldUv = worldCoords * _WorldTexPixelsPerUnit * _WorldTex_TexelSize.xy;
                 return output;
             }

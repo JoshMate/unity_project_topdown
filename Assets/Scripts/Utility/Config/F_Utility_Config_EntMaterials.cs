@@ -17,6 +17,8 @@ public class F_Utility_Config_EntMaterials : ScriptableObject
     public Material cfgEntMaterialWorldMaterial;
     // Texture pixels per world unit; keep equal to sprite pixels per unit for consistent pixel density
     public float cfgEntMaterialTexturePixelsPerUnit = 64f;
+    // World-space UV offset from integer-centred sprites to their 1x1 grid-cell origin
+    public Vector2 cfgEntMaterialTextureGridOffset = new Vector2(0.5f, 0.5f);
     // One entry per enumMaterialType; ents copy the entry matching their material
     public List<F_Ent_MaterialSettings> cfgEntMaterialSettings = new List<F_Ent_MaterialSettings>();
 

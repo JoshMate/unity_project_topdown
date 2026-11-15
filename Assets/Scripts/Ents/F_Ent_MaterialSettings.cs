@@ -20,8 +20,10 @@ public class F_Ent_MaterialSettings
     public AudioClip[] materialFootStepSounds;
 
     [Header("Textures")]
-    // Texture tiled seamlessly in world space across every world object of this material
-    public Texture2D materialTexture;
+    // Texture tiled seamlessly in world space across wall shapes of this material
+    public Texture2D materialWallTexture;
+    // Texture tiled seamlessly in world space across floor shapes of this material
+    public Texture2D materialFloorTexture;
 
     [Header("Colours")]
     // Colour of the on-hit particle effects for this material
