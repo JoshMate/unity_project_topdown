@@ -65,15 +65,15 @@ public enum enumItemMaxCount
 {
     CountMaxSingle          = 1,
 
-    CountMaxItemResource   = 500,
+    CountMaxItemResource   = 1000,
     CountMaxItemMoney      = 1000,
 
-    CountMaxAmmoPistol      = 120,
+    CountMaxAmmoPistol      = 90,
     CountMaxAmmoShotgun     = 32,
     CountMaxAmmoRifle       = 60,
     CountMaxAmmoMagnum      = 20,
     CountMaxAmmoEnergy      = 100,
-    CountMaxAmmoOrdanance   = 10,
+    CountMaxAmmoOrdnance    = 10,
     CountMaxAmmoArrow       = 10
     
 }
