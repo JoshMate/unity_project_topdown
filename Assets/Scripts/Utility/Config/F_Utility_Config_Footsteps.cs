@@ -20,9 +20,13 @@ public static class F_Utility_Config_Footsteps
     // World distance travelled between two footsteps
     public const float cfgFootstepStrideDistance = 1f;
 
+    [UnityEngine.Header("Constants Public Frequency")]
+    // Scales the maximum speed-based footstep playback rate
+    public const float cfgFootstepFrequencyCoefficient = 1f;
+
     [UnityEngine.Header("Constants Public Volume")]
     // Volumes are 0-100 as expected by F_Logic_Audio.PlaySound
-    public const float cfgFootstepSneakVolume = 30f;
-    public const float cfgFootstepWalkVolume = 60f;
-    public const float cfgFootstepRunVolume = 80f;
+    public const float cfgFootstepSneakVolume = 40f;
+    public const float cfgFootstepWalkVolume = 70f;
+    public const float cfgFootstepRunVolume = 100f;
 }

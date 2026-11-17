@@ -15,7 +15,6 @@ public class F_Ent_Footsteps : MonoBehaviour
     private const float maximumFootstepVolume = 100f;
 
     [Header("Privates")]
-    [SerializeField, Min(0f)] private float footstepFrequencyCoefficient = 2f;
     private Rigidbody2D movementRigidbody;
     private Vector2 lastPosition;
     private float footstepRateAccumulator;
@@ -56,7 +55,7 @@ public class F_Ent_Footsteps : MonoBehaviour
 
         float cappedSpeed = Mathf.Min(currentSpeed, defaultFootstepsMaxRate);
         float speedRatio = cappedSpeed / defaultFootstepsMaxRate;
-        float soundsPerSecond = speedRatio * cfgFootstepMaximumSoundsPerSecond * footstepFrequencyCoefficient;
+        float soundsPerSecond = speedRatio * cfgFootstepMaximumSoundsPerSecond * F_Utility_Config_Footsteps.cfgFootstepFrequencyCoefficient;
         footstepRateAccumulator += soundsPerSecond * deltaTime;
         while (footstepRateAccumulator >= 1f)
         {
