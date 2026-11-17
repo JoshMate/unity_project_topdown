@@ -257,7 +257,7 @@ public static class F_Utility_Helper_Inventory
             return 0;
         }
 
-        F_Item ammoTemplate = weapon.weaponAmmoType;
+        F_Item ammoTemplate = weapon.WeaponAmmoItem;
         int unloadedAmmo = weapon.TakeLoadedAmmo();
         if (unloadedAmmo <= 0)
         {

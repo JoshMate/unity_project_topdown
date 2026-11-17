@@ -79,8 +79,9 @@ public class F_Item_Weapon : F_Item
     [Header("Weapon Ammo Stats")]
     // Wether or not the weapon requires ammo to fire
     public bool weaponUsesAmmo = true;
-    // The inventory Item being used as Ammo for this weapon (For example OB_Item_Ammo_Pistol)
-    public F_Item weaponAmmoType;
+    // Enum selector for the ammo prefab used by this weapon
+    public enumWeaponAmmoType weaponAmmoType;
+    public F_Item WeaponAmmoItem => F_Utility_Config_WeaponAmmo.GetAmmoItem(weaponAmmoType);
     // How much ammo this weapon can hold before it needs to reload
     public int weaponAmmoCapacity = 5;
     // How much ammo is used per shot (The gun can't fire if there isn't enough loaded)
@@ -95,8 +96,8 @@ public class F_Item_Weapon : F_Item
     public bool weaponIsReloadOneBulletPerReload = false;
 
     [Header("Weapon Handling Stats")]
-    // How many seconds this weapon takes to deploy when switched to before it is usable
-    public float weaponDeployDelay = 0.5f;
+    // Deploy delay in hundredths of a second, selected from the weapon delay presets
+    public enumWeaponDeployDelay weaponDeployDelay = enumWeaponDeployDelay.DeployDelayTwoHandedFast;
     // How much durability the weapon currently has left
     public float weaponDurabilityCurrent = 1000f;
     // How much durability the weapon can ever have
@@ -237,7 +238,7 @@ public class F_Item_Weapon : F_Item
         deployStartTime = HeldTime;
         PlayReloadSound(weaponDeploySound);
 
-        deployEndTime = HeldTime + Mathf.Max(minimumFireDelay, weaponDeployDelay);
+        deployEndTime = HeldTime + Mathf.Max(minimumFireDelay, (float)weaponDeployDelay / 100f);
         isDeployEndSoundPending = true;
     }
 
@@ -568,8 +569,8 @@ public class F_Item_Weapon : F_Item
 
     private bool HasReserveAmmo(F_PlayerInventory playerInventory)
     {
-        return weaponAmmoType == null ||
-            F_Utility_Helper_Inventory.GetItemCountInInventory(playerInventory, weaponAmmoType) > 0;
+        return WeaponAmmoItem == null ||
+            F_Utility_Helper_Inventory.GetItemCountInInventory(playerInventory, WeaponAmmoItem) > 0;
     }
 
     private void PlayReloadSound(AudioClip reloadSound)
@@ -594,8 +595,8 @@ public class F_Item_Weapon : F_Item
 
             while (currentAmmoLoaded < weaponAmmoCapacity)
             {
-                if (weaponAmmoType != null &&
-                    F_Utility_Helper_Inventory.GetItemCountInInventory(playerInventory, weaponAmmoType) < 1)
+                if (WeaponAmmoItem != null &&
+                    F_Utility_Helper_Inventory.GetItemCountInInventory(playerInventory, WeaponAmmoItem) < 1)
                 {
                     break;
                 }
@@ -606,8 +607,8 @@ public class F_Item_Weapon : F_Item
                 BeginReloadProgressSegment(roundDelay);
                 yield return WaitForHeldSeconds(roundDelay);
 
-                int consumedAmmo = weaponAmmoType != null
-                    ? F_Utility_Helper_Inventory.ConsumeItemFromInventory(playerInventory, weaponAmmoType, 1)
+                int consumedAmmo = WeaponAmmoItem != null
+                    ? F_Utility_Helper_Inventory.ConsumeItemFromInventory(playerInventory, WeaponAmmoItem, 1)
                     : 1;
                 if (consumedAmmo <= 0)
                 {
@@ -641,16 +642,16 @@ public class F_Item_Weapon : F_Item
             yield return WaitForHeldSeconds(weaponReloadDelay * (1f - reloadMiddleFraction));
 
             int neededAmmo = weaponAmmoCapacity - currentAmmoLoaded;
-            int availableAmmo = weaponAmmoType != null
-                ? F_Utility_Helper_Inventory.GetItemCountInInventory(playerInventory, weaponAmmoType)
+            int availableAmmo = WeaponAmmoItem != null
+                ? F_Utility_Helper_Inventory.GetItemCountInInventory(playerInventory, WeaponAmmoItem)
                 : neededAmmo;
             int ammoToLoad = Mathf.Min(neededAmmo, availableAmmo);
 
             if (ammoToLoad > 0)
             {
                 PlayReloadSound(weaponReloadEndSound);
-                int consumedAmmo = weaponAmmoType != null
-                    ? F_Utility_Helper_Inventory.ConsumeItemFromInventory(playerInventory, weaponAmmoType, ammoToLoad)
+                int consumedAmmo = WeaponAmmoItem != null
+                    ? F_Utility_Helper_Inventory.ConsumeItemFromInventory(playerInventory, WeaponAmmoItem, ammoToLoad)
                     : ammoToLoad;
                 currentAmmoLoaded += consumedAmmo;
                 isFinishingReload = true;
@@ -696,7 +697,7 @@ public class F_Item_Weapon : F_Item
     }
 
     /// <summary>Whether the weapon currently holds ammo that can be removed (not possible mid-reload).</summary>
-    public bool CanUnloadAmmo => weaponUsesAmmo && weaponAmmoType != null && !isReloading && currentAmmoLoaded > 0;
+    public bool CanUnloadAmmo => weaponUsesAmmo && WeaponAmmoItem != null && !isReloading && currentAmmoLoaded > 0;
 
     /// <summary>Empties the weapon's magazine and returns how many rounds were removed.</summary>
     /// <remarks>Only changes the weapon's own state; the caller is responsible for giving the rounds to an inventory.</remarks>
@@ -716,7 +717,7 @@ public class F_Item_Weapon : F_Item
     public override List<enumItemContextAction> GetContextMenuActions()
     {
         List<enumItemContextAction> actions = base.GetContextMenuActions();
-        if (weaponUsesAmmo && weaponAmmoType != null)
+        if (weaponUsesAmmo && WeaponAmmoItem != null)
         {
             actions.Insert(0, enumItemContextAction.Unload);
         }

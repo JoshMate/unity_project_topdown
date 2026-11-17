@@ -83,7 +83,7 @@ SpriteRenderer:
   m_SortingLayer: 10
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 4271609836247489768, guid: e7a68358ea10b04488655010b0450ffd, type: 3}
+  m_Sprite: {fileID: 21300000, guid: e7a68358ea10b04488655010b0450ffd, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -91,7 +91,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
 --- !u!60 &8140732514401708236
 PolygonCollider2D:
@@ -131,7 +131,7 @@ PolygonCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.421875, y: 0.6875}
+    oldSize: {x: 1, y: 1}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -139,13 +139,27 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: 0.0703125, y: 0.34375}
-      - {x: -0.2109375, y: 0.0625}
-      - {x: -0.2109375, y: -0.09375}
-      - {x: 0.0703125, y: -0.34375}
-      - {x: 0.1796875, y: -0.34375}
-      - {x: 0.2109375, y: -0.3125}
-      - {x: 0.2109375, y: 0.34375}
+    - - {x: 0.03125, y: 0}
+      - {x: 0.03125, y: 0.03125}
+      - {x: 0, y: 0.0625}
+      - {x: 0.171875, y: 0.234375}
+      - {x: 0.171875, y: 0.25}
+      - {x: 0.15625, y: 0.265625}
+      - {x: 0.171875, y: 0.328125}
+      - {x: 0.15625, y: 0.34375}
+      - {x: 0.125, y: 0.34375}
+      - {x: 0.078125, y: 0.296875}
+      - {x: 0.046875, y: 0.296875}
+      - {x: 0.046875, y: 0.265625}
+      - {x: -0.15625, y: 0.0625}
+      - {x: -0.1875, y: 0.0625}
+      - {x: -0.21875, y: 0.03125}
+      - {x: -0.21875, y: -0.015625}
+      - {x: 0.078125, y: -0.3125}
+      - {x: 0.09375, y: -0.3125}
+      - {x: 0.171875, y: -0.234375}
+      - {x: 0.171875, y: -0.21875}
+      - {x: 0, y: -0.046875}
   m_UseDelaunayMesh: 1
 --- !u!114 &7146244672435563995
 MonoBehaviour:
@@ -190,24 +204,24 @@ MonoBehaviour:
   weaponProjectileShotCount: 1
   weaponProjectileBurstCount: 1
   weaponProjectileBurstDelay: 0.1
-  weaponIsFullyAutomatic: 1
+  weaponIsFullyAutomatic: 0
   weaponIsRangeReverseFallOff: 0
   weaponIsBoltAction: 0
   weaponBoltActionDelay: 1
-  weaponSpreadStart: 0.05
-  weaponSpreadMax: 0.2
-  weaponSpreadRecoilImpulse: 0.015
-  weaponSpreadRecoilRecoveryAmount: 0.005
+  weaponSpreadStart: 0.1
+  weaponSpreadMax: 0.3
+  weaponSpreadRecoilImpulse: 0.1
+  weaponSpreadRecoilRecoveryAmount: 0.01
   weaponSpreadRecoilRecoveryDelay: 0.05
   weaponIsReverseRecoilImpulse: 0
   weaponUsesAmmo: 1
-  weaponAmmoType: {fileID: 4020092144798230732, guid: 7e226b366eb06a347897a1f7ee111c2d, type: 3}
-  weaponAmmoCapacity: 120
+  weaponAmmoType: 3
+  weaponAmmoCapacity: 18
   weaponAmmoTakenPerShot: 1
-  weaponReloadDelay: 1
+  weaponReloadDelay: 0.5
   weaponShotLoudness: 10
   weaponIsReloadOneBulletPerReload: 0
-  weaponDeployDelay: 0.5
+  weaponDeployDelay: 25
   weaponDurabilityCurrent: 10000
   weaponDurabilityMax: 10000
   weaponDurabilityLost: 0

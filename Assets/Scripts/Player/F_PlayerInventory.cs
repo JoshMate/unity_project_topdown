@@ -183,11 +183,11 @@ public class F_PlayerInventory : MonoBehaviour
     private static float GetLoadedAmmoWeight(F_Item item)
     {
         F_Item_Weapon weapon = item as F_Item_Weapon;
-        if (weapon == null || !weapon.weaponUsesAmmo || weapon.weaponAmmoType == null)
+        if (weapon == null || !weapon.weaponUsesAmmo || weapon.WeaponAmmoItem == null)
         {
             return 0f;
         }
 
-        return Mathf.Max(0f, weapon.weaponAmmoType.itemWeight) * Mathf.Max(0, weapon.CurrentAmmoLoaded);
+        return Mathf.Max(0f, weapon.WeaponAmmoItem.itemWeight) * Mathf.Max(0, weapon.CurrentAmmoLoaded);
     }
 }

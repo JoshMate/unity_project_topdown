@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fc1c94cce7a3df44857dece89df5bd2, type: 3}
+  m_Name: OB_Config_WeaponAmmo
+  m_EditorClassIdentifier: Assembly-CSharp::F_Utility_Config_WeaponAmmo
+  cfgWeaponAmmoEnergyItem: {fileID: 4020092144798230732, guid: 789f6a34dd6d81a4381e15084b727f95, type: 3}
+  cfgWeaponAmmoMagnumItem: {fileID: 4020092144798230732, guid: 8be919d8b1276674da1c1db6fcac0137, type: 3}
+  cfgWeaponAmmoOrdnanceItem: {fileID: 4020092144798230732, guid: 40129d09550e6cf45a60856fa32f5fd3, type: 3}
+  cfgWeaponAmmoPistolItem: {fileID: 4020092144798230732, guid: 7e226b366eb06a347897a1f7ee111c2d, type: 3}
+  cfgWeaponAmmoRifleItem: {fileID: 4020092144798230732, guid: 04d01e6d74af6af40b591a757e41bd02, type: 3}
+  cfgWeaponAmmoShotgunItem: {fileID: 4020092144798230732, guid: df5f3e946acaa3f41a6f2fd47516b46d, type: 3}

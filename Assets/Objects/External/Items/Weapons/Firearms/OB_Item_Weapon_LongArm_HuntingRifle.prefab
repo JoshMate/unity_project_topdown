@@ -221,13 +221,13 @@ MonoBehaviour:
   weaponSpreadRecoilRecoveryDelay: 0.1
   weaponIsReverseRecoilImpulse: 0
   weaponUsesAmmo: 1
-  weaponAmmoType: {fileID: 4020092144798230732, guid: 8be919d8b1276674da1c1db6fcac0137, type: 3}
+  weaponAmmoType: 1
   weaponAmmoCapacity: 5
   weaponAmmoTakenPerShot: 1
   weaponReloadDelay: 0.6
   weaponShotLoudness: 30
   weaponIsReloadOneBulletPerReload: 1
-  weaponDeployDelay: 0.5
+  weaponDeployDelay: 80
   weaponDurabilityCurrent: 1000
   weaponDurabilityMax: 1000
   weaponDurabilityLost: 0

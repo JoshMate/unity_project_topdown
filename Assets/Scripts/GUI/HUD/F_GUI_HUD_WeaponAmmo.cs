@@ -99,13 +99,13 @@ public class F_GUI_HUD_WeaponAmmo : MonoBehaviour
             return;
         }
 
-        int reserveAmmo = weapon.weaponAmmoType != null && playerInventory != null
-            ? F_Utility_Helper_Inventory.GetItemCountInInventory(playerInventory, weapon.weaponAmmoType)
+        int reserveAmmo = weapon.WeaponAmmoItem != null && playerInventory != null
+            ? F_Utility_Helper_Inventory.GetItemCountInInventory(playerInventory, weapon.WeaponAmmoItem)
             : 0;
         ammoCountText.text = weapon.CurrentAmmoLoaded + ammoSeparator + reserveAmmo;
         ammoCountText.color = weapon.CurrentAmmoLoaded <= 0 ? emptyAmmoTextColour : textColour;
 
-        Sprite ammoSprite = weapon.weaponAmmoType != null ? weapon.weaponAmmoType.ItemSprite : null;
+        Sprite ammoSprite = weapon.WeaponAmmoItem != null ? weapon.WeaponAmmoItem.ItemSprite : null;
         ammoIconImage.sprite = ammoSprite;
         ammoIconImage.enabled = ammoSprite != null;
     }
