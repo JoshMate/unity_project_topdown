@@ -449,6 +449,7 @@ public static class F_Utility_Helper_Inventory
                 sourceSlot.slotItemObj = null;
                 destinationSlot.slotItemObj = itemToMove;
                 itemToMove.SetInventoryStoredState(true);
+                PlayDropSound(itemToMove);
                 return true;
             }
         }
@@ -487,6 +488,7 @@ public static class F_Utility_Helper_Inventory
             sourceSlot.slotItemObj = null;
             destinationSlot.slotItemObj = itemToMove;
             itemToMove.SetInventoryStoredState(true);
+            PlayPickupSound(itemToMove);
             return true;
         }
 
@@ -538,7 +540,9 @@ public static class F_Utility_Helper_Inventory
         return true;
     }
 
-    private static void PlayPickupSound(F_Item item)
+    /// <summary>Plays the pickup sound configured on an item, when available.</summary>
+    /// <param name="item">The item whose pickup sound should play.</param>
+    public static void PlayPickupSound(F_Item item)
     {
         if (item != null && item.itemSoundPickup != null)
         {
@@ -548,7 +552,9 @@ public static class F_Utility_Helper_Inventory
         }
     }
 
-    private static void PlayDropSound(F_Item item)
+    /// <summary>Plays the drop sound configured on an item, when available.</summary>
+    /// <param name="item">The item whose drop sound should play.</param>
+    public static void PlayDropSound(F_Item item)
     {
         if (item != null && item.itemSoundDrop != null)
         {
@@ -645,6 +651,7 @@ public static class F_Utility_Helper_Inventory
         sourceItem.itemCount -= splitCount;
         splitItem.SetInventoryStoredState(true);
         cursor.cursorHeldItemObj = splitItem;
+        PlayPickupSound(splitItem);
         return true;
     }
 
@@ -709,6 +716,7 @@ public static class F_Utility_Helper_Inventory
             RemoveItemFromInventory(sourceItem, GetCursorInventory(cursor));
         }
 
+        PlayPickupSound(sourceItem);
         return true;
     }
 

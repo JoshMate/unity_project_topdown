@@ -87,8 +87,13 @@ public class F_GUI_Inventory_Slot : MonoBehaviour, IPointerClickHandler, IPointe
         if (cursorObj.cursorHeldItemObj != null)
         {
             F_Item heldItem = cursorObj.cursorHeldItemObj;
+            F_PlayerInventory playerInventory = cursorObj.playerController != null
+                ? cursorObj.playerController.playerInventory
+                : null;
+            bool isContainerSlot = playerInventory != null &&
+                                   playerInventory.invSlotContainer != null &&
+                                   playerInventory.invSlotContainer.Contains(this);
             int placeCount = F_Utility_Helper_Inventory.GetModifierTransferCount(cursorObj.controls, heldItem.itemCount);
-
 
             if (!F_Utility_Helper_Inventory.CheckIfItemTypeMatchesSlotType(this, heldItem))
             {
@@ -96,11 +101,43 @@ public class F_GUI_Inventory_Slot : MonoBehaviour, IPointerClickHandler, IPointe
             }
             else if (placeCount < heldItem.itemCount)
             {
-                F_Utility_Helper_Inventory.TryPlacePartialCursorStack(this, cursorObj, placeCount);
+                bool placedPartialStack = F_Utility_Helper_Inventory.TryPlacePartialCursorStack(this, cursorObj, placeCount);
+                if (placedPartialStack)
+                {
+                    if (isContainerSlot)
+                    {
+                        F_Utility_Helper_Inventory.PlayDropSound(heldItem);
+                    }
+                    else
+                    {
+                        F_Utility_Helper_Inventory.PlayPickupSound(heldItem);
+                    }
+                }
             }
-            else if (!TryMergeHeldItemStack())
+            else if (TryMergeHeldItemStack())
+            {
+                if (isContainerSlot)
+                {
+                    F_Utility_Helper_Inventory.PlayDropSound(heldItem);
+                }
+                else
+                {
+                    F_Utility_Helper_Inventory.PlayPickupSound(heldItem);
+                }
+            }
+            else
             {
                 (cursorObj.cursorHeldItemObj, slotItemObj) = (slotItemObj, cursorObj.cursorHeldItemObj);
+                if (isContainerSlot)
+                {
+                    F_Utility_Helper_Inventory.PlayDropSound(heldItem);
+                }
+                else
+                {
+                    F_Utility_Helper_Inventory.PlayPickupSound(heldItem);
+                }
+
+                F_Utility_Helper_Inventory.PlayPickupSound(cursorObj.cursorHeldItemObj);
             }
         }
         else if (slotItemObj != null)
@@ -109,6 +146,7 @@ public class F_GUI_Inventory_Slot : MonoBehaviour, IPointerClickHandler, IPointe
             if (takeCount >= slotItemObj.itemCount || !F_Utility_Helper_Inventory.TrySplitSlotStackToCursor(this, cursorObj, takeCount))
             {
                 (cursorObj.cursorHeldItemObj, slotItemObj) = (slotItemObj, cursorObj.cursorHeldItemObj);
+                F_Utility_Helper_Inventory.PlayPickupSound(cursorObj.cursorHeldItemObj);
             }
             else if (cursorObj.controls != null && cursorObj.controls.IsControlModifierHeld())
             {
