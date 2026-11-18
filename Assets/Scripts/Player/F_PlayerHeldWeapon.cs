@@ -107,7 +107,8 @@ public class F_PlayerHeldWeapon : MonoBehaviour
         heldWeaponItemTracked = currentWeaponItem;
         if (heldWeaponItemTracked != null)
         {
-            heldWeaponItemTracked.SetHeld(true);
+            F_PlayerController holderController = GetComponentInParent<F_PlayerController>();
+            heldWeaponItemTracked.SetHeld(true, holderController != null ? holderController.rb : null);
         }
     }
 

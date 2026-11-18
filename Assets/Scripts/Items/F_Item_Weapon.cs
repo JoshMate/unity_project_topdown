@@ -121,6 +121,7 @@ public class F_Item_Weapon : F_Item
     private const string defaultDeployStartSoundAssetPath = "Assets/Sound/Interface/SD_Interface_Deploy_Weapon_Start.wav";
     private const string defaultDeployEndSoundAssetPath = "Assets/Sound/Interface/SD_Interface_Deploy_Weapon_End.wav";
     private const float minimumSpreadRecoveryDelay = 0.01f;
+    private const float minimumHolderMovementSpeedSqr = 0.0001f;
     private const float minimumFireDelay = 0f;
     private const float reloadMiddleFraction = 0.5f;
     private const float reloadCompletionDelay = 0.3f;
@@ -129,6 +130,7 @@ public class F_Item_Weapon : F_Item
     [Header("Privates")]
     private int currentAmmoLoaded;
     private float currentAccuracySpread;
+    private float currentMovementSpread;
     private float nextFireReadyTime;
     // Time at which the current bolt action cycle finishes; reloading is blocked until then
     private float boltActionEndTime;
@@ -140,6 +142,8 @@ public class F_Item_Weapon : F_Item
     private bool isReloading;
     // Held clock state: delays run on HeldTime so they only progress while this weapon is held
     private bool isHeld;
+    private bool wasHolderMoving;
+    private Rigidbody2D heldByRigidbody;
     private float heldSinceTime;
     private float accumulatedHeldTime;
     private float reloadSegmentStartTime;
@@ -189,10 +193,12 @@ public class F_Item_Weapon : F_Item
     /// <summary>Seconds this weapon has spent held. All weapon delays (deploy, fire rate, bolt action, reload) run on this clock so they only progress while the weapon is held.</summary>
     public float HeldTime => accumulatedHeldTime + (isHeld ? Time.time - heldSinceTime : 0f);
 
-    /// <summary>Marks the weapon as held or holstered. Delay timers pause while it is not held.</summary>
+    /// <summary>Marks the weapon as held or holstered and assigns the holder used for movement spread.</summary>
     /// <param name="isNowHeld">True when the weapon becomes the held weapon.</param>
-    public void SetHeld(bool isNowHeld)
+    /// <param name="holderRigidbody">The holder's Rigidbody2D, or null when unavailable.</param>
+    public void SetHeld(bool isNowHeld, Rigidbody2D holderRigidbody = null)
     {
+        heldByRigidbody = isNowHeld ? holderRigidbody : null;
         if (isHeld == isNowHeld)
         {
             return;
@@ -258,8 +264,10 @@ public class F_Item_Weapon : F_Item
         PlayReloadSound(weaponDeployEndSound);
     }
 
-    /// <summary>The weapon's current accuracy cone half-angle, in radians.</summary>
-    public float CurrentAccuracySpreadRadians => currentAccuracySpread;
+    /// <summary>The weapon's current accuracy cone half-angle, in radians, including movement spread and its recovery.</summary>
+    public float CurrentAccuracySpreadRadians => IsHolderMoving()
+        ? currentAccuracySpread * Mathf.Max(0f, weaponSpreadMovementMult)
+        : currentAccuracySpread + currentMovementSpread;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -272,6 +280,7 @@ public class F_Item_Weapon : F_Item
     // Update is called once per frame
     void Update()
     {
+        UpdateMovementSpread();
         RecoverAccuracySpread();
         PlayDeployEndSoundWhenFinished();
     }
@@ -537,7 +546,8 @@ public class F_Item_Weapon : F_Item
     /// <param name="aimDirection">The unmodified aim direction, e.g. the fire point's forward vector.</param>
     public Vector2 ApplyAccuracySpreadToDirection(Vector2 aimDirection)
     {
-        float randomSpreadRadians = Random.Range(-currentAccuracySpread, currentAccuracySpread);
+        float currentSpread = CurrentAccuracySpreadRadians;
+        float randomSpreadRadians = Random.Range(-currentSpread, currentSpread);
         float randomSpreadDegrees = randomSpreadRadians * Mathf.Rad2Deg;
         return Quaternion.Euler(0f, 0f, randomSpreadDegrees) * aimDirection;
     }
@@ -669,6 +679,23 @@ public class F_Item_Weapon : F_Item
         reloadRoutine = null;
     }
 
+    private void UpdateMovementSpread()
+    {
+        bool holderIsMoving = IsHolderMoving();
+        if (holderIsMoving || wasHolderMoving)
+        {
+            currentMovementSpread = currentAccuracySpread * (Mathf.Max(0f, weaponSpreadMovementMult) - 1f);
+        }
+
+        wasHolderMoving = holderIsMoving;
+    }
+
+    private bool IsHolderMoving()
+    {
+        return isHeld && heldByRigidbody != null &&
+            heldByRigidbody.linearVelocity.sqrMagnitude > minimumHolderMovementSpeedSqr;
+    }
+
     private void RecoverAccuracySpread()
     {
         if (!Application.isPlaying || Time.time < nextSpreadRecoveryTime)
@@ -677,10 +704,15 @@ public class F_Item_Weapon : F_Item
         }
 
         nextSpreadRecoveryTime = Time.time + Mathf.Max(weaponSpreadRecoilRecoveryDelay, minimumSpreadRecoveryDelay);
+        float recoveryAmount = Mathf.Max(0f, weaponSpreadRecoilRecoveryAmount);
         currentAccuracySpread = Mathf.MoveTowards(
             currentAccuracySpread,
             GetRestingAccuracySpread(),
-            weaponSpreadRecoilRecoveryAmount);
+            recoveryAmount);
+        if (!IsHolderMoving())
+        {
+            currentMovementSpread = Mathf.MoveTowards(currentMovementSpread, 0f, recoveryAmount);
+        }
     }
 
     private void ApplyRecoilImpulse()
