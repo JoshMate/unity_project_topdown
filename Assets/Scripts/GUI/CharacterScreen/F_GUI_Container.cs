@@ -226,6 +226,7 @@ public class F_GUI_Container : MonoBehaviour
         SyncSlotsToContainer();
         List<F_Item> containerItems = containerGuiOpenContainer.ContainerItems;
         int slotCount = Mathf.Min(containerItems.Count, containerGuiSlots.Count);
+        bool pickupSoundPlayed = false;
         for (int slotIndex = 0; slotIndex < slotCount; slotIndex++)
         {
             F_Item itemToMove = containerItems[slotIndex];
@@ -249,6 +250,12 @@ public class F_GUI_Container : MonoBehaviour
             if (transferredCount <= 0)
             {
                 break;
+            }
+
+            if (!pickupSoundPlayed)
+            {
+                F_Utility_Helper_Inventory.PlayPickupSound(itemToMove);
+                pickupSoundPlayed = true;
             }
 
             itemToMove.itemCount -= transferredCount;
