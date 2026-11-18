@@ -6,7 +6,6 @@ public enum enumItemType
     MiscQuestItem,
     MiscMod,
     ActiveConsumable,
-    ActiveGadget,
     WeaponMeleeOneHanded,
     WeaponMeleeTwoHanded,
     WeaponGunOneHanded,

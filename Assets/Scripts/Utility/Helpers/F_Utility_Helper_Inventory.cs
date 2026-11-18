@@ -66,8 +66,7 @@ public static class F_Utility_Helper_Inventory
 
         if (slotToCheck.slotType == enumSlotType.MiscActive)
         {
-            return itemToCheck.itemType == enumItemType.ActiveConsumable ||
-                   itemToCheck.itemType == enumItemType.ActiveGadget;
+            return itemToCheck.itemType == enumItemType.ActiveConsumable;
         }
 
         if (slotToCheck.slotType == enumSlotType.WeaponPrimary)

@@ -71,6 +71,8 @@ public class F_Item_Weapon : F_Item
     public float weaponSpreadRecoilRecoveryAmount = 0.01f;
     // How much time delay between each accuracy recovery cycle
     public float weaponSpreadRecoilRecoveryDelay = 0.01f;
+    // How much to multiply the current spread by when the holder is moving
+    public float weaponSpreadMovementMult = 1.5f;
     
     [Header("Weapon Accuracy Features")]
     // Wether or not the weapon gets more accurate with each shot (starting at max spread and improving to Spread Start)
@@ -98,6 +100,8 @@ public class F_Item_Weapon : F_Item
     [Header("Weapon Handling Stats")]
     // Deploy delay in hundredths of a second, selected from the weapon delay presets
     public enumWeaponDeployDelay weaponDeployDelay = enumWeaponDeployDelay.DeployDelayTwoHandedFast;
+    
+    [Header("Weapon Durability Stats")]
     // How much durability the weapon currently has left
     public float weaponDurabilityCurrent = 1000f;
     // How much durability the weapon can ever have

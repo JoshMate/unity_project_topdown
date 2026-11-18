@@ -19,6 +19,7 @@ public struct F_ItemTooltipDetail
 public class F_Item : MonoBehaviour
 {
     [Header("Constants Private")]
+    private const int itemCountMinimum = 1;
     private const string defaultPickupSoundAssetPath = "Assets/Sound/Interface/Items/SD_Interface_PickupItem.wav";
     private const string defaultDropSoundAssetPath = "Assets/Sound/Interface/SD_Interface_DropItem.wav";
 
@@ -32,7 +33,8 @@ public class F_Item : MonoBehaviour
     public enumItemRarity itemRarity = enumItemRarity.Rarity00Junk;
     public float itemWeight = 1.0f;
     public int itemValue = 1;
-    public int itemCount = 1;
+    [F_ItemCountSlider(nameof(itemCountMax))]
+    public int itemCount = itemCountMinimum;
     public enumItemMaxCount itemCountMax = enumItemMaxCount.CountMaxSingle;
 
     [Header("Item Art")]
@@ -62,6 +64,7 @@ public class F_Item : MonoBehaviour
         EnsureDefaultItemAssets();
         EnsureSpriteRendererReference();
         ConfigurePickupCollider();
+        itemCount = Mathf.Clamp(itemCount, itemCountMinimum, Mathf.Max(itemCountMinimum, ItemCountMaxValue));
     }
 
     /// <summary>Assigns default assets to any empty item references; subclasses extend this with their own defaults.</summary>
