@@ -9,6 +9,13 @@
         "com.unity.timeline": "1.6.0"
       }
     },
+    "com.h8man.2d.navmeshplus": {
+      "version": "https://github.com/h8man/NavMeshPlus.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "d615919ce2d1472e21ea1c761882cc02d7ba4469"
+    },
     "com.unity.2d.animation": {
       "version": "13.0.2",
       "depth": 1,

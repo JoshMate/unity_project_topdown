@@ -1,0 +1,67 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &1936955763746935225
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 5609468337708379251, guid: f68b0fad39e425d488dfd459eede676c, type: 3}
+      propertyPath: pointName
+      value: Zombie Spawn
+      objectReference: {fileID: 0}
+    - target: {fileID: 5609468337708379251, guid: f68b0fad39e425d488dfd459eede676c, type: 3}
+      propertyPath: spawnLootTable
+      value: 
+      objectReference: {fileID: 11400000, guid: 02beebd9928aaa341be72b4f8143ef90, type: 2}
+    - target: {fileID: 7141526004024843475, guid: f68b0fad39e425d488dfd459eede676c, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7141526004024843475, guid: f68b0fad39e425d488dfd459eede676c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7141526004024843475, guid: f68b0fad39e425d488dfd459eede676c, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7141526004024843475, guid: f68b0fad39e425d488dfd459eede676c, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7141526004024843475, guid: f68b0fad39e425d488dfd459eede676c, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7141526004024843475, guid: f68b0fad39e425d488dfd459eede676c, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7141526004024843475, guid: f68b0fad39e425d488dfd459eede676c, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7141526004024843475, guid: f68b0fad39e425d488dfd459eede676c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7141526004024843475, guid: f68b0fad39e425d488dfd459eede676c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7141526004024843475, guid: f68b0fad39e425d488dfd459eede676c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8771335364730908028, guid: f68b0fad39e425d488dfd459eede676c, type: 3}
+      propertyPath: m_Name
+      value: OB_Spawn_Character_Zombie_Basic
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: f68b0fad39e425d488dfd459eede676c, type: 3}

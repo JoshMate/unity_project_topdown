@@ -488,9 +488,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 805c1640dfada3347bf10a59b8c07a1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  entInfoName: Entity Name
-  entInfoDescription: Entity Description
-  entFeatureMaterial: 0
+  entInfoName: Player
+  entInfoDescription: The Player controlled character
+  entFeatureMaterial: 11
   entStatHealth: 100
   entStatHealthMax: 100
   entStatToxic: 0
@@ -501,8 +501,8 @@ MonoBehaviour:
   entResistanceFire: 0
   entResistanceExplosive: 0
   entResistanceToxic: 0
-  entFeatureOverrideMaterialHealth: 0
-  entFeatureOverrideResistances: 0
+  entFeatureOverrideMaterialHealth: 1
+  entFeatureOverrideResistances: 1
   entFeatureCanSeeThrough: 0
   entFeatureCanWalkThrough: 0
   entFeatureCanShootOver: 0
@@ -510,13 +510,13 @@ MonoBehaviour:
   entFeatureCreateBloodOnHit: 1
   entFeatureCreateDecalOnDestroy: 1
   entFeatureOverrideMaterialStats: 0
-  characterFeatureFootstepsEnabled: 1
   characterStatStamina: 100
   characterStatStaminaMax: 100
   characterStatStaminaRegenDelay: 0.1
   characterStatStaminaSprintDrainDelay: 0.05
   characterStatSpeedMove: 2
   characterStatSpeedSprint: 4
+  characterFeatureFootstepsEnabled: 1
   characterStatusIsSprinting: 0
   playerRefHudManager: {fileID: 0}
   playerRefCharacterScreenManager: {fileID: 0}

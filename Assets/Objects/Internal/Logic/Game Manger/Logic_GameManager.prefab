@@ -5797,6 +5797,7 @@ GameObject:
   - component: {fileID: 3068398398364438551}
   - component: {fileID: 7952757894837243461}
   - component: {fileID: 8737863478908105950}
+  - component: {fileID: 6253384719752068049}
   m_Layer: 0
   m_Name: Logic_GameManager
   m_TagString: Untagged
@@ -5855,6 +5856,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8637c4a272a3b5499053561928d5357, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::F_Logic_InitScene
+--- !u!114 &6253384719752068049
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7256211655589812437}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f762456fc23cbed4fa04ff3d1b9f494e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::F_Logic_Navigation
 --- !u!1 &7593702934074073214
 GameObject:
   m_ObjectHideFlags: 0

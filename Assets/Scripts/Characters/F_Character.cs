@@ -7,9 +7,6 @@ using UnityEngine;
 /// </summary>
 public class F_Character : F_Ent
 {
-    [Header("Character Features")]
-    // Whether this character plays footstep sounds while moving; turn off for silent NPCs.
-    public bool characterFeatureFootstepsEnabled = true;
 
     [Header("Character Stamina Stats")]
     // Current stamina, drained while sprinting and regenerated while resting.
@@ -26,6 +23,10 @@ public class F_Character : F_Ent
     public float characterStatSpeedMove;
     // Movement speed while sprinting with stamina remaining.
     public float characterStatSpeedSprint;
+
+    [Header("Character Features")]
+    // Whether this character plays footstep sounds while moving; turn off for silent NPCs.
+    public bool characterFeatureFootstepsEnabled = true;
 
     [Header("Character Status Flags")]
     // Whether this character is currently trying to sprint.

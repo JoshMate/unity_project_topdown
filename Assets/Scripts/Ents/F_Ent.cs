@@ -92,9 +92,17 @@ public class F_Ent : MonoBehaviour
     public static event Action<F_Ent, float, enumDamageType, GameObject> OnAnyEntDamaged;
     // Fired for every ent after healing is applied: ent, amount restored, source (may be null)
     public static event Action<F_Ent, float, GameObject> OnAnyEntHealed;
+    // Fired for every ent once when its health reaches zero, before it is destroyed
+    public static event Action<F_Ent> OnAnyEntDied;
 
     /// <summary>Whether this ent has died.</summary>
     public bool IsDead => entIsDead;
+
+    /// <summary>Whether this ent moves around (player, NPCs), so it is ignored when building the NavMesh.</summary>
+    public bool IsNavigationMover => IsMover;
+
+    /// <summary>Whether this ent carves a hole in the NavMesh: it is solid to movers and is not a mover itself.</summary>
+    public bool BlocksNavigation => !entFeatureCanWalkThrough && !IsMover;
 
     protected virtual void Awake()
     {
@@ -179,10 +187,11 @@ public class F_Ent : MonoBehaviour
         entMaterialDecalColour = settings.materialDecalColour;
     }
 
-    /// <summary>Applies the walk-through and shoot-through features to this ent's colliders. Call again after changing either flag at runtime.</summary>
+    /// <summary>Applies the walk-through and shoot-through features to this ent's colliders and NavMesh modifiers. Call again after changing either flag at runtime.</summary>
     public void ApplyPassThroughFeatures()
     {
         F_Utility_Helper_Physics.ApplyEntPassThroughFeatures(this);
+        F_Utility_Helper_Navigation.ApplyEntNavigationFeatures(this);
     }
 
     // Whether this ent walks or slides around and so passes through walk-through ents; override to true for the player and npcs.
@@ -303,6 +312,7 @@ public class F_Ent : MonoBehaviour
     {
         entIsDead = true;
         OnDied?.Invoke(this);
+        OnAnyEntDied?.Invoke(this);
         PlayEntSound(entMaterialDestroySounds, entMaterialHitSounds);
         if (entFeatureCreateDecalOnDestroy)
         {
