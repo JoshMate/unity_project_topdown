@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class F_PlayerInventory : MonoBehaviour
+public class F_PlayerInventory : MonoBehaviour, IF_Item_Weapon_AmmoReserve
 {
     [Header("Constants Private")]
     private const int oneBasedIndexOffset = 1;
@@ -87,6 +87,21 @@ public class F_PlayerInventory : MonoBehaviour
         }
 
         return invSlotWeapons[slotIndex];
+    }
+
+    /// <summary>Returns how many of the ammo item the inventory holds; firearms with no ammo item have unlimited reserve.</summary>
+    /// <param name="ammoItem">The ammo item the firearm uses, or null when it uses no specific ammo item.</param>
+    public int GetReserveAmmoCount(F_Item ammoItem)
+    {
+        return ammoItem == null ? int.MaxValue : F_Utility_Helper_Inventory.GetItemCountInInventory(this, ammoItem);
+    }
+
+    /// <summary>Consumes ammo items from the inventory for a reload and returns how many were removed.</summary>
+    /// <param name="ammoItem">The ammo item the firearm uses, or null when it uses no specific ammo item.</param>
+    /// <param name="amountToConsume">How many rounds the firearm wants to load.</param>
+    public int ConsumeReserveAmmo(F_Item ammoItem, int amountToConsume)
+    {
+        return ammoItem == null ? amountToConsume : F_Utility_Helper_Inventory.ConsumeItemFromInventory(this, ammoItem, amountToConsume);
     }
 
     /// <summary>Calculates the total weight of a list of items using the same item and loaded-ammunition rules as carried weight.</summary>

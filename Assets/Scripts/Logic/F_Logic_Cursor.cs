@@ -331,11 +331,11 @@ public class F_Logic_Cursor : MonoBehaviour
                 : null;
             F_Item_Weapon_Firearm heldFirearm = heldWeapon as F_Item_Weapon_Firearm;
             bool isReloading = heldFirearm != null && heldFirearm.IsReloading && cursorSpriteReload != null;
-            bool isDeploying = heldWeapon != null && heldWeapon.IsDeploying && cursorSpriteDeploy != null;
+            bool isDeploying = heldWeapon != null && heldWeapon.IsDeploying;
             bool isFinishingReload = heldFirearm != null && heldFirearm.IsFinishingReload && cursorSpriteOkay != null;
             if (isDeploying)
             {
-                cursorRendererPointer.sprite = cursorSpriteDeploy;
+                cursorRendererPointer.sprite = cursorSpriteReload != null ? cursorSpriteReload : cursorSpriteDeploy;
             }
             else if (isFinishingReload)
             {

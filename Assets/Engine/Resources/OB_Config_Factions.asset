@@ -1,0 +1,134 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07bcbdb5528160c4db666d4a5735b912, type: 3}
+  m_Name: OB_Config_Factions
+  m_EditorClassIdentifier: Assembly-CSharp::F_Utility_Config_Factions
+  cfgFactionSettings:
+  - factionName: Player
+    faction: 0
+    factionRelationships:
+    - relationshipFaction: 0
+      relationshipType: 0
+    - relationshipFaction: 1
+      relationshipType: 1
+    - relationshipFaction: 2
+      relationshipType: 1
+    - relationshipFaction: 3
+      relationshipType: 1
+    - relationshipFaction: 4
+      relationshipType: 1
+    - relationshipFaction: 5
+      relationshipType: 1
+    - relationshipFaction: 6
+      relationshipType: 1
+  - factionName: Nature
+    faction: 1
+    factionRelationships:
+    - relationshipFaction: 0
+      relationshipType: 1
+    - relationshipFaction: 1
+      relationshipType: 0
+    - relationshipFaction: 2
+      relationshipType: 1
+    - relationshipFaction: 3
+      relationshipType: 1
+    - relationshipFaction: 4
+      relationshipType: 1
+    - relationshipFaction: 5
+      relationshipType: 1
+    - relationshipFaction: 6
+      relationshipType: 1
+  - factionName: Undead
+    faction: 2
+    factionRelationships:
+    - relationshipFaction: 0
+      relationshipType: 1
+    - relationshipFaction: 1
+      relationshipType: 1
+    - relationshipFaction: 2
+      relationshipType: 0
+    - relationshipFaction: 3
+      relationshipType: 1
+    - relationshipFaction: 4
+      relationshipType: 1
+    - relationshipFaction: 5
+      relationshipType: 1
+    - relationshipFaction: 6
+      relationshipType: 1
+  - factionName: Bandits
+    faction: 3
+    factionRelationships:
+    - relationshipFaction: 0
+      relationshipType: 1
+    - relationshipFaction: 1
+      relationshipType: 1
+    - relationshipFaction: 2
+      relationshipType: 1
+    - relationshipFaction: 3
+      relationshipType: 0
+    - relationshipFaction: 4
+      relationshipType: 1
+    - relationshipFaction: 5
+      relationshipType: 1
+    - relationshipFaction: 6
+      relationshipType: 1
+  - factionName: Military
+    faction: 4
+    factionRelationships:
+    - relationshipFaction: 0
+      relationshipType: 1
+    - relationshipFaction: 1
+      relationshipType: 1
+    - relationshipFaction: 2
+      relationshipType: 1
+    - relationshipFaction: 3
+      relationshipType: 1
+    - relationshipFaction: 4
+      relationshipType: 0
+    - relationshipFaction: 5
+      relationshipType: 1
+    - relationshipFaction: 6
+      relationshipType: 1
+  - factionName: Robot
+    faction: 5
+    factionRelationships:
+    - relationshipFaction: 0
+      relationshipType: 1
+    - relationshipFaction: 1
+      relationshipType: 1
+    - relationshipFaction: 2
+      relationshipType: 1
+    - relationshipFaction: 3
+      relationshipType: 1
+    - relationshipFaction: 4
+      relationshipType: 1
+    - relationshipFaction: 5
+      relationshipType: 0
+    - relationshipFaction: 6
+      relationshipType: 1
+  - factionName: Civilian
+    faction: 6
+    factionRelationships:
+    - relationshipFaction: 0
+      relationshipType: 0
+    - relationshipFaction: 1
+      relationshipType: 1
+    - relationshipFaction: 2
+      relationshipType: 1
+    - relationshipFaction: 3
+      relationshipType: 1
+    - relationshipFaction: 4
+      relationshipType: 1
+    - relationshipFaction: 5
+      relationshipType: 1
+    - relationshipFaction: 6
+      relationshipType: 0

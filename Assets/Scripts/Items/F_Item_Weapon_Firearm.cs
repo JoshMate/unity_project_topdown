@@ -300,7 +300,7 @@ public class F_Item_Weapon_Firearm : F_Item_Weapon
     {
         F_Logic_Audio.PlaySound(
             weaponBoltActionSound,
-            EnumSoundType.Direct,
+            HeldSoundType,
             weaponShotLoudness,
             100f,
             firePositionWorld);
@@ -330,7 +330,7 @@ public class F_Item_Weapon_Firearm : F_Item_Weapon
         {
             F_Logic_Audio.PlaySound(
                 weaponFireSound,
-                EnumSoundType.Direct,
+                HeldSoundType,
                 weaponShotLoudness,
                 100f,
                 firePositionWorld);
@@ -397,11 +397,11 @@ public class F_Item_Weapon_Firearm : F_Item_Weapon
         return weaponDamage * falloffMultiplier;
     }
 
-    /// <summary>Starts the weapon's reload cycle, consuming matching ammo items from the inventory as needed.</summary>
-    /// <param name="playerInventory">The inventory the reload should draw ammo from.</param>
-    public void StartReload(F_PlayerInventory playerInventory)
+    /// <summary>Starts the weapon's reload cycle, drawing rounds from the ammo reserve as needed.</summary>
+    /// <param name="ammoReserve">Where the reload draws ammo from (the player inventory, or an NPC's virtual ammo).</param>
+    public void StartReload(IF_Item_Weapon_AmmoReserve ammoReserve)
     {
-        if (IsBroken() || isReloading || IsDeploying || HeldTime < boltActionEndTime || !weaponUsesAmmo || currentAmmoLoaded >= weaponAmmoCapacity || !HasReserveAmmo(playerInventory))
+        if (ammoReserve == null || IsBroken() || isReloading || IsDeploying || HeldTime < boltActionEndTime || !weaponUsesAmmo || currentAmmoLoaded >= weaponAmmoCapacity || !HasReserveAmmo(ammoReserve))
         {
             return;
         }
@@ -411,21 +411,27 @@ public class F_Item_Weapon_Firearm : F_Item_Weapon
             StopCoroutine(reloadRoutine);
         }
 
-        reloadRoutine = StartCoroutine(ReloadRoutine(playerInventory));
+        reloadRoutine = StartCoroutine(ReloadRoutine(ammoReserve));
     }
 
-    private bool HasReserveAmmo(F_PlayerInventory playerInventory)
+    /// <summary>Whether the weapon could start a reload from the given reserve right now, ignoring timing (deploy, bolt action).</summary>
+    /// <param name="ammoReserve">Where the reload would draw ammo from.</param>
+    public bool CanReloadFrom(IF_Item_Weapon_AmmoReserve ammoReserve)
     {
-        return WeaponAmmoItem == null ||
-            F_Utility_Helper_Inventory.GetItemCountInInventory(playerInventory, WeaponAmmoItem) > 0;
+        return ammoReserve != null && !IsBroken() && !isReloading && weaponUsesAmmo && currentAmmoLoaded < weaponAmmoCapacity && HasReserveAmmo(ammoReserve);
+    }
+
+    private bool HasReserveAmmo(IF_Item_Weapon_AmmoReserve ammoReserve)
+    {
+        return ammoReserve.GetReserveAmmoCount(WeaponAmmoItem) > 0;
     }
 
     private void PlayReloadSound(AudioClip reloadSound)
     {
-        PlayWeaponDirectSound(reloadSound);
+        PlayWeaponSound(reloadSound);
     }
 
-    private IEnumerator ReloadRoutine(F_PlayerInventory playerInventory)
+    private IEnumerator ReloadRoutine(IF_Item_Weapon_AmmoReserve ammoReserve)
     {
         isReloading = true;
 
@@ -437,8 +443,7 @@ public class F_Item_Weapon_Firearm : F_Item_Weapon
 
             while (currentAmmoLoaded < weaponAmmoCapacity)
             {
-                if (WeaponAmmoItem != null &&
-                    F_Utility_Helper_Inventory.GetItemCountInInventory(playerInventory, WeaponAmmoItem) < 1)
+                if (!HasReserveAmmo(ammoReserve))
                 {
                     break;
                 }
@@ -449,9 +454,7 @@ public class F_Item_Weapon_Firearm : F_Item_Weapon
                 BeginReloadProgressSegment(roundDelay);
                 yield return WaitForHeldSeconds(roundDelay);
 
-                int consumedAmmo = WeaponAmmoItem != null
-                    ? F_Utility_Helper_Inventory.ConsumeItemFromInventory(playerInventory, WeaponAmmoItem, 1)
-                    : 1;
+                int consumedAmmo = ammoReserve.ConsumeReserveAmmo(WeaponAmmoItem, 1);
                 if (consumedAmmo <= 0)
                 {
                     break;
@@ -476,7 +479,7 @@ public class F_Item_Weapon_Firearm : F_Item_Weapon
             PlayReloadSound(weaponReloadStartSound);
             BeginReloadProgressSegment(weaponReloadDelay);
             yield return WaitForHeldSeconds(weaponReloadDelay * reloadMiddleFraction);
-            if (HasReserveAmmo(playerInventory))
+            if (HasReserveAmmo(ammoReserve))
             {
                 PlayReloadSound(weaponReloadMiddleSound);
             }
@@ -484,17 +487,13 @@ public class F_Item_Weapon_Firearm : F_Item_Weapon
             yield return WaitForHeldSeconds(weaponReloadDelay * (1f - reloadMiddleFraction));
 
             int neededAmmo = weaponAmmoCapacity - currentAmmoLoaded;
-            int availableAmmo = WeaponAmmoItem != null
-                ? F_Utility_Helper_Inventory.GetItemCountInInventory(playerInventory, WeaponAmmoItem)
-                : neededAmmo;
+            int availableAmmo = ammoReserve.GetReserveAmmoCount(WeaponAmmoItem);
             int ammoToLoad = Mathf.Min(neededAmmo, availableAmmo);
 
             if (ammoToLoad > 0)
             {
                 PlayReloadSound(weaponReloadEndSound);
-                int consumedAmmo = WeaponAmmoItem != null
-                    ? F_Utility_Helper_Inventory.ConsumeItemFromInventory(playerInventory, WeaponAmmoItem, ammoToLoad)
-                    : ammoToLoad;
+                int consumedAmmo = ammoReserve.ConsumeReserveAmmo(WeaponAmmoItem, ammoToLoad);
                 currentAmmoLoaded += consumedAmmo;
                 isFinishingReload = true;
                 BeginReloadProgressSegment(0f);

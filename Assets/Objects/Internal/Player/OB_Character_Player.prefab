@@ -431,18 +431,18 @@ MonoBehaviour:
   entInfoName: Player
   entInfoDescription: The Player controlled character
   entFeatureMaterial: 11
+  entFeatureOverrideMaterialHealth: 1
   entStatHealth: 100
   entStatHealthMax: 100
   entStatToxic: 0
   entStatToxicMax: 1000
+  entFeatureOverrideResistances: 1
   entResistanceMelee: 0
   entResistanceBullet: 0
   entResistanceEnergy: 0
   entResistanceFire: 0
   entResistanceExplosive: 0
   entResistanceToxic: 0
-  entFeatureOverrideMaterialHealth: 1
-  entFeatureOverrideResistances: 1
   entFeatureCanSeeThrough: 0
   entFeatureCanWalkThrough: 0
   entFeatureCanShootOver: 0
@@ -450,14 +450,15 @@ MonoBehaviour:
   entFeatureCreateBloodOnHit: 1
   entFeatureCreateDecalOnDestroy: 1
   entFeatureOverrideMaterialStats: 0
+  characterFaction: 0
   characterStatStamina: 100
   characterStatStaminaMax: 100
   characterStatStaminaRegenDelay: 0.1
   characterStatStaminaSprintDrainDelay: 0.05
+  characterStatStaminaIsInfinite: 0
   characterStatSpeedMove: 2
   characterStatSpeedSprint: 4
   characterFeatureFootstepsEnabled: 1
-  characterStatusIsSprinting: 0
   playerRefHudManager: {fileID: 0}
   playerRefCharacterScreenManager: {fileID: 0}
   playerStatHunger: 100

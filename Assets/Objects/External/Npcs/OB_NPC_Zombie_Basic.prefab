@@ -51,18 +51,18 @@ MonoBehaviour:
   entInfoName: Zombie
   entInfoDescription: A shambling corpse.
   entFeatureMaterial: 11
-  entStatHealth: 100
-  entStatHealthMax: 100
+  entFeatureOverrideMaterialHealth: 1
+  entStatHealth: 50
+  entStatHealthMax: 50
   entStatToxic: 0
   entStatToxicMax: 1000
+  entFeatureOverrideResistances: 1
   entResistanceMelee: 0
   entResistanceBullet: 0
   entResistanceEnergy: 0
   entResistanceFire: 0
   entResistanceExplosive: 0
   entResistanceToxic: 1
-  entFeatureOverrideMaterialHealth: 1
-  entFeatureOverrideResistances: 1
   entFeatureCanSeeThrough: 0
   entFeatureCanWalkThrough: 0
   entFeatureCanShootOver: 0
@@ -70,20 +70,27 @@ MonoBehaviour:
   entFeatureCreateBloodOnHit: 1
   entFeatureCreateDecalOnDestroy: 1
   entFeatureOverrideMaterialStats: 0
+  characterFaction: 2
   characterStatStamina: 100
   characterStatStaminaMax: 100
   characterStatStaminaRegenDelay: 0.1
   characterStatStaminaSprintDrainDelay: 0.05
+  characterStatStaminaIsInfinite: 1
   characterStatSpeedMove: 1.5
   characterStatSpeedSprint: 2.5
   characterFeatureFootstepsEnabled: 1
-  characterStatusIsSprinting: 0
-  npcStatDetectionRange: 6
-  npcStatLoseTargetRange: 9
-  npcStatWanderRadius: 4
+  npcEquippedWeaponMelee: {fileID: 8175982676517353981, guid: 7377f3a45f3bfe34092067c197c66708, type: 3}
+  npcEquippedWeaponFirearm: {fileID: 0}
+  npcEquippedWeaponAmmoCount: 30
+  npcPersonalityCombatApproach: 1
+  npcPersonalityCombatSkillAiming: 2
+  npcPersonalityCombatSightRange: 2
+  npcPersonalityCombatAwarenessLevel: 1
+  npcIdleWanderRange: 4
   npcStatWanderWaitTimeMin: 1
   npcStatWanderWaitTimeMax: 3
   npcStatWanderSpeedMultiplier: 0.5
+  npcCanSprint: 0
   npcStatRepathInterval: 0.25
   npcStatStoppingDistance: 0.4
   npcStatRotationOffset: 0

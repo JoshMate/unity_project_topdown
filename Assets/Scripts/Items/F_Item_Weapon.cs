@@ -48,6 +48,7 @@ public abstract class F_Item_Weapon : F_Item
     private const float weaponDurabilityMin = 0f;
     private const float weaponDeployDelayHundredthsPerSecond = 100f;
     private const float weaponMinimumDelay = 0f;
+    private const float weaponSoundVolume = 100f;
     private const string weaponDefaultBreakSoundAssetPath = "Assets/Sound/Interface/Weapon Handling/SD_Interface_Weapon_Break.ogg";
     private const string weaponDefaultDryFireSoundAssetPath = "Assets/Sound/Interface/Weapon Handling/SD_Interface_Weapon_Click.ogg";
     private const string weaponDefaultDeployStartSoundAssetPath = "Assets/Sound/Interface/Weapon Handling/SD_Interface_Deploy_Weapon_Start.wav";
@@ -61,6 +62,8 @@ public abstract class F_Item_Weapon : F_Item
     // Held clock state: delays run on HeldTime so they only progress while this weapon is held
     private bool weaponIsHeld;
     private Rigidbody2D weaponHeldByRigidbody;
+    // Direct for the player so their weapon sounds are always heard clearly, Spatial for NPCs so theirs fade with distance
+    private EnumSoundType weaponHeldSoundType = EnumSoundType.Direct;
     private float weaponHeldSinceTime;
     private float weaponAccumulatedHeldTime;
 
@@ -69,6 +72,12 @@ public abstract class F_Item_Weapon : F_Item
 
     /// <summary>The holder's Rigidbody2D while held, otherwise null.</summary>
     protected Rigidbody2D HeldByRigidbody => weaponHeldByRigidbody;
+
+    /// <summary>How this weapon's sounds play for its current holder.</summary>
+    protected EnumSoundType HeldSoundType => weaponHeldSoundType;
+
+    /// <summary>World position this weapon's sounds play from: the holder while held, otherwise the weapon itself.</summary>
+    protected Vector3 HeldSoundPosition => weaponHeldByRigidbody != null ? (Vector3)weaponHeldByRigidbody.position : transform.position;
 
     /// <summary>Seconds this weapon has spent held. All weapon delays run on this clock so they only progress while the weapon is held.</summary>
     public float HeldTime => weaponAccumulatedHeldTime + (weaponIsHeld ? Time.time - weaponHeldSinceTime : 0f);
@@ -123,12 +132,18 @@ public abstract class F_Item_Weapon : F_Item
         PlayDeployEndSoundWhenFinished();
     }
 
-    /// <summary>Marks the weapon as held or holstered and assigns the holder's rigidbody.</summary>
+    /// <summary>Marks the weapon as held or holstered and assigns the holder's rigidbody and sound playback type.</summary>
     /// <param name="isNowHeld">True when the weapon becomes the held weapon.</param>
     /// <param name="holderRigidbody">The holder's Rigidbody2D, or null when unavailable.</param>
-    public void SetHeld(bool isNowHeld, Rigidbody2D holderRigidbody = null)
+    /// <param name="holderSoundType">How the weapon's sounds play for this holder.</param>
+    public void SetHeld(bool isNowHeld, Rigidbody2D holderRigidbody = null, EnumSoundType holderSoundType = EnumSoundType.Direct)
     {
         weaponHeldByRigidbody = isNowHeld ? holderRigidbody : null;
+        if (isNowHeld)
+        {
+            weaponHeldSoundType = holderSoundType;
+        }
+
         if (weaponIsHeld == isNowHeld)
         {
             return;
@@ -160,7 +175,7 @@ public abstract class F_Item_Weapon : F_Item
     public virtual void BeginDeploy()
     {
         weaponDeployStartTime = HeldTime;
-        PlayWeaponDirectSound(weaponDeploySound);
+        PlayWeaponSound(weaponDeploySound);
 
         weaponDeployEndTime = HeldTime + Mathf.Max(weaponMinimumDelay, (float)weaponDeployDelay / weaponDeployDelayHundredthsPerSecond);
         weaponIsDeployEndSoundPending = true;
@@ -175,15 +190,17 @@ public abstract class F_Item_Weapon : F_Item
         }
 
         weaponIsDeployEndSoundPending = false;
-        PlayWeaponDirectSound(weaponDeployEndSound);
+        PlayWeaponSound(weaponDeployEndSound);
     }
 
-    /// <summary>Plays a non-spatial weapon sound when one is assigned.</summary>
-    protected static void PlayWeaponDirectSound(AudioClip weaponSound)
+    /// <summary>Plays a weapon sound for the current holder (direct for the player, spatial for NPCs) when one is assigned.</summary>
+    /// <param name="weaponSound">The clip to play.</param>
+    /// <param name="weaponSoundLoudness">How far away the sound can be heard by hearing systems.</param>
+    protected void PlayWeaponSound(AudioClip weaponSound, EnumSoundLoudness weaponSoundLoudness = EnumSoundLoudness.NoSound)
     {
         if (weaponSound != null)
         {
-            F_Logic_Audio.PlaySound(weaponSound, EnumSoundType.Direct);
+            F_Logic_Audio.PlaySound(weaponSound, weaponHeldSoundType, weaponSoundLoudness, weaponSoundVolume, HeldSoundPosition);
         }
     }
 
@@ -233,14 +250,14 @@ public abstract class F_Item_Weapon : F_Item
 
         if (!wasBroken && IsBroken())
         {
-            PlayWeaponDirectSound(weaponBreakSound);
+            PlayWeaponSound(weaponBreakSound);
         }
     }
 
     /// <summary>Plays the dry-fire click used when a use attempt is blocked.</summary>
     public void PlayDryFireSound()
     {
-        PlayWeaponDirectSound(weaponDryFireSound);
+        PlayWeaponSound(weaponDryFireSound);
     }
 
     /// <summary>Assigns the default weapon sounds in the editor when none are set, alongside the base item defaults.</summary>

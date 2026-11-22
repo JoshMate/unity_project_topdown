@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -7,6 +8,9 @@ using UnityEngine;
 /// </summary>
 public class F_Character : F_Ent
 {
+    [Header("Character Faction")]
+    // Which side this character fights for; relationships between factions are set in OB_Config_Factions
+    public enumFaction characterFaction = F_Utility_Config_Factions.cfgFactionCharacterDefault;
 
     [Header("Character Stamina Stats")]
     // Current stamina, drained while sprinting and regenerated while resting.
@@ -17,6 +21,8 @@ public class F_Character : F_Ent
     public float characterStatStaminaRegenDelay;
     // Seconds between each stamina point drained while sprinting.
     public float characterStatStaminaSprintDrainDelay;
+    // When true, stamina is never checked or spent: sprinting and stamina actions (such as melee swings) always succeed.
+    public bool characterStatStaminaIsInfinite = false;
 
     [Header("Character Movement Stats")]
     // Normal movement speed.
@@ -27,10 +33,6 @@ public class F_Character : F_Ent
     [Header("Character Features")]
     // Whether this character plays footstep sounds while moving; turn off for silent NPCs.
     public bool characterFeatureFootstepsEnabled = true;
-
-    [Header("Character Status Flags")]
-    // Whether this character is currently trying to sprint.
-    public bool characterStatusIsSprinting = false;
 
     [Header("Constants Private")]
     private const float characterStaminaRegenStartDelay = 2f;
@@ -44,21 +46,30 @@ public class F_Character : F_Ent
     private const float characterFootstepMaxVolume = 100f;
 
     [Header("Privates")]
+    // Whether this character is currently trying to sprint.
+    private bool characterStatusIsSprinting;
     private float characterLastStaminaUseTime = 0f;
     private float characterLastStaminaRegenTime = 0f;
     private float characterLastStaminaSprintDrainTime = 0f;
     private Rigidbody2D characterMovementRigidbody;
     private Vector2 characterFootstepLastPosition;
     private float characterFootstepRateAccumulator;
+    private static readonly List<F_Character> characterActiveCharacters = new List<F_Character>();
+
+    /// <summary>Every enabled character in the loaded scenes, used by NPCs to find targets without scene searches.</summary>
+    public static IReadOnlyList<F_Character> ActiveCharacters => characterActiveCharacters;
+
+    /// <summary>Whether this character is currently sprinting.</summary>
+    public bool IsSprinting => characterStatusIsSprinting;
 
     /// <summary>Whether this character has stamina left to sprint with.</summary>
-    public bool CanSprint => characterStatStamina > characterStatFloor;
+    public bool CanSprint => characterStatStaminaIsInfinite || characterStatStamina > characterStatFloor;
 
-    /// <summary>Returns whether this character currently has at least the given amount of stamina.</summary>
+    /// <summary>Returns whether this character currently has at least the given amount of stamina (always true with infinite stamina).</summary>
     /// <param name="staminaAmount">The stamina an action requires.</param>
     public bool HasStamina(float staminaAmount)
     {
-        return characterStatStamina >= staminaAmount;
+        return characterStatStaminaIsInfinite || characterStatStamina >= staminaAmount;
     }
 
     /// <summary>Spends stamina for an action and delays regeneration, failing without spending when there is not enough.</summary>
@@ -66,6 +77,11 @@ public class F_Character : F_Ent
     /// <returns>True when the stamina was spent.</returns>
     public bool TryConsumeStamina(float staminaAmount)
     {
+        if (characterStatStaminaIsInfinite)
+        {
+            return true;
+        }
+
         if (!HasStamina(staminaAmount))
         {
             return false;
@@ -90,6 +106,15 @@ public class F_Character : F_Ent
     {
         characterFootstepLastPosition = transform.position;
         characterFootstepRateAccumulator = 0f;
+        if (!characterActiveCharacters.Contains(this))
+        {
+            characterActiveCharacters.Add(this);
+        }
+    }
+
+    protected virtual void OnDisable()
+    {
+        characterActiveCharacters.Remove(this);
     }
 
     protected override void Update()
@@ -130,7 +155,7 @@ public class F_Character : F_Ent
                 characterStatStamina = Math.Clamp(characterStatStamina + characterStaminaStepAmount, characterStatFloor, characterStatStaminaMax);
             }
         }
-        if (characterStatusIsSprinting && CanSprint)
+        if (characterStatusIsSprinting && CanSprint && !characterStatStaminaIsInfinite)
         {
             if (Time.time > characterLastStaminaSprintDrainTime + characterStatStaminaSprintDrainDelay)
             {

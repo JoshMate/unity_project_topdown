@@ -58,8 +58,11 @@ public static class F_Utility_Helper_Navigation
         return TrySamplePosition(position, out _);
     }
 
-    // Snaps a position to the nearest NavMesh point within the configured sample distance.
-    private static bool TrySamplePosition(Vector2 position, out Vector2 point)
+    /// <summary>Snaps a position to the nearest NavMesh point within the configured sample distance.</summary>
+    /// <param name="position">World position to snap.</param>
+    /// <param name="point">The NavMesh point found, or the original position when none is close enough.</param>
+    /// <returns>True when a NavMesh point was found.</returns>
+    public static bool TrySamplePosition(Vector2 position, out Vector2 point)
     {
         if (NavMesh.SamplePosition(new Vector3(position.x, position.y, 0f), out NavMeshHit hit,
             F_Utility_Config_Navigation.cfgNavigationSampleDistance, NavMesh.AllAreas))

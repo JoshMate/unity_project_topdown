@@ -15,6 +15,8 @@ public class F_Ent : MonoBehaviour
     public enumMaterialType entFeatureMaterial;
 
     [Header("Ent Health Stats")]
+    // When enabled, this ent uses its prefab health values instead of its material health settings.
+    public bool entFeatureOverrideMaterialHealth = false;
     // Current health points when this reaches zero the entity should run a on death method 
     public float entStatHealth = 100f;
     // Max health points, current health can't go above this
@@ -25,6 +27,8 @@ public class F_Ent : MonoBehaviour
     public float entStatToxicMax = 1000f;
 
     [Header("Ent Resistance Stats")]
+    // When enabled, this ent uses its prefab resistance values instead of its material resistance settings.
+    public bool entFeatureOverrideResistances = false;
     // How much to reduce incoming damage of this type by 1.0 fully immune. 0.0 takes full damge.
     [Range(entResistanceMin, entResistanceMax)] public float entResistanceMelee = 0.0f;
     // How much to reduce incoming damage of this type by 1.0 fully immune. 0.0 takes full damge.
@@ -37,12 +41,7 @@ public class F_Ent : MonoBehaviour
     [Range(entResistanceMin, entResistanceMax)] public float entResistanceExplosive = 0.0f;
     // How much to reduce incoming damage of this type by 1.0 fully immune. 0.0 takes full damge.
     [Range(entResistanceMin, entResistanceMax)] public float entResistanceToxic = 0.0f;
-
-    [Header("Ent Overrides")]
-    // When enabled, this ent uses its prefab health values instead of its material health settings.
-    public bool entFeatureOverrideMaterialHealth = false;
-    // When enabled, this ent uses its prefab resistance values instead of its material resistance settings.
-    public bool entFeatureOverrideResistances = false;
+    
 
     [Header("Ent Features")]
     // Whether or not this ent blocks npcs vision (reserved for NPC vision)

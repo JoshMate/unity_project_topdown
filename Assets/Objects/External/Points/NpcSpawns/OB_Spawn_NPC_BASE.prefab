@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2940659072635740999}
   - component: {fileID: 5609468337708379251}
   m_Layer: 0
-  m_Name: OB_Spawn_Character_BASE
+  m_Name: OB_Spawn_NPC_BASE
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

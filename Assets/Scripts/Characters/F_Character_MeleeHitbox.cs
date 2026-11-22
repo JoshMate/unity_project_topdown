@@ -35,7 +35,6 @@ public class F_Character_MeleeHitbox : MonoBehaviour
         Rigidbody2D hitboxBody = GetComponent<Rigidbody2D>();
         hitboxBody.bodyType = RigidbodyType2D.Kinematic;
         meleeHitboxCollider.isTrigger = true;
-        meleeHitboxSpriteRenderer.sortingLayerName = F_Utility_Config_Melee.cfgMeleeSortingLayerName;
         ApplyHeldWeaponVisual();
     }
 
@@ -192,7 +191,7 @@ public class F_Character_MeleeHitbox : MonoBehaviour
         }
     }
 
-    // Ents can have several colliders; each ent counts once, at its distance from the holder.
+    // Ents can have several colliders; each ent counts once, at its distance from the holder. The holder's allies are never hit.
     private void CollectNewTouchingTargets(Vector2 knockbackOrigin)
     {
         meleeHitboxNewTargets.Clear();
@@ -208,7 +207,8 @@ public class F_Character_MeleeHitbox : MonoBehaviour
             Collider2D overlapCollider = meleeHitboxOverlapResults[colliderIndex];
             F_Ent overlapEnt = overlapCollider != null ? overlapCollider.GetComponentInParent<F_Ent>() : null;
             if (overlapEnt == null || overlapEnt.IsDead || overlapEnt == meleeHitboxHolder || transform.IsChildOf(overlapEnt.transform) || overlapEnt.entFeatureCanShootOver ||
-                meleeHitboxHitTargets.Contains(overlapEnt) || meleeHitboxNewTargets.Contains(overlapEnt))
+                meleeHitboxHitTargets.Contains(overlapEnt) || meleeHitboxNewTargets.Contains(overlapEnt) ||
+                F_Utility_Helper_Faction.IsFriendly(meleeHitboxHolder, overlapEnt))
             {
                 continue;
             }

@@ -5,6 +5,21 @@ public static class F_Utility_Helper_Random
     [Header("Constants Private")]
     // More samples give a tighter bell; three is a close, cheap approximation of a normal distribution
     private const int randomBellCurveSampleCount = 3;
+    private const float randomChanceNever = 0f;
+    private const float randomChanceAlways = 1f;
+
+    /// <summary>Rolls a chance from 0 (never) to 1 (always); 0 and 1 are guaranteed outcomes.</summary>
+    /// <param name="chance">Probability of success, from 0 to 1.</param>
+    /// <returns>True when the roll succeeds.</returns>
+    public static bool RollChance(float chance)
+    {
+        if (chance <= randomChanceNever)
+        {
+            return false;
+        }
+
+        return chance >= randomChanceAlways || Random.value < chance;
+    }
 
     /// <summary>Rolls a whole number between min and max (both inclusive), distributed by the given curve.</summary>
     /// <param name="minValue">The lowest value that can be returned.</param>

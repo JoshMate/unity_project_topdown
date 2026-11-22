@@ -136,18 +136,18 @@ MonoBehaviour:
   entInfoName: Wooden Wall
   entInfoDescription: A solid wall
   entFeatureMaterial: 4
+  entFeatureOverrideMaterialHealth: 0
   entStatHealth: 25
   entStatHealthMax: 25
   entStatToxic: 0
   entStatToxicMax: 1000
+  entFeatureOverrideResistances: 0
   entResistanceMelee: 0
   entResistanceBullet: 0
   entResistanceEnergy: 0
   entResistanceFire: 0
   entResistanceExplosive: 0
   entResistanceToxic: 0
-  entFeatureOverrideMaterialHealth: 0
-  entFeatureOverrideResistances: 0
   entFeatureCanSeeThrough: 0
   entFeatureCanWalkThrough: 0
   entFeatureCanShootOver: 0
