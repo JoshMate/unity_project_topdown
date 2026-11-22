@@ -4,104 +4,32 @@ using System.Globalization;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-public class F_Item_Weapon : F_Item
+/// <summary>
+/// Shared base for every weapon type (firearm, melee, ...). Owns durability, damage, deploy timing and the held clock
+/// so each weapon type only implements how it is used.
+/// </summary>
+public abstract class F_Item_Weapon : F_Item
 {
-    [Header("Weapon Art Projectile")]
-    public Sprite weaponProjectileSprite;
-
     [Header("Weapon Art Sounds")]
-    public AudioClip weaponFireSound;
-    public AudioClip weaponBoltActionSound;
-    // Played when a full reload cycle begins
-    public AudioClip weaponReloadStartSound;
-    // Played when a full reload cycle is half way complete
-    public AudioClip weaponReloadMiddleSound;
-    // Played when a full reload cycle finishes
-    public AudioClip weaponReloadEndSound;
-    // Played once per round at the end of each round's delay when reloading one bullet at a time
-    public AudioClip weaponReloadOneAtATimeSound;
     // Played once at the start of deploying the weapon
     public AudioClip weaponDeploySound;
     // Played once when the weapon finishes deploying and becomes usable
     public AudioClip weaponDeployEndSound;
     // Played directly when the weapon's durability reaches zero and it breaks
     public AudioClip weaponBreakSound;
-    // Played directly when a fire attempt is blocked because the weapon is broken or out of ammo
+    // Played directly when a use attempt is blocked (broken, out of ammo, not enough stamina...)
     public AudioClip weaponDryFireSound;
 
     [Header("Weapon Damage Stats")]
-    // How much damage the projectile deals when it hits a target
+    // How much damage the weapon deals to each target it hits
     public float weaponDamage = 1f;
-    // What type that damage is 
+    // What type that damage is
     public enumDamageType weaponDamageType;
-    // How much delay there is between each shot
-    public float weaponFireRateDelay = 0.5f;
-    // How far the projectile moves before beining destroyed
-    public float weaponRange = 10f;
-    // How much the damage should be reduced to in a linear fashion (As a percent of starting damge) as the projectile travels across its range (Starting damage that grows if weaponIsRangeReverseFallOff is true)
-    public float weaponRangeDamageFallOffMin = 0.30f;
-    // The how fast the projectile moves
-    public float weaponProjectileSpeed = 10f;
-    // How many projectiles the weapon fires each time it shoots (Each projectile has random spread)
-    public int weaponProjectileShotCount = 1;
-    // How many times the weapon should fire when shot
-    public int weaponProjectileBurstCount = 1;
-    // The delay between the extra burst shots (Regular fire rate delay is then put in place after the burst is finished)
-    public float weaponProjectileBurstDelay = 0.1f;
-
-    
-    [Header("Weapon Damage Features")]
-    // Wether or not the weapon is automatic, continues to fire with the button held down or if one shot per press
-    public bool weaponIsFullyAutomatic = false;
-    // Wether or not the weapon loses or gains damage as the projectile moves through its range
-    public bool weaponIsRangeReverseFallOff = false;
-    // Wether or not the weapon should play a follow up sound after the shot has been fired (Plays weaponBoltActionSound and delays fire rate)
-    public bool weaponIsBoltAction = false;
-    // How long to wait in seconds before playing the bolt action sound after shooting, this delays the normal fire rate delay
-    public float weaponBoltActionDelay = 1f;
-    
-
-    [Header("Weapon Accuracy Stats")]
-    // The starting accuracy of the weapon as a cone
-    public float weaponSpreadStart = 0.01f;
-    // The maximum ammount of inaccuracy the weapon can reach from recoil
-    public float weaponSpreadMax = 0.10f;
-    // How much the current spread is increased by with each shot
-    public float weaponSpreadRecoilImpulse = 0.02f;
-    // How much accuracy is restored each cycle
-    public float weaponSpreadRecoilRecoveryAmount = 0.01f;
-    // How much time delay between each accuracy recovery cycle
-    public float weaponSpreadRecoilRecoveryDelay = 0.01f;
-    // How much to multiply the current spread by when the holder is moving
-    public float weaponSpreadMovementMult = 1.5f;
-    
-    [Header("Weapon Accuracy Features")]
-    // Wether or not the weapon gets more accurate with each shot (starting at max spread and improving to Spread Start)
-    public bool weaponIsReverseRecoilImpulse = false;
-
-    [Header("Weapon Ammo Stats")]
-    // Wether or not the weapon requires ammo to fire
-    public bool weaponUsesAmmo = true;
-    // Enum selector for the ammo prefab used by this weapon
-    public enumWeaponAmmoType weaponAmmoType;
-    public F_Item WeaponAmmoItem => F_Utility_Config_WeaponAmmo.GetAmmoItem(weaponAmmoType);
-    // How much ammo this weapon can hold before it needs to reload
-    public int weaponAmmoCapacity = 5;
-    // How much ammo is used per shot (The gun can't fire if there isn't enough loaded)
-    public int weaponAmmoTakenPerShot = 1;
-    // How many seconds this weapon takes to perform a reload cycle
-    public float weaponReloadDelay = 3.00f;
-    // How far around the player the shot can be heard in the world (For use in the custom spatial audio manger system)
-    public EnumSoundLoudness weaponShotLoudness;
-
-    [Header("Weapon Ammo Features")]
-    // Wether or not the weapon reloads its entire magazine per reload cycle or just one at a time in a loop (Like loading a shotgun with shells)
-    public bool weaponIsReloadOneBulletPerReload = false;
 
     [Header("Weapon Handling Stats")]
     // Deploy delay in hundredths of a second, selected from the weapon delay presets
     public enumWeaponDeployDelay weaponDeployDelay = enumWeaponDeployDelay.DeployDelayTwoHandedFast;
-    
+
     [Header("Weapon Durability Stats")]
     // How much durability the weapon currently has left
     [Range(0f, 100f)]
@@ -111,124 +39,42 @@ public class F_Item_Weapon : F_Item
     [InspectorName("Durability Max Lost")]
     [Range(0f, 100f)]
     public float weaponDurabilityMaxLost = 0f;
-    // How much durability the weapon loses each time it is shot
-    public float weaponDurabilityLostPerShot = 10f;
-
-    
-    [Header("Weapon Flags")]
-
+    // How much durability the weapon loses each time it is used (each shot or swing)
+    [FormerlySerializedAs("weaponDurabilityLostPerShot")]
+    public float weaponDurabilityLostPerUse = 10f;
 
     [Header("Constants Private")]
     private const float weaponDurabilityMax = 100f;
-    private const string defaultBreakSoundAssetPath = "Assets/Sound/Interface/SD_Interface_Weapon_Break.ogg";
-    private const string defaultDryFireSoundAssetPath = "Assets/Sound/Interface/SD_Interface_Weapon_Click.ogg";
-    private const string defaultDeployStartSoundAssetPath = "Assets/Sound/Interface/SD_Interface_Deploy_Weapon_Start.wav";
-    private const string defaultDeployEndSoundAssetPath = "Assets/Sound/Interface/SD_Interface_Deploy_Weapon_End.wav";
-    private const float minimumSpreadRecoveryDelay = 0.01f;
-    private const float minimumHolderMovementSpeedSqr = 0.0001f;
-    private const float minimumFireDelay = 0f;
-    private const float reloadMiddleFraction = 0.5f;
-    private const float reloadCompletionDelay = 0.3f;
-    private const float oneAtATimeFirstRoundDelayMultiplier = 2f;
+    private const float weaponDurabilityMin = 0f;
+    private const float weaponDeployDelayHundredthsPerSecond = 100f;
+    private const float weaponMinimumDelay = 0f;
+    private const string weaponDefaultBreakSoundAssetPath = "Assets/Sound/Interface/Weapon Handling/SD_Interface_Weapon_Break.ogg";
+    private const string weaponDefaultDryFireSoundAssetPath = "Assets/Sound/Interface/Weapon Handling/SD_Interface_Weapon_Click.ogg";
+    private const string weaponDefaultDeployStartSoundAssetPath = "Assets/Sound/Interface/Weapon Handling/SD_Interface_Deploy_Weapon_Start.wav";
+    private const string weaponDefaultDeployEndSoundAssetPath = "Assets/Sound/Interface/Weapon Handling/SD_Interface_Deploy_Weapon_End.wav";
 
     [Header("Privates")]
-    private int currentAmmoLoaded;
-    private float currentAccuracySpread;
-    private float currentMovementSpread;
-    private float nextFireReadyTime;
-    // Time at which the current bolt action cycle finishes; reloading is blocked until then
-    private float boltActionEndTime;
-    private float nextSpreadRecoveryTime;
-    private float deployStartTime;
-    private float deployEndTime;
+    private float weaponDeployStartTime;
+    private float weaponDeployEndTime;
     // True from the start of a deploy until its end sound has been played
-    private bool isDeployEndSoundPending;
-    private bool isReloading;
+    private bool weaponIsDeployEndSoundPending;
     // Held clock state: delays run on HeldTime so they only progress while this weapon is held
-    private bool isHeld;
-    private bool wasHolderMoving;
-    private Rigidbody2D heldByRigidbody;
-    private float heldSinceTime;
-    private float accumulatedHeldTime;
-    private float reloadSegmentStartTime;
-    private float reloadSegmentDuration;
-    // True during the completion delay at the end of a reload, when the reload can no longer be interrupted by firing
-    private bool isFinishingReload;
-    private Coroutine reloadRoutine;
-    private readonly List<Collider2D> firedProjectileColliders = new List<Collider2D>();
+    private bool weaponIsHeld;
+    private Rigidbody2D weaponHeldByRigidbody;
+    private float weaponHeldSinceTime;
+    private float weaponAccumulatedHeldTime;
 
-    /// <summary>How many rounds are currently loaded in the weapon.</summary>
-    public int CurrentAmmoLoaded => currentAmmoLoaded;
+    /// <summary>Whether this weapon is currently the held weapon.</summary>
+    protected bool IsHeld => weaponIsHeld;
 
-    /// <summary>Whether the weapon is currently mid-reload.</summary>
-    public bool IsReloading => isReloading;
+    /// <summary>The holder's Rigidbody2D while held, otherwise null.</summary>
+    protected Rigidbody2D HeldByRigidbody => weaponHeldByRigidbody;
 
-    /// <summary>Whether the weapon is in the short completion delay at the end of a reload.</summary>
-    public bool IsFinishingReload => isFinishingReload;
-
-    /// <summary>Progress from 0 to 1 of the current reload cycle segment (the whole reload, or a single round when loading one at a time).</summary>
-    public float ReloadProgress
-    {
-        get
-        {
-            if (!isReloading)
-            {
-                return 0f;
-            }
-
-            if (reloadSegmentDuration <= 0f)
-            {
-                return 1f;
-            }
-
-            return Mathf.Clamp01((HeldTime - reloadSegmentStartTime) / reloadSegmentDuration);
-        }
-    }
-
-    private void BeginReloadProgressSegment(float segmentDuration)
-    {
-        reloadSegmentStartTime = HeldTime;
-        reloadSegmentDuration = segmentDuration;
-    }
+    /// <summary>Seconds this weapon has spent held. All weapon delays run on this clock so they only progress while the weapon is held.</summary>
+    public float HeldTime => weaponAccumulatedHeldTime + (weaponIsHeld ? Time.time - weaponHeldSinceTime : 0f);
 
     /// <summary>Whether the weapon is still being deployed after being selected, blocking all use.</summary>
-    public bool IsDeploying => HeldTime < deployEndTime;
-
-    /// <summary>Seconds this weapon has spent held. All weapon delays (deploy, fire rate, bolt action, reload) run on this clock so they only progress while the weapon is held.</summary>
-    public float HeldTime => accumulatedHeldTime + (isHeld ? Time.time - heldSinceTime : 0f);
-
-    /// <summary>Marks the weapon as held or holstered and assigns the holder used for movement spread.</summary>
-    /// <param name="isNowHeld">True when the weapon becomes the held weapon.</param>
-    /// <param name="holderRigidbody">The holder's Rigidbody2D, or null when unavailable.</param>
-    public void SetHeld(bool isNowHeld, Rigidbody2D holderRigidbody = null)
-    {
-        heldByRigidbody = isNowHeld ? holderRigidbody : null;
-        if (isHeld == isNowHeld)
-        {
-            return;
-        }
-
-        if (isNowHeld)
-        {
-            heldSinceTime = Time.time;
-        }
-        else
-        {
-            accumulatedHeldTime += Time.time - heldSinceTime;
-        }
-
-        isHeld = isNowHeld;
-    }
-
-    // Waits for the given number of held seconds; time spent holstered does not count
-    private IEnumerator WaitForHeldSeconds(float duration)
-    {
-        float targetHeldTime = HeldTime + duration;
-        while (HeldTime < targetHeldTime)
-        {
-            yield return null;
-        }
-    }
+    public bool IsDeploying => HeldTime < weaponDeployEndTime;
 
     /// <summary>Progress from 0 to 1 of the current deploy delay, or 0 when not deploying.</summary>
     public float DeployProgress
@@ -240,59 +86,111 @@ public class F_Item_Weapon : F_Item
                 return 0f;
             }
 
-            float deployDuration = deployEndTime - deployStartTime;
-            return deployDuration <= 0f ? 1f : Mathf.Clamp01((HeldTime - deployStartTime) / deployDuration);
+            float deployDuration = weaponDeployEndTime - weaponDeployStartTime;
+            return deployDuration <= 0f ? 1f : Mathf.Clamp01((HeldTime - weaponDeployStartTime) / deployDuration);
         }
     }
 
-    /// <summary>Starts the deploy delay, during which the weapon cannot fire or reload. Cancels any in-progress reload.</summary>
-    public void BeginDeploy()
-    {
-        InterruptReload();
-        deployStartTime = HeldTime;
-        PlayReloadSound(weaponDeploySound);
+    /// <summary>Whether holding the primary action keeps using the weapon, rather than one use per press.</summary>
+    public virtual bool IsUseContinuous => false;
 
-        deployEndTime = HeldTime + Mathf.Max(minimumFireDelay, (float)weaponDeployDelay / 100f);
-        isDeployEndSoundPending = true;
+    /// <summary>Returns whether this weapon can be used right now by the given holder.</summary>
+    /// <param name="weaponHolder">The character holding the weapon, or null when unknown.</param>
+    public abstract bool CanUseWeapon(F_Character weaponHolder);
+
+    /// <summary>Returns whether a use attempt is blocked by a condition that should play the dry-fire feedback.</summary>
+    /// <param name="weaponHolder">The character holding the weapon, or null when unknown.</param>
+    public abstract bool IsUseBlocked(F_Character weaponHolder);
+
+    /// <summary>Returns whether this weapon class may use the given item type (the item type decides which slots and held arms it uses).</summary>
+    protected abstract bool IsItemTypeAllowed(enumItemType candidateItemType);
+
+    /// <summary>The item type applied when an item type this weapon class doesn't allow is selected.</summary>
+    protected abstract enumItemType DefaultItemType { get; }
+
+    /// <summary>Keeps the item type valid for this weapon class, so it can only be equipped in its matching slots.</summary>
+    protected override void ValidateItemData()
+    {
+        base.ValidateItemData();
+        if (!IsItemTypeAllowed(itemType))
+        {
+            itemType = DefaultItemType;
+        }
+    }
+
+    protected virtual void Update()
+    {
+        PlayDeployEndSoundWhenFinished();
+    }
+
+    /// <summary>Marks the weapon as held or holstered and assigns the holder's rigidbody.</summary>
+    /// <param name="isNowHeld">True when the weapon becomes the held weapon.</param>
+    /// <param name="holderRigidbody">The holder's Rigidbody2D, or null when unavailable.</param>
+    public void SetHeld(bool isNowHeld, Rigidbody2D holderRigidbody = null)
+    {
+        weaponHeldByRigidbody = isNowHeld ? holderRigidbody : null;
+        if (weaponIsHeld == isNowHeld)
+        {
+            return;
+        }
+
+        if (isNowHeld)
+        {
+            weaponHeldSinceTime = Time.time;
+        }
+        else
+        {
+            weaponAccumulatedHeldTime += Time.time - weaponHeldSinceTime;
+        }
+
+        weaponIsHeld = isNowHeld;
+    }
+
+    /// <summary>Waits for the given number of held seconds; time spent holstered does not count.</summary>
+    protected IEnumerator WaitForHeldSeconds(float duration)
+    {
+        float targetHeldTime = HeldTime + duration;
+        while (HeldTime < targetHeldTime)
+        {
+            yield return null;
+        }
+    }
+
+    /// <summary>Starts the deploy delay, during which the weapon cannot be used.</summary>
+    public virtual void BeginDeploy()
+    {
+        weaponDeployStartTime = HeldTime;
+        PlayWeaponDirectSound(weaponDeploySound);
+
+        weaponDeployEndTime = HeldTime + Mathf.Max(weaponMinimumDelay, (float)weaponDeployDelay / weaponDeployDelayHundredthsPerSecond);
+        weaponIsDeployEndSoundPending = true;
     }
 
     // Plays the deploy end sound once the weapon is held and its deploy delay has finished
     private void PlayDeployEndSoundWhenFinished()
     {
-        if (!isDeployEndSoundPending || !isHeld || IsDeploying)
+        if (!weaponIsDeployEndSoundPending || !weaponIsHeld || IsDeploying)
         {
             return;
         }
 
-        isDeployEndSoundPending = false;
-        PlayReloadSound(weaponDeployEndSound);
+        weaponIsDeployEndSoundPending = false;
+        PlayWeaponDirectSound(weaponDeployEndSound);
     }
 
-    /// <summary>The weapon's current accuracy cone half-angle, in radians, including movement spread and its recovery.</summary>
-    public float CurrentAccuracySpreadRadians => IsHolderMoving()
-        ? currentAccuracySpread * Mathf.Max(0f, weaponSpreadMovementMult)
-        : currentAccuracySpread + currentMovementSpread;
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    /// <summary>Plays a non-spatial weapon sound when one is assigned.</summary>
+    protected static void PlayWeaponDirectSound(AudioClip weaponSound)
     {
-        currentAmmoLoaded = 0;
-        currentAccuracySpread = GetRestingAccuracySpread();
-        nextSpreadRecoveryTime = Time.time + weaponSpreadRecoilRecoveryDelay;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        UpdateMovementSpread();
-        RecoverAccuracySpread();
-        PlayDeployEndSoundWhenFinished();
+        if (weaponSound != null)
+        {
+            F_Logic_Audio.PlaySound(weaponSound, EnumSoundType.Direct);
+        }
     }
 
     /// <summary>Maximum durability currently available after permanent losses are removed.</summary>
     public float GetDurabilityMaxEffective()
     {
-        float maxLost = Mathf.Clamp(weaponDurabilityMaxLost, 0f, weaponDurabilityMax);
+        float maxLost = Mathf.Clamp(weaponDurabilityMaxLost, weaponDurabilityMin, weaponDurabilityMax);
         return weaponDurabilityMax - maxLost;
     }
 
@@ -300,7 +198,7 @@ public class F_Item_Weapon : F_Item
     public float GetDurabilityCurrentFraction()
     {
         float effectiveMax = GetDurabilityMaxEffective();
-        if (effectiveMax <= 0f)
+        if (effectiveMax <= weaponDurabilityMin)
         {
             return 0f;
         }
@@ -317,476 +215,66 @@ public class F_Item_Weapon : F_Item
     /// <summary>Permanently lost durability as a fraction of the full maximum (0-1).</summary>
     public float GetDurabilityLostFraction()
     {
-        return Mathf.Clamp01(Mathf.Clamp(weaponDurabilityMaxLost, 0f, weaponDurabilityMax) / weaponDurabilityMax);
+        return Mathf.Clamp01(Mathf.Clamp(weaponDurabilityMaxLost, weaponDurabilityMin, weaponDurabilityMax) / weaponDurabilityMax);
     }
 
     /// <summary>Whether the weapon has no durability left and cannot be used.</summary>
     public bool IsBroken()
     {
-        return weaponDurabilityCurrent <= 0f;
+        return weaponDurabilityCurrent <= weaponDurabilityMin;
     }
 
-    /// <summary>Applies the configured durability wear for a single shot.</summary>
-    public void ApplyDurabilityLossForShot()
+    /// <summary>Applies the configured durability wear for a single use (one shot or one swing).</summary>
+    public void ApplyDurabilityLossForUse()
     {
         bool wasBroken = IsBroken();
         float clampedCurrent = Mathf.Min(weaponDurabilityCurrent, GetDurabilityMaxEffective());
-        weaponDurabilityCurrent = Mathf.Max(0f, clampedCurrent - weaponDurabilityLostPerShot);
+        weaponDurabilityCurrent = Mathf.Max(weaponDurabilityMin, clampedCurrent - weaponDurabilityLostPerUse);
 
-        if (!wasBroken && IsBroken() && weaponBreakSound != null)
+        if (!wasBroken && IsBroken())
         {
-            F_Logic_Audio.PlaySound(weaponBreakSound, EnumSoundType.Direct);
+            PlayWeaponDirectSound(weaponBreakSound);
         }
     }
 
-    /// <summary>Whether the weapon cannot fire because it is broken or has too little ammo loaded.</summary>
-    public bool IsFireBlockedByBrokenOrEmpty()
-    {
-        return IsBroken() || (weaponUsesAmmo && currentAmmoLoaded < weaponAmmoTakenPerShot);
-    }
-
-    /// <summary>Plays the dry-fire click used when a fire attempt is blocked by a broken weapon or empty ammo.</summary>
+    /// <summary>Plays the dry-fire click used when a use attempt is blocked.</summary>
     public void PlayDryFireSound()
     {
-        if (weaponDryFireSound != null)
-        {
-            F_Logic_Audio.PlaySound(weaponDryFireSound, EnumSoundType.Direct);
-        }
+        PlayWeaponDirectSound(weaponDryFireSound);
     }
 
-    /// <summary>Assigns the default break sound in the editor when none is set, alongside the base item defaults.</summary>
+    /// <summary>Assigns the default weapon sounds in the editor when none are set, alongside the base item defaults.</summary>
     protected override void EnsureDefaultItemAssets()
     {
         base.EnsureDefaultItemAssets();
 #if UNITY_EDITOR
         if (weaponBreakSound == null)
         {
-            weaponBreakSound = UnityEditor.AssetDatabase.LoadAssetAtPath<AudioClip>(defaultBreakSoundAssetPath);
+            weaponBreakSound = UnityEditor.AssetDatabase.LoadAssetAtPath<AudioClip>(weaponDefaultBreakSoundAssetPath);
         }
 
         if (weaponDryFireSound == null)
         {
-            weaponDryFireSound = UnityEditor.AssetDatabase.LoadAssetAtPath<AudioClip>(defaultDryFireSoundAssetPath);
+            weaponDryFireSound = UnityEditor.AssetDatabase.LoadAssetAtPath<AudioClip>(weaponDefaultDryFireSoundAssetPath);
         }
 
         if (weaponDeploySound == null)
         {
-            weaponDeploySound = UnityEditor.AssetDatabase.LoadAssetAtPath<AudioClip>(defaultDeployStartSoundAssetPath);
+            weaponDeploySound = UnityEditor.AssetDatabase.LoadAssetAtPath<AudioClip>(weaponDefaultDeployStartSoundAssetPath);
         }
 
         if (weaponDeployEndSound == null)
         {
-            weaponDeployEndSound = UnityEditor.AssetDatabase.LoadAssetAtPath<AudioClip>(defaultDeployEndSoundAssetPath);
+            weaponDeployEndSound = UnityEditor.AssetDatabase.LoadAssetAtPath<AudioClip>(weaponDefaultDeployEndSoundAssetPath);
         }
 #endif
     }
 
-    /// <summary>Returns whether this weapon is currently able to fire a shot.</summary>
-    public bool CanFireWeapon()
-    {
-        if (IsBroken() || IsDeploying || isFinishingReload || HeldTime < nextFireReadyTime)
-        {
-            return false;
-        }
-
-        // An in-progress reload does not block firing as long as enough ammo is already loaded
-        return !weaponUsesAmmo || currentAmmoLoaded >= weaponAmmoTakenPerShot;
-    }
-
-    /// <summary>Stops an in-progress reload without loading further ammo; rounds already loaded are kept.</summary>
-    private void InterruptReload()
-    {
-        if (!isReloading)
-        {
-            return;
-        }
-
-        if (reloadRoutine != null)
-        {
-            StopCoroutine(reloadRoutine);
-            reloadRoutine = null;
-        }
-
-        isReloading = false;
-        isFinishingReload = false;
-    }
-
-    /// <summary>Consumes ammo and cooldown for a single shot, applies recoil, and plays the fire sound.</summary>
-    /// <param name="firePositionWorld">World position where the shot was fired.</param>
-    /// <returns>True when the shot was successfully fired.</returns>
-    public bool TryFireShot(Vector3 firePositionWorld)
-    {
-        if (!CanFireWeapon() || !TryConsumeAmmoForShot())
-        {
-            return false;
-        }
-
-        InterruptReload();
-        ApplyDurabilityLossForShot();
-        ProcessShot(firePositionWorld);
-        return true;
-    }
-
-    /// <summary>Consumes ammo and processes a follow-up shot in an active burst without applying the regular fire-rate cooldown.</summary>
-    /// <param name="firePositionWorld">World position where the shot was fired.</param>
-    /// <returns>True when the follow-up shot was successfully fired.</returns>
-    public bool TryFireBurstFollowupShot(Vector3 firePositionWorld)
-    {
-        if (IsBroken() || IsDeploying || isFinishingReload || !TryConsumeAmmoForShot())
-        {
-            return false;
-        }
-
-        InterruptReload();
-        ApplyDurabilityLossForShot();
-        ProcessShot(firePositionWorld);
-        return true;
-    }
-
-    /// <summary>Completes a firing sequence, playing any configured bolt-action sound and applying cooldowns.</summary>
-    /// <param name="firePositionWorld">World position where the weapon fired.</param>
-    public void CompleteFireSequence(Vector3 firePositionWorld)
-    {
-        float boltActionDelay = weaponIsBoltAction
-            ? Mathf.Max(minimumFireDelay, weaponBoltActionDelay)
-            : minimumFireDelay;
-        float fireRateDelay = Mathf.Max(minimumFireDelay, weaponFireRateDelay);
-        nextFireReadyTime = HeldTime + boltActionDelay + fireRateDelay;
-        boltActionEndTime = HeldTime + boltActionDelay;
-
-        if (!weaponIsBoltAction || weaponBoltActionSound == null)
-        {
-            return;
-        }
-
-        if (boltActionDelay <= minimumFireDelay)
-        {
-            PlayBoltActionSound(firePositionWorld);
-            return;
-        }
-
-        StartCoroutine(PlayBoltActionSoundRoutine(firePositionWorld, boltActionDelay));
-    }
-
-    private IEnumerator PlayBoltActionSoundRoutine(Vector3 firePositionWorld, float delay)
-    {
-        yield return WaitForHeldSeconds(delay);
-        PlayBoltActionSound(firePositionWorld);
-    }
-
-    private void PlayBoltActionSound(Vector3 firePositionWorld)
-    {
-        F_Logic_Audio.PlaySound(
-            weaponBoltActionSound,
-            EnumSoundType.Direct,
-            weaponShotLoudness,
-            100f,
-            firePositionWorld);
-    }
-
-    private bool TryConsumeAmmoForShot()
-    {
-        if (!weaponUsesAmmo)
-        {
-            return true;
-        }
-
-        if (currentAmmoLoaded < weaponAmmoTakenPerShot)
-        {
-            return false;
-        }
-
-        currentAmmoLoaded -= weaponAmmoTakenPerShot;
-        return true;
-    }
-
-    private void ProcessShot(Vector3 firePositionWorld)
-    {
-        ApplyRecoilImpulse();
-
-        if (weaponFireSound != null)
-        {
-            F_Logic_Audio.PlaySound(
-                weaponFireSound,
-                EnumSoundType.Direct,
-                weaponShotLoudness,
-                100f,
-                firePositionWorld);
-        }
-    }
-
-    /// <summary>Prevents this weapon's newly fired projectile colliders from colliding with its active projectiles.</summary>
-    /// <param name="projectileColliders">The colliders belonging to a newly spawned projectile.</param>
-    public void IgnoreCollisionsWithPreviouslyFiredProjectiles(Collider2D[] projectileColliders)
-    {
-        if (projectileColliders == null || projectileColliders.Length == 0)
-        {
-            return;
-        }
-
-        for (int existingIndex = firedProjectileColliders.Count - 1; existingIndex >= 0; existingIndex--)
-        {
-            Collider2D existingCollider = firedProjectileColliders[existingIndex];
-            if (existingCollider == null)
-            {
-                firedProjectileColliders.RemoveAt(existingIndex);
-                continue;
-            }
-
-            for (int newIndex = 0; newIndex < projectileColliders.Length; newIndex++)
-            {
-                Collider2D newCollider = projectileColliders[newIndex];
-                if (newCollider != null)
-                {
-                    Physics2D.IgnoreCollision(existingCollider, newCollider);
-                }
-            }
-        }
-
-        for (int newIndex = 0; newIndex < projectileColliders.Length; newIndex++)
-        {
-            Collider2D newCollider = projectileColliders[newIndex];
-            if (newCollider != null)
-            {
-                firedProjectileColliders.Add(newCollider);
-            }
-        }
-    }
-
-    /// <summary>Rotates an aim direction randomly within the weapon's current accuracy cone.</summary>
-    /// <param name="aimDirection">The unmodified aim direction, e.g. the fire point's forward vector.</param>
-    public Vector2 ApplyAccuracySpreadToDirection(Vector2 aimDirection)
-    {
-        float currentSpread = CurrentAccuracySpreadRadians;
-        float randomSpreadRadians = Random.Range(-currentSpread, currentSpread);
-        float randomSpreadDegrees = randomSpreadRadians * Mathf.Rad2Deg;
-        return Quaternion.Euler(0f, 0f, randomSpreadDegrees) * aimDirection;
-    }
-
-    /// <summary>Returns the damage this weapon's projectile should deal after range falloff (or buildup, if reversed).</summary>
-    /// <param name="distanceTraveled">How far the projectile has traveled from its firing position.</param>
-    public float GetDamageAtDistance(float distanceTraveled)
-    {
-        float rangeFraction = weaponRange > 0f ? Mathf.Clamp01(distanceTraveled / weaponRange) : 1f;
-        float falloffMultiplier = weaponIsRangeReverseFallOff
-            ? Mathf.Lerp(weaponRangeDamageFallOffMin, 1f, rangeFraction)
-            : Mathf.Lerp(1f, weaponRangeDamageFallOffMin, rangeFraction);
-
-        return weaponDamage * falloffMultiplier;
-    }
-
-    /// <summary>Starts the weapon's reload cycle, consuming matching ammo items from the inventory as needed.</summary>
-    /// <param name="playerInventory">The inventory the reload should draw ammo from.</param>
-    public void StartReload(F_PlayerInventory playerInventory)
-    {
-        if (IsBroken() || isReloading || IsDeploying || HeldTime < boltActionEndTime || !weaponUsesAmmo || currentAmmoLoaded >= weaponAmmoCapacity || !HasReserveAmmo(playerInventory))
-        {
-            return;
-        }
-
-        if (reloadRoutine != null)
-        {
-            StopCoroutine(reloadRoutine);
-        }
-
-        reloadRoutine = StartCoroutine(ReloadRoutine(playerInventory));
-    }
-
-    private bool HasReserveAmmo(F_PlayerInventory playerInventory)
-    {
-        return WeaponAmmoItem == null ||
-            F_Utility_Helper_Inventory.GetItemCountInInventory(playerInventory, WeaponAmmoItem) > 0;
-    }
-
-    private void PlayReloadSound(AudioClip reloadSound)
-    {
-        if (reloadSound == null)
-        {
-            return;
-        }
-
-        F_Logic_Audio.PlaySound(reloadSound, EnumSoundType.Direct);
-    }
-
-    private IEnumerator ReloadRoutine(F_PlayerInventory playerInventory)
-    {
-        isReloading = true;
-
-        if (weaponIsReloadOneBulletPerReload)
-        {
-            PlayReloadSound(weaponReloadStartSound);
-
-            int roundsLoadedThisCycle = 0;
-
-            while (currentAmmoLoaded < weaponAmmoCapacity)
-            {
-                if (WeaponAmmoItem != null &&
-                    F_Utility_Helper_Inventory.GetItemCountInInventory(playerInventory, WeaponAmmoItem) < 1)
-                {
-                    break;
-                }
-
-                float roundDelay = roundsLoadedThisCycle == 0
-                    ? weaponReloadDelay * oneAtATimeFirstRoundDelayMultiplier
-                    : weaponReloadDelay;
-                BeginReloadProgressSegment(roundDelay);
-                yield return WaitForHeldSeconds(roundDelay);
-
-                int consumedAmmo = WeaponAmmoItem != null
-                    ? F_Utility_Helper_Inventory.ConsumeItemFromInventory(playerInventory, WeaponAmmoItem, 1)
-                    : 1;
-                if (consumedAmmo <= 0)
-                {
-                    break;
-                }
-
-                PlayReloadSound(weaponReloadOneAtATimeSound);
-
-                currentAmmoLoaded += consumedAmmo;
-                roundsLoadedThisCycle++;
-            }
-
-            if (roundsLoadedThisCycle > 0)
-            {
-                PlayReloadSound(weaponReloadEndSound);
-                isFinishingReload = true;
-                BeginReloadProgressSegment(0f);
-                yield return WaitForHeldSeconds(reloadCompletionDelay);
-            }
-        }
-        else
-        {
-            PlayReloadSound(weaponReloadStartSound);
-            BeginReloadProgressSegment(weaponReloadDelay);
-            yield return WaitForHeldSeconds(weaponReloadDelay * reloadMiddleFraction);
-            if (HasReserveAmmo(playerInventory))
-            {
-                PlayReloadSound(weaponReloadMiddleSound);
-            }
-
-            yield return WaitForHeldSeconds(weaponReloadDelay * (1f - reloadMiddleFraction));
-
-            int neededAmmo = weaponAmmoCapacity - currentAmmoLoaded;
-            int availableAmmo = WeaponAmmoItem != null
-                ? F_Utility_Helper_Inventory.GetItemCountInInventory(playerInventory, WeaponAmmoItem)
-                : neededAmmo;
-            int ammoToLoad = Mathf.Min(neededAmmo, availableAmmo);
-
-            if (ammoToLoad > 0)
-            {
-                PlayReloadSound(weaponReloadEndSound);
-                int consumedAmmo = WeaponAmmoItem != null
-                    ? F_Utility_Helper_Inventory.ConsumeItemFromInventory(playerInventory, WeaponAmmoItem, ammoToLoad)
-                    : ammoToLoad;
-                currentAmmoLoaded += consumedAmmo;
-                isFinishingReload = true;
-                BeginReloadProgressSegment(0f);
-                yield return WaitForHeldSeconds(reloadCompletionDelay);
-            }
-        }
-
-        isReloading = false;
-        isFinishingReload = false;
-        reloadRoutine = null;
-    }
-
-    private void UpdateMovementSpread()
-    {
-        bool holderIsMoving = IsHolderMoving();
-        if (holderIsMoving || wasHolderMoving)
-        {
-            currentMovementSpread = currentAccuracySpread * (Mathf.Max(0f, weaponSpreadMovementMult) - 1f);
-        }
-
-        wasHolderMoving = holderIsMoving;
-    }
-
-    private bool IsHolderMoving()
-    {
-        return isHeld && heldByRigidbody != null &&
-            heldByRigidbody.linearVelocity.sqrMagnitude > minimumHolderMovementSpeedSqr;
-    }
-
-    private void RecoverAccuracySpread()
-    {
-        if (!Application.isPlaying || Time.time < nextSpreadRecoveryTime)
-        {
-            return;
-        }
-
-        nextSpreadRecoveryTime = Time.time + Mathf.Max(weaponSpreadRecoilRecoveryDelay, minimumSpreadRecoveryDelay);
-        float recoveryAmount = Mathf.Max(0f, weaponSpreadRecoilRecoveryAmount);
-        currentAccuracySpread = Mathf.MoveTowards(
-            currentAccuracySpread,
-            GetRestingAccuracySpread(),
-            recoveryAmount);
-        if (!IsHolderMoving())
-        {
-            currentMovementSpread = Mathf.MoveTowards(currentMovementSpread, 0f, recoveryAmount);
-        }
-    }
-
-    private void ApplyRecoilImpulse()
-    {
-        if (weaponIsReverseRecoilImpulse)
-        {
-            currentAccuracySpread = Mathf.Max(currentAccuracySpread - weaponSpreadRecoilImpulse, weaponSpreadStart);
-        }
-        else
-        {
-            currentAccuracySpread = Mathf.Min(currentAccuracySpread + weaponSpreadRecoilImpulse, weaponSpreadMax);
-        }
-    }
-
-    private float GetRestingAccuracySpread()
-    {
-        return weaponIsReverseRecoilImpulse ? weaponSpreadMax : weaponSpreadStart;
-    }
-
-    /// <summary>Whether the weapon currently holds ammo that can be removed (not possible mid-reload).</summary>
-    public bool CanUnloadAmmo => weaponUsesAmmo && WeaponAmmoItem != null && !isReloading && currentAmmoLoaded > 0;
-
-    /// <summary>Empties the weapon's magazine and returns how many rounds were removed.</summary>
-    /// <remarks>Only changes the weapon's own state; the caller is responsible for giving the rounds to an inventory.</remarks>
-    public int TakeLoadedAmmo()
-    {
-        if (!CanUnloadAmmo)
-        {
-            return 0;
-        }
-
-        int removedAmmo = currentAmmoLoaded;
-        currentAmmoLoaded = 0;
-        return removedAmmo;
-    }
-
-    /// <summary>Adds the Unload action for weapons that use ammo, on top of the shared item actions.</summary>
-    public override List<enumItemContextAction> GetContextMenuActions()
-    {
-        List<enumItemContextAction> actions = base.GetContextMenuActions();
-        if (weaponUsesAmmo && WeaponAmmoItem != null)
-        {
-            actions.Insert(0, enumItemContextAction.Unload);
-        }
-
-        return actions;
-    }
-
-    /// <summary>Adds weapon-specific stats on top of the shared item tooltip details.</summary>
+    /// <summary>Adds the shared weapon stats on top of the generic item tooltip details.</summary>
     public override List<F_ItemTooltipDetail> GetTooltipDetails()
     {
         List<F_ItemTooltipDetail> tooltipDetails = base.GetTooltipDetails();
         tooltipDetails.Add(new F_ItemTooltipDetail("Damage", weaponDamage.ToString("0.##", CultureInfo.InvariantCulture)));
-        tooltipDetails.Add(new F_ItemTooltipDetail("Fire Rate", weaponFireRateDelay.ToString("0.##", CultureInfo.InvariantCulture) + "s"));
-        tooltipDetails.Add(new F_ItemTooltipDetail("Range", weaponRange.ToString("0.##", CultureInfo.InvariantCulture)));
-
-        if (weaponUsesAmmo)
-        {
-            tooltipDetails.Add(new F_ItemTooltipDetail(
-                "Ammo",
-                currentAmmoLoaded.ToString(CultureInfo.InvariantCulture) + "/" + weaponAmmoCapacity.ToString(CultureInfo.InvariantCulture)));
-        }
-
         return tooltipDetails;
     }
 }

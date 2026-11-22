@@ -38,7 +38,7 @@ public static class F_Utility_Helper_ContextMenu
                 F_Utility_Helper_Inventory.DropItemFromInventory(item, playerInventory);
                 break;
             case enumItemContextAction.Unload:
-                F_Item_Weapon weapon = item as F_Item_Weapon;
+                F_Item_Weapon_Firearm weapon = item as F_Item_Weapon_Firearm;
                 bool wasUnloaded = F_Utility_Helper_Inventory.UnloadWeaponAmmoToInventory(weapon, playerInventory) > 0;
                 if (wasUnloaded && actionSound != null)
                 {

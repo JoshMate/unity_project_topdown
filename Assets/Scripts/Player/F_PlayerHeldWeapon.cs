@@ -22,9 +22,10 @@ public class F_PlayerHeldWeapon : MonoBehaviour
     private F_GUI_Inventory_Slot selectedWeaponSlot;
     private bool isBurstFiring;
     private F_Item_Weapon heldWeaponItemTracked;
+    private F_PlayerController heldWeaponHolderController;
 
-    /// <summary>Returns whether the selected slot currently contains a firearm that can fire.</summary>
-    public bool CanFireCurrentWeapon
+    /// <summary>Returns whether the selected slot currently contains a weapon that can be used right now.</summary>
+    public bool CanUseCurrentWeapon
     {
         get
         {
@@ -33,31 +34,18 @@ public class F_PlayerHeldWeapon : MonoBehaviour
                 return false;
             }
 
-            if (selectedWeaponSlot == null || selectedWeaponSlot.slotItemObj == null)
-            {
-                return false;
-            }
-
-            enumItemType selectedItemType = selectedWeaponSlot.slotItemObj.itemType;
-            bool isFirearm = selectedItemType == enumItemType.WeaponGunOneHanded ||
-                              selectedItemType == enumItemType.WeaponGunTwoHanded;
-            if (!isFirearm)
-            {
-                return false;
-            }
-
             F_Item_Weapon weaponItem = GetSelectedWeaponItem();
-            return weaponItem != null && weaponItem.CanFireWeapon();
+            return weaponItem != null && weaponItem.CanUseWeapon(GetWeaponHolder());
         }
     }
 
-    /// <summary>Whether the selected weapon should keep firing while the primary action remains held.</summary>
-    public bool IsCurrentWeaponFullyAutomatic
+    /// <summary>Whether the selected weapon should keep being used while the primary action remains held.</summary>
+    public bool IsCurrentWeaponContinuous
     {
         get
         {
             F_Item_Weapon weaponItem = GetSelectedWeaponItem();
-            return weaponItem != null && weaponItem.weaponIsFullyAutomatic;
+            return weaponItem != null && weaponItem.IsUseContinuous;
         }
     }
 
@@ -66,19 +54,16 @@ public class F_PlayerHeldWeapon : MonoBehaviour
         UpdateHeldWeaponSprite();
     }
 
-    /// <summary>Plays the dry-fire click when the selected firearm cannot fire because it is broken or out of ammo.</summary>
+    /// <summary>Plays the dry-fire click when the selected weapon cannot be used (broken, out of ammo, or not enough stamina).</summary>
     public void TryPlayDryFireSound()
     {
-        if (isBurstFiring || selectedWeaponSlot == null || selectedWeaponSlot.slotItemObj == null)
+        if (isBurstFiring)
         {
             return;
         }
 
-        enumItemType selectedItemType = selectedWeaponSlot.slotItemObj.itemType;
-        bool isFirearm = selectedItemType == enumItemType.WeaponGunOneHanded ||
-                          selectedItemType == enumItemType.WeaponGunTwoHanded;
         F_Item_Weapon weaponItem = GetSelectedWeaponItem();
-        if (isFirearm && weaponItem != null && !weaponItem.IsDeploying && weaponItem.IsFireBlockedByBrokenOrEmpty())
+        if (weaponItem != null && !weaponItem.IsDeploying && weaponItem.IsUseBlocked(GetWeaponHolder()))
         {
             weaponItem.PlayDryFireSound();
         }
@@ -107,7 +92,7 @@ public class F_PlayerHeldWeapon : MonoBehaviour
         heldWeaponItemTracked = currentWeaponItem;
         if (heldWeaponItemTracked != null)
         {
-            F_PlayerController holderController = GetComponentInParent<F_PlayerController>();
+            F_PlayerController holderController = GetHolderController();
             heldWeaponItemTracked.SetHeld(true, holderController != null ? holderController.rb : null);
         }
     }
@@ -129,15 +114,37 @@ public class F_PlayerHeldWeapon : MonoBehaviour
         UpdateHeldWeaponSprite();
     }
 
-    /// <summary>Fires a burst of shots from the selected firearm, with each shot spawning the configured number of spread projectiles.</summary>
-    public void FireWeapon()
+    /// <summary>Uses the selected weapon: firearms fire, melee weapons swing.</summary>
+    public void UseCurrentWeapon()
+    {
+        F_Item_Weapon weaponItem = GetSelectedWeaponItem();
+        if (weaponItem is F_Item_Weapon_Firearm firearmItem)
+        {
+            FireWeapon(firearmItem);
+        }
+        else if (weaponItem is F_Item_Weapon_Melee meleeItem)
+        {
+            SwingMeleeWeapon(meleeItem);
+        }
+    }
+
+    // Swings from the held arm's fire position when one is assigned, otherwise from the holder, in the aim direction.
+    private void SwingMeleeWeapon(F_Item_Weapon_Melee meleeItem)
+    {
+        Transform swingTransform = heldWeaponCurrentlySelected != null && heldWeaponCurrentlySelected.firePosition != null
+            ? heldWeaponCurrentlySelected.firePosition
+            : GetHolderTransform();
+        meleeItem.TrySwing(GetWeaponHolder(), swingTransform.position, swingTransform.right);
+    }
+
+    // Fires a burst of shots from the firearm, with each shot spawning the configured number of spread projectiles.
+    private void FireWeapon(F_Item_Weapon_Firearm weaponItem)
     {
         if (isBurstFiring)
         {
             return;
         }
 
-        F_Item_Weapon weaponItem = GetSelectedWeaponItem();
         if (weaponItem == null || weaponItem.IsBroken() || projectileObject == null || heldWeaponCurrentlySelected == null ||
             heldWeaponCurrentlySelected.firePosition == null)
         {
@@ -164,7 +171,7 @@ public class F_PlayerHeldWeapon : MonoBehaviour
         }
     }
 
-    private IEnumerator FireBurstRoutine(F_Item_Weapon weaponItem, Transform firePosition, int burstShotCount)
+    private IEnumerator FireBurstRoutine(F_Item_Weapon_Firearm weaponItem, Transform firePosition, int burstShotCount)
     {
         for (int burstShotIndex = minimumBurstShotCount; burstShotIndex < burstShotCount; burstShotIndex++)
         {
@@ -191,7 +198,7 @@ public class F_PlayerHeldWeapon : MonoBehaviour
         isBurstFiring = false;
     }
 
-    private void SpawnProjectilesForShot(F_Item_Weapon weaponItem, Transform firePosition)
+    private void SpawnProjectilesForShot(F_Item_Weapon_Firearm weaponItem, Transform firePosition)
     {
         int projectileShotCount = Mathf.Max(minimumProjectilesPerShot, weaponItem.weaponProjectileShotCount);
         for (int projectileIndex = 0; projectileIndex < projectileShotCount; projectileIndex++)
@@ -230,14 +237,13 @@ public class F_PlayerHeldWeapon : MonoBehaviour
         }
     }
 
-    /// <summary>Starts a reload cycle on the currently selected weapon item, if any.</summary>
+    /// <summary>Starts a reload cycle on the currently selected firearm, if any.</summary>
     /// <param name="playerInventory">The inventory the reload should draw ammo from.</param>
     public void ReloadCurrentWeapon(F_PlayerInventory playerInventory)
     {
-        F_Item_Weapon weaponItem = GetSelectedWeaponItem();
-        if (weaponItem != null)
+        if (GetSelectedWeaponItem() is F_Item_Weapon_Firearm firearmItem)
         {
-            weaponItem.StartReload(playerInventory);
+            firearmItem.StartReload(playerInventory);
         }
     }
 
@@ -247,6 +253,29 @@ public class F_PlayerHeldWeapon : MonoBehaviour
     private F_Item_Weapon GetSelectedWeaponItem()
     {
         return selectedWeaponSlot != null ? selectedWeaponSlot.slotItemObj as F_Item_Weapon : null;
+    }
+
+    private F_PlayerController GetHolderController()
+    {
+        if (heldWeaponHolderController == null)
+        {
+            heldWeaponHolderController = GetComponentInParent<F_PlayerController>();
+        }
+
+        return heldWeaponHolderController;
+    }
+
+    // The character holding the weapon, used for stamina costs and to avoid hitting themselves.
+    private F_Character GetWeaponHolder()
+    {
+        F_PlayerController holderController = GetHolderController();
+        return holderController != null ? holderController.playerStats : null;
+    }
+
+    private Transform GetHolderTransform()
+    {
+        F_PlayerController holderController = GetHolderController();
+        return holderController != null ? holderController.transform : transform;
     }
 
     /// <summary>Refreshes the held weapon visual from the selected inventory item's type.</summary>

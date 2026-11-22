@@ -126,7 +126,7 @@ public class F_NPC : F_Character
     {
         if (IsDead || !IsAgentUsable)
         {
-            npcRigidbody.linearVelocity = Vector2.zero;
+            npcRigidbody.linearVelocity = IsDead ? Vector2.zero : KnockbackVelocity;
             return;
         }
 
@@ -136,7 +136,7 @@ public class F_NPC : F_Character
             ? Vector2.zero
             : Vector2.ClampMagnitude(npcAgent.desiredVelocity, npcCurrentSpeed);
 
-        npcRigidbody.linearVelocity = npcVelocity;
+        npcRigidbody.linearVelocity = npcVelocity + KnockbackVelocity;
         npcAgent.nextPosition = npcRigidbody.position;
 
         if (npcVelocity.sqrMagnitude > npcVelocityStopThreshold * npcVelocityStopThreshold)

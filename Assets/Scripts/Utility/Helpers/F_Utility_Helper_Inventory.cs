@@ -249,7 +249,7 @@ public static class F_Utility_Helper_Inventory
     /// <param name="weapon">The weapon to unload.</param>
     /// <param name="playerInventory">The inventory that receives the ammo (overflow drops under the player).</param>
     /// <returns>The number of rounds moved into the inventory; 0 when nothing could be unloaded.</returns>
-    public static int UnloadWeaponAmmoToInventory(F_Item_Weapon weapon, F_PlayerInventory playerInventory)
+    public static int UnloadWeaponAmmoToInventory(F_Item_Weapon_Firearm weapon, F_PlayerInventory playerInventory)
     {
         if (weapon == null || playerInventory == null || !weapon.CanUnloadAmmo)
         {

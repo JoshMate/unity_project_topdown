@@ -182,7 +182,7 @@ public class F_PlayerInventory : MonoBehaviour
     // Weapons carry the weight of the rounds currently loaded in them (rounds x the ammo type's per-item weight).
     private static float GetLoadedAmmoWeight(F_Item item)
     {
-        F_Item_Weapon weapon = item as F_Item_Weapon;
+        F_Item_Weapon_Firearm weapon = item as F_Item_Weapon_Firearm;
         if (weapon == null || !weapon.weaponUsesAmmo || weapon.WeaponAmmoItem == null)
         {
             return 0f;

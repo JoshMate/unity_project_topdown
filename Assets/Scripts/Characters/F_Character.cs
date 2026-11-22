@@ -54,6 +54,28 @@ public class F_Character : F_Ent
     /// <summary>Whether this character has stamina left to sprint with.</summary>
     public bool CanSprint => characterStatStamina > characterStatFloor;
 
+    /// <summary>Returns whether this character currently has at least the given amount of stamina.</summary>
+    /// <param name="staminaAmount">The stamina an action requires.</param>
+    public bool HasStamina(float staminaAmount)
+    {
+        return characterStatStamina >= staminaAmount;
+    }
+
+    /// <summary>Spends stamina for an action and delays regeneration, failing without spending when there is not enough.</summary>
+    /// <param name="staminaAmount">The stamina to spend.</param>
+    /// <returns>True when the stamina was spent.</returns>
+    public bool TryConsumeStamina(float staminaAmount)
+    {
+        if (!HasStamina(staminaAmount))
+        {
+            return false;
+        }
+
+        characterStatStamina = Math.Clamp(characterStatStamina - Mathf.Max(characterStatFloor, staminaAmount), characterStatFloor, characterStatStaminaMax);
+        characterLastStaminaUseTime = Time.time;
+        return true;
+    }
+
     // Characters walk around, so they pass through walk-through ents.
     protected override bool IsMover => true;
 

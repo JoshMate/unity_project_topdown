@@ -21,7 +21,7 @@ public class F_Item : MonoBehaviour
     [Header("Constants Private")]
     private const int itemCountMinimum = 1;
     private const string defaultPickupSoundAssetPath = "Assets/Sound/Interface/Items/SD_Interface_PickupItem.wav";
-    private const string defaultDropSoundAssetPath = "Assets/Sound/Interface/SD_Interface_DropItem.wav";
+    private const string defaultDropSoundAssetPath = "Assets/Sound/Interface/Items/SD_Interface_DropItem.wav";
 
     [Header("Object Refs")]
     public SpriteRenderer itemSpriteRenderer;
@@ -64,7 +64,13 @@ public class F_Item : MonoBehaviour
         EnsureDefaultItemAssets();
         EnsureSpriteRendererReference();
         ConfigurePickupCollider();
+        ValidateItemData();
         itemCount = Mathf.Clamp(itemCount, itemCountMinimum, Mathf.Max(itemCountMinimum, ItemCountMaxValue));
+    }
+
+    /// <summary>Corrects invalid inspector data when the item is edited; subclasses extend this with their own rules.</summary>
+    protected virtual void ValidateItemData()
+    {
     }
 
     /// <summary>Assigns default assets to any empty item references; subclasses extend this with their own defaults.</summary>

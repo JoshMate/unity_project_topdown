@@ -329,9 +329,10 @@ public class F_Logic_Cursor : MonoBehaviour
             F_Item_Weapon heldWeapon = playerController != null && playerController.playerHeldWeapon != null
                 ? playerController.playerHeldWeapon.SelectedWeaponItem
                 : null;
-            bool isReloading = heldWeapon != null && heldWeapon.IsReloading && cursorSpriteReload != null;
+            F_Item_Weapon_Firearm heldFirearm = heldWeapon as F_Item_Weapon_Firearm;
+            bool isReloading = heldFirearm != null && heldFirearm.IsReloading && cursorSpriteReload != null;
             bool isDeploying = heldWeapon != null && heldWeapon.IsDeploying && cursorSpriteDeploy != null;
-            bool isFinishingReload = heldWeapon != null && heldWeapon.IsFinishingReload && cursorSpriteOkay != null;
+            bool isFinishingReload = heldFirearm != null && heldFirearm.IsFinishingReload && cursorSpriteOkay != null;
             if (isDeploying)
             {
                 cursorRendererPointer.sprite = cursorSpriteDeploy;

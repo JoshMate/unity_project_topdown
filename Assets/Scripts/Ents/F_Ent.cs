@@ -74,11 +74,15 @@ public class F_Ent : MonoBehaviour
     private const float entResistanceMin = 0f;
     private const float entResistanceMax = 1f;
     private const float entSoundVolume = 100f;
+    private const float entKnockbackMinimumDirectionSqr = 0.0001f;
 
     [Header("Privates")]
     // Kept hidden so existing prefabs retain the previous override-both behaviour after the split.
     [SerializeField, HideInInspector] private bool entFeatureOverrideMaterialStats = false;
     private bool entIsDead = false;
+    // Knockback speed added on top of a mover's own movement; fades over time
+    private Vector2 entKnockbackVelocity;
+    private Rigidbody2D entRigidbody;
 
     // Events (Header attributes are not valid on events)
     // Fired after damage is applied: ent, final damage, damage type
@@ -98,6 +102,9 @@ public class F_Ent : MonoBehaviour
     /// <summary>Whether this ent has died.</summary>
     public bool IsDead => entIsDead;
 
+    /// <summary>Knockback speed that movers add to their own movement velocity each physics step.</summary>
+    public Vector2 KnockbackVelocity => entKnockbackVelocity;
+
     /// <summary>Whether this ent moves around (player, NPCs), so it is ignored when building the NavMesh.</summary>
     public bool IsNavigationMover => IsMover;
 
@@ -106,6 +113,8 @@ public class F_Ent : MonoBehaviour
 
     protected virtual void Awake()
     {
+        entRigidbody = GetComponent<Rigidbody2D>();
+
         // Preserve the old combined setting on existing prefab and scene data.
         if (entFeatureOverrideMaterialStats)
         {
@@ -225,6 +234,36 @@ public class F_Ent : MonoBehaviour
     // Update is called once per frame
     protected virtual void Update()
     {
+        DecayKnockback();
+    }
+
+    /// <summary>Pushes this ent away in a direction. Movers receive a fading knockback speed; other dynamic rigidbodies receive an impulse.</summary>
+    /// <param name="knockbackDirection">Direction to push in; it does not need to be normalised.</param>
+    /// <param name="knockbackAmount">Starting knockback speed in world units per second.</param>
+    public void ApplyKnockback(Vector2 knockbackDirection, float knockbackAmount)
+    {
+        if (entIsDead || knockbackAmount <= 0f || knockbackDirection.sqrMagnitude <= entKnockbackMinimumDirectionSqr)
+        {
+            return;
+        }
+
+        Vector2 knockbackVelocity = knockbackDirection.normalized * knockbackAmount;
+        if (IsMover)
+        {
+            entKnockbackVelocity += knockbackVelocity;
+            return;
+        }
+
+        if (entRigidbody != null && entRigidbody.bodyType == RigidbodyType2D.Dynamic)
+        {
+            entRigidbody.AddForce(knockbackVelocity * entRigidbody.mass, ForceMode2D.Impulse);
+        }
+    }
+
+    // Fades the mover knockback speed back to zero at the configured rate.
+    private void DecayKnockback()
+    {
+        entKnockbackVelocity = Vector2.MoveTowards(entKnockbackVelocity, Vector2.zero, F_Utility_Config_Physics.cfgPhysicsKnockbackDecayRate * Time.deltaTime);
     }
 
     /// <summary>Applies damage after resistance. Toxic damage fills the toxic stat instead of reducing health.</summary>

@@ -70,12 +70,12 @@ public class F_PlayerController : MonoBehaviour
         }
 
         ProcessWeaponSlotSelectionInputs();
-        bool primaryActionRequested = playerHeldWeapon.IsCurrentWeaponFullyAutomatic
+        bool primaryActionRequested = playerHeldWeapon.IsCurrentWeaponContinuous
             ? controls.IsPrimaryActionHeld()
             : controls.IsPrimaryActionPressed();
-        if (primaryActionRequested && playerHeldWeapon.CanFireCurrentWeapon)
+        if (primaryActionRequested && playerHeldWeapon.CanUseCurrentWeapon)
         {
-            playerHeldWeapon.FireWeapon();
+            playerHeldWeapon.UseCurrentWeapon();
         }
         else if (primaryActionRequested && controls.IsPrimaryActionPressed())
         {
@@ -118,6 +118,6 @@ public class F_PlayerController : MonoBehaviour
         rb.rotation = aimAngle;
 
         float finalSpeed = playerStats.GetCurrentMoveSpeed();
-        rb.linearVelocity = new Vector2(moveDirection.x, moveDirection.y) * finalSpeed;
+        rb.linearVelocity = new Vector2(moveDirection.x, moveDirection.y) * finalSpeed + playerStats.KnockbackVelocity;
     }
 }

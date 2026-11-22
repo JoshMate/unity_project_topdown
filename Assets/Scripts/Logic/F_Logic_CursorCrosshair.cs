@@ -1,9 +1,7 @@
 using UnityEngine;
 
 /// <summary>
-/// Draws four white crosshair arms around the cursor while a firearm is equipped.
-/// The arms spread apart and close together to match the weapon's current accuracy spread.
-/// Arms are generated at runtime, so no manual setup is required per weapon.
+/// Draws firearm accuracy arms and a shared progress ring for weapon deployment and firearm reloading.
 /// </summary>
 public class F_Logic_CursorCrosshair : MonoBehaviour
 {
@@ -28,10 +26,10 @@ public class F_Logic_CursorCrosshair : MonoBehaviour
     // How quickly the arms move toward the target gap
     public float gapSmoothingSpeed = 30f;
 
-    [Header("Reload Ring")]
-    // Outer radius of the reload progress ring in world units
+    [Header("Weapon Progress Ring")]
+    // Outer radius of the shared weapon progress ring in world units
     public float reloadRingRadius = 0.3f;
-    // Thickness of the reload progress ring in world units
+    // Thickness of the shared weapon progress ring in world units
     public float reloadRingThickness = 0.05f;
 
     [Header("Constants Private")]
@@ -58,7 +56,7 @@ public class F_Logic_CursorCrosshair : MonoBehaviour
     private void Start()
     {
         BuildArms();
-        BuildReloadRing();
+        BuildWeaponProgressRing();
         SetArmsVisible(false);
     }
 
@@ -83,16 +81,17 @@ public class F_Logic_CursorCrosshair : MonoBehaviour
 
     private void LateUpdate()
     {
-        F_Item_Weapon weapon = GetEquippedFirearm();
+        F_Item_Weapon weapon = GetEquippedWeapon();
+        F_Item_Weapon_Firearm firearm = weapon as F_Item_Weapon_Firearm;
         bool isMenuClosed = characterScreenManager == null || !characterScreenManager.isMenuOpen;
-        bool isReloading = weapon != null && weapon.IsReloading && isMenuClosed;
+        bool isReloading = firearm != null && firearm.IsReloading && isMenuClosed;
         bool isDeploying = weapon != null && weapon.IsDeploying && isMenuClosed;
-        bool showReloadRing = isReloading && !weapon.IsFinishingReload;
+        bool showReloadRing = isReloading && !firearm.IsFinishingReload;
         bool showRing = isDeploying || showReloadRing;
-        float ringProgress = isDeploying ? weapon.DeployProgress : (showReloadRing ? weapon.ReloadProgress : 0f);
-        UpdateReloadRing(ringProgress, showRing);
+        float ringProgress = isDeploying ? weapon.DeployProgress : (showReloadRing ? firearm.ReloadProgress : 0f);
+        UpdateProgressRing(ringProgress, showRing);
 
-        bool shouldShow = weapon != null && isMenuClosed && !isReloading && !isDeploying;
+        bool shouldShow = firearm != null && isMenuClosed && !isReloading && !isDeploying;
         SetArmsVisible(shouldShow);
         if (!shouldShow)
         {
@@ -100,27 +99,14 @@ public class F_Logic_CursorCrosshair : MonoBehaviour
             return;
         }
 
-        float targetGap = CalculateGapForSpread(weapon.CurrentAccuracySpreadRadians);
+        float targetGap = CalculateGapForSpread(firearm.CurrentAccuracySpreadRadians);
         currentGap = Mathf.Lerp(currentGap, targetGap, 1f - Mathf.Exp(-gapSmoothingSpeed * Time.deltaTime));
         PositionArms(currentGap);
     }
 
-    private F_Item_Weapon GetEquippedFirearm()
+    private F_Item_Weapon GetEquippedWeapon()
     {
-        if (playerHeldWeapon == null)
-        {
-            return null;
-        }
-
-        F_Item_Weapon weapon = playerHeldWeapon.SelectedWeaponItem;
-        if (weapon == null)
-        {
-            return null;
-        }
-
-        bool isFirearm = weapon.itemType == enumItemType.WeaponGunOneHanded ||
-                         weapon.itemType == enumItemType.WeaponGunTwoHanded;
-        return isFirearm ? weapon : null;
+        return playerHeldWeapon != null ? playerHeldWeapon.SelectedWeaponItem : null;
     }
 
     private float CalculateGapForSpread(float spreadRadians)
@@ -177,12 +163,12 @@ public class F_Logic_CursorCrosshair : MonoBehaviour
             armRenderers[armIndex].color = F_Utility_Config_Colours.cfgColourCursorCrosshair;
         }
     }
-    private void BuildReloadRing()
+    private void BuildWeaponProgressRing()
     {
-        GameObject ringObject = new GameObject("Reload_ProgressRing");
+        GameObject ringObject = new GameObject("Weapon_ProgressRing");
         ringObject.transform.SetParent(transform, false);
 
-        ringMesh = new Mesh { name = "ReloadRingMesh" };
+        ringMesh = new Mesh { name = "WeaponProgressRingMesh" };
         ringMesh.MarkDynamic();
         ringObject.AddComponent<MeshFilter>().sharedMesh = ringMesh;
 
@@ -200,7 +186,7 @@ public class F_Logic_CursorCrosshair : MonoBehaviour
     }
 
     // Shows the ring filled clockwise from the top by the given progress (0 to 1), or hides it
-    private void UpdateReloadRing(float progress, bool isVisible)
+    private void UpdateProgressRing(float progress, bool isVisible)
     {
         if (ringRenderer == null)
         {

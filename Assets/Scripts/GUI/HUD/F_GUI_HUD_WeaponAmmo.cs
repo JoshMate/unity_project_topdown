@@ -91,7 +91,8 @@ public class F_GUI_HUD_WeaponAmmo : MonoBehaviour
         weaponIconImage.sprite = weapon.ItemSprite;
         weaponIconImage.enabled = weapon.ItemSprite != null;
 
-        bool showAmmo = weapon.weaponUsesAmmo;
+        F_Item_Weapon_Firearm firearm = weapon as F_Item_Weapon_Firearm;
+        bool showAmmo = firearm != null && firearm.weaponUsesAmmo;
         ammoCountText.gameObject.SetActive(showAmmo);
         ammoIconImage.gameObject.SetActive(showAmmo);
         if (!showAmmo)
@@ -99,13 +100,13 @@ public class F_GUI_HUD_WeaponAmmo : MonoBehaviour
             return;
         }
 
-        int reserveAmmo = weapon.WeaponAmmoItem != null && playerInventory != null
-            ? F_Utility_Helper_Inventory.GetItemCountInInventory(playerInventory, weapon.WeaponAmmoItem)
+        int reserveAmmo = firearm.WeaponAmmoItem != null && playerInventory != null
+            ? F_Utility_Helper_Inventory.GetItemCountInInventory(playerInventory, firearm.WeaponAmmoItem)
             : 0;
-        ammoCountText.text = weapon.CurrentAmmoLoaded + ammoSeparator + reserveAmmo;
-        ammoCountText.color = weapon.CurrentAmmoLoaded <= 0 ? emptyAmmoTextColour : textColour;
+        ammoCountText.text = firearm.CurrentAmmoLoaded + ammoSeparator + reserveAmmo;
+        ammoCountText.color = firearm.CurrentAmmoLoaded <= 0 ? emptyAmmoTextColour : textColour;
 
-        Sprite ammoSprite = weapon.WeaponAmmoItem != null ? weapon.WeaponAmmoItem.ItemSprite : null;
+        Sprite ammoSprite = firearm.WeaponAmmoItem != null ? firearm.WeaponAmmoItem.ItemSprite : null;
         ammoIconImage.sprite = ammoSprite;
         ammoIconImage.enabled = ammoSprite != null;
     }

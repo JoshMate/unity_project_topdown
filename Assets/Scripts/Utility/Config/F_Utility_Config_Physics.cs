@@ -5,4 +5,8 @@ public static class F_Utility_Config_Physics
     public const string cfgPhysicsLayerMover = "Physics_Mover";
     // Layer for projectiles and bullets; passes over ents with entFeatureCanShootOver
     public const string cfgPhysicsLayerProjectile = "Physics_Projectile";
+
+    // Constants Public: Knockback
+    // How quickly knockback speed on movers (player, NPCs) fades, in world units per second, per second
+    public const float cfgPhysicsKnockbackDecayRate = 25f;
 }
