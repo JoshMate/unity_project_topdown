@@ -49,7 +49,7 @@ public class F_PlayerController : MonoBehaviour
         moveDirection = controls.GetMovementInput();
         mousePosition = playerCamera.ScreenToWorldPoint(controls.GetMouseScreenPosition());
 
-        if (characterScreenManager.isMenuOpen && playerStats.isSprinting)
+        if (characterScreenManager.isMenuOpen && playerStats.characterStatusIsSprinting)
         {
             playerStats.SprintEnd();
         }
@@ -117,12 +117,7 @@ public class F_PlayerController : MonoBehaviour
         float aimAngle = Mathf.Atan2(aimDirection.y, aimDirection.x) * Mathf.Rad2Deg;
         rb.rotation = aimAngle;
 
-        float finalSpeed = playerStats.speedMove;
-        if (playerStats.isSprinting && playerStats.stamina > 0)
-        {
-            finalSpeed = playerStats.speedSprint;
-        }
-
+        float finalSpeed = playerStats.GetCurrentMoveSpeed();
         rb.linearVelocity = new Vector2(moveDirection.x, moveDirection.y) * finalSpeed;
     }
 }

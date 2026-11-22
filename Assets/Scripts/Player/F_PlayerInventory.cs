@@ -46,7 +46,7 @@ public class F_PlayerInventory : MonoBehaviour
         playerStats = GetComponent<F_PlayerStats>();
         if (playerStats != null)
         {
-            ApplyInventorySlotAvailability(playerStats.inventorySlotsAvailable);
+            ApplyInventorySlotAvailability(playerStats.playerStatInventorySlotsAvailable);
         }
     }
 

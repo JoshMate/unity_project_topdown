@@ -4,59 +4,49 @@ using System.Collections.Generic;
 using System.Globalization;
 using UnityEngine;
 
-public class F_PlayerStats : F_Ent
+/// <summary>
+/// Player-only stats on top of the shared character stats: HUD, hunger and thirst survival, and inventory slots and carry weight.
+/// </summary>
+public class F_PlayerStats : F_Character
 {
     [Header("Constants Private")]
-    private const int defaultInventorySlotsAvailable = 9;
-    private const float defaultMaxCarryWeight = 50f;
-    // Weight class thresholds, expressed as a fraction of weightMax.
-    private const float weightThresholdLightWeight = 0.25f;
-    private const float weightThresholdMediumWeight = 0.50f;
-    private const float weightThresholdHeavyWeight = 0.75f;
-    private const float weightThresholdTooMuchWeight = 1.00f;
+    private const int playerDefaultInventorySlotsAvailable = 9;
+    private const float playerDefaultMaxCarryWeight = 50f;
+    // Weight class thresholds, expressed as a fraction of playerStatWeightMax.
+    private const float playerWeightThresholdLightWeight = 0.25f;
+    private const float playerWeightThresholdMediumWeight = 0.50f;
+    private const float playerWeightThresholdHeavyWeight = 0.75f;
+    private const float playerWeightThresholdTooMuchWeight = 1.00f;
+    // Survival drain tuning.
+    private const float playerSurvivalStepAmount = 1f;
+    private const float playerSurvivalLowStatRatio = 0.5f;
+    private const float playerSurvivalFastDrainDivisor = 2f;
+    private const float playerSurvivalStatFloor = 0f;
 
-    [Header("Object Refs")]
-    public F_GUI_HUD_Manager hudManager;
-    public F_GUI_CharacterScreen_Manager characterScreenManager;
+    [Header("Player Object Refs")]
+    public F_GUI_HUD_Manager playerRefHudManager;
+    public F_GUI_CharacterScreen_Manager playerRefCharacterScreenManager;
 
-    [Header("Stamina Stats")]
-    public float stamina;
-    public float staminaMax; 
-    public float staminaRegenDelay;
-    public float staminaSprintDrainDelay;
+    [Header("Player Survival Stats")]
+    public float playerStatHunger;
+    public float playerStatHungerMax;
+    public float playerStatHungerDrainRateDelay;
+    public float playerStatThirst;
+    public float playerStatThirstMax;
+    public float playerStatThirstDrainRateDelay;
 
-    [Header("Survival Stats")]
-    public float hunger;       
-    public float hungerMax; 
-    public float hungerDrainRateDelay;
-    public float thirst; 
-    public float thirstMax; 
-    public float thirstDrainRateDelay;
-
-
-    [Header("Movement Stats")]
-    public float speedMove;
-    public float speedSprint;
-
-    [Header("Inventory Stats")]
-    public float weight;
-    public float weightMax = defaultMaxCarryWeight;
-    // Carry-weight classification, driven by weight as a percentage of weightMax. Used for future gameplay effects on the player.
-    public enumWeightClass weightClass;
-    public int inventorySlotsAvailable = defaultInventorySlotsAvailable;
-    public int inventorySlotsMax;
-
-    [Header("Status Flags")]
-    public bool isSprinting = false;
+    [Header("Player Inventory Stats")]
+    public float playerStatWeight;
+    public float playerStatWeightMax = playerDefaultMaxCarryWeight;
+    // Carry-weight classification, driven by weight as a percentage of playerStatWeightMax. Used for future gameplay effects on the player.
+    public enumWeightClass playerStatWeightClass;
+    public int playerStatInventorySlotsAvailable = playerDefaultInventorySlotsAvailable;
+    public int playerStatInventorySlotsMax;
 
     [Header("Privates")]
     private F_PlayerInventory playerInventory;
-    private float lastStaminaUseTime = 0f;
-    private float lastStaminaRegenTime = 0f;
-    private float staminaRegenStartDelay = 2f;
-    private float lastStaminaSprintDrainTime = 0f;
-    private float lastHungerDrainTime = 0f;
-    private float lastThirstDrainTime = 0f;
+    private float playerLastHungerDrainTime = 0f;
+    private float playerLastThirstDrainTime = 0f;
 
 
     protected override void Awake()
@@ -64,9 +54,9 @@ public class F_PlayerStats : F_Ent
         base.Awake();
         playerInventory = GetComponent<F_PlayerInventory>();
         RefreshInventorySlotStats();
-        if (weightMax <= 0f)
+        if (playerStatWeightMax <= 0f)
         {
-            weightMax = defaultMaxCarryWeight;
+            playerStatWeightMax = playerDefaultMaxCarryWeight;
         }
 
         UpdateInventoryWeight();
@@ -76,7 +66,7 @@ public class F_PlayerStats : F_Ent
     /// <param name="availableSlotCount">The requested number of unlocked inventory slots.</param>
     public void SetInventorySlotsAvailable(int availableSlotCount)
     {
-        inventorySlotsAvailable = availableSlotCount;
+        playerStatInventorySlotsAvailable = availableSlotCount;
         RefreshInventorySlotStats();
     }
 
@@ -90,8 +80,8 @@ public class F_PlayerStats : F_Ent
         }
 
         RefreshInventorySlotStats();
-        int remainingSlots = inventorySlotsMax - inventorySlotsAvailable;
-        inventorySlotsAvailable += slotsToUnlock >= remainingSlots ? remainingSlots : slotsToUnlock;
+        int remainingSlots = playerStatInventorySlotsMax - playerStatInventorySlotsAvailable;
+        playerStatInventorySlotsAvailable += slotsToUnlock >= remainingSlots ? remainingSlots : slotsToUnlock;
         RefreshInventorySlotStats();
     }
 
@@ -102,13 +92,13 @@ public class F_PlayerStats : F_Ent
             playerInventory = GetComponent<F_PlayerInventory>();
         }
 
-        inventorySlotsMax = playerInventory != null && playerInventory.invSlotInventory != null
+        playerStatInventorySlotsMax = playerInventory != null && playerInventory.invSlotInventory != null
             ? playerInventory.invSlotInventory.Count
             : 0;
-        inventorySlotsAvailable = Mathf.Clamp(inventorySlotsAvailable, 0, inventorySlotsMax);
+        playerStatInventorySlotsAvailable = Mathf.Clamp(playerStatInventorySlotsAvailable, 0, playerStatInventorySlotsMax);
         if (playerInventory != null)
         {
-            playerInventory.ApplyInventorySlotAvailability(inventorySlotsAvailable);
+            playerInventory.ApplyInventorySlotAvailability(playerStatInventorySlotsAvailable);
         }
     }
 
@@ -120,9 +110,6 @@ public class F_PlayerStats : F_Ent
 
     // The player persists after death to avoid breaking systems that reference it.
     protected override bool DestroyOnDeath => false;
-
-    // The player moves around, so it passes through walk-through ents.
-    protected override bool IsMover => true;
 
     // Logs player death; death UI is out of scope for now.
     protected override void OnDeath()
@@ -137,149 +124,105 @@ public class F_PlayerStats : F_Ent
         UpdateWeightClass();
         HUDUpdate();
         FoodHungerUpdate();
-        StaminaUpdate();
-    }
-
-    void FixedUpdate()
-    {
-        
-    }
-
-    public void SprintStart()
-    {
-        isSprinting = true;
-    }
-
-    public void SprintEnd()
-    {
-        lastStaminaUseTime = Time.time;
-        isSprinting = false;
     }
 
     private void UpdateInventoryWeight()
     {
         if (playerInventory != null)
         {
-            weight = playerInventory.CalculateCurrentWeight();
+            playerStatWeight = playerInventory.CalculateCurrentWeight();
         }
     }
 
-    // Recalculates weightClass from the current weight-to-weightMax ratio.
+    // Recalculates playerStatWeightClass from the current weight-to-max-weight ratio.
     private void UpdateWeightClass()
     {
-        float weightPercent = weightMax > 0f ? weight / weightMax : 0f;
+        float weightPercent = playerStatWeightMax > 0f ? playerStatWeight / playerStatWeightMax : 0f;
 
-        if (weightPercent >= weightThresholdTooMuchWeight)
+        if (weightPercent >= playerWeightThresholdTooMuchWeight)
         {
-            weightClass = enumWeightClass.TooMuchWeight;
+            playerStatWeightClass = enumWeightClass.TooMuchWeight;
         }
-        else if (weightPercent >= weightThresholdHeavyWeight)
+        else if (weightPercent >= playerWeightThresholdHeavyWeight)
         {
-            weightClass = enumWeightClass.HeavyWeight;
+            playerStatWeightClass = enumWeightClass.HeavyWeight;
         }
-        else if (weightPercent >= weightThresholdMediumWeight)
+        else if (weightPercent >= playerWeightThresholdMediumWeight)
         {
-            weightClass = enumWeightClass.MediumWeight;
+            playerStatWeightClass = enumWeightClass.MediumWeight;
         }
-        else if (weightPercent >= weightThresholdLightWeight)
+        else if (weightPercent >= playerWeightThresholdLightWeight)
         {
-            weightClass = enumWeightClass.LightWeight;
+            playerStatWeightClass = enumWeightClass.LightWeight;
         }
         else
         {
-            weightClass = enumWeightClass.FreeWeight;
+            playerStatWeightClass = enumWeightClass.FreeWeight;
         }
     }
 
     // Update HUD
     private void HUDUpdate()
     {
-        hudManager.healthBar.barText.text = Math.Ceiling(entStatHealth).ToString();
-        hudManager.healthBar.barTextMax.text = Math.Ceiling(entStatHealthMax).ToString();  
-        hudManager.healthBar.barSlider.value = entStatHealth;
-        hudManager.healthBar.barSlider.maxValue = entStatHealthMax;
+        playerRefHudManager.healthBar.barText.text = Math.Ceiling(entStatHealth).ToString();
+        playerRefHudManager.healthBar.barTextMax.text = Math.Ceiling(entStatHealthMax).ToString();
+        playerRefHudManager.healthBar.barSlider.value = entStatHealth;
+        playerRefHudManager.healthBar.barSlider.maxValue = entStatHealthMax;
 
-        hudManager.staminaBar.barText.text = Math.Ceiling(stamina).ToString();
-        hudManager.staminaBar.barTextMax.text = Math.Ceiling(staminaMax).ToString();
-        hudManager.staminaBar.barSlider.value = stamina;
-        hudManager.staminaBar.barSlider.maxValue = staminaMax;
+        playerRefHudManager.staminaBar.barText.text = Math.Ceiling(characterStatStamina).ToString();
+        playerRefHudManager.staminaBar.barTextMax.text = Math.Ceiling(characterStatStaminaMax).ToString();
+        playerRefHudManager.staminaBar.barSlider.value = characterStatStamina;
+        playerRefHudManager.staminaBar.barSlider.maxValue = characterStatStaminaMax;
 
-        hudManager.hungerBar.barText.text = Math.Ceiling(hunger).ToString();
-        hudManager.hungerBar.barTextMax.text = Math.Ceiling(hungerMax).ToString();
-        hudManager.hungerBar.barSlider.value = hunger;
-        hudManager.hungerBar.barSlider.maxValue = hungerMax;
+        playerRefHudManager.hungerBar.barText.text = Math.Ceiling(playerStatHunger).ToString();
+        playerRefHudManager.hungerBar.barTextMax.text = Math.Ceiling(playerStatHungerMax).ToString();
+        playerRefHudManager.hungerBar.barSlider.value = playerStatHunger;
+        playerRefHudManager.hungerBar.barSlider.maxValue = playerStatHungerMax;
 
-        hudManager.thirstBar.barText.text = Math.Ceiling(thirst).ToString();
-        hudManager.thirstBar.barTextMax.text = Math.Ceiling(thirstMax).ToString();
-        hudManager.thirstBar.barSlider.value = thirst;
-        hudManager.thirstBar.barSlider.maxValue = thirstMax;
+        playerRefHudManager.thirstBar.barText.text = Math.Ceiling(playerStatThirst).ToString();
+        playerRefHudManager.thirstBar.barTextMax.text = Math.Ceiling(playerStatThirstMax).ToString();
+        playerRefHudManager.thirstBar.barSlider.value = playerStatThirst;
+        playerRefHudManager.thirstBar.barSlider.maxValue = playerStatThirstMax;
 
-        hudManager.toxicBar.barText.text = Math.Ceiling(entStatToxic).ToString();
-        hudManager.toxicBar.barTextMax.text = Math.Ceiling(entStatToxicMax).ToString();
-        hudManager.toxicBar.barSlider.value = entStatToxic;
-        hudManager.toxicBar.barSlider.maxValue = entStatToxicMax;
+        playerRefHudManager.toxicBar.barText.text = Math.Ceiling(entStatToxic).ToString();
+        playerRefHudManager.toxicBar.barTextMax.text = Math.Ceiling(entStatToxicMax).ToString();
+        playerRefHudManager.toxicBar.barSlider.value = entStatToxic;
+        playerRefHudManager.toxicBar.barSlider.maxValue = entStatToxicMax;
 
-        hudManager.weightBar.barText.text = weight.ToString("0.##", CultureInfo.InvariantCulture);
-        hudManager.weightBar.barTextMax.text = weightMax.ToString("0.##", CultureInfo.InvariantCulture);
-        hudManager.weightBar.barSlider.maxValue = weightMax;
-        hudManager.weightBar.barSlider.value = weight;
-        hudManager.weightBar.SetWeightClass(weightClass);
-    }
-
-    // Handle Stamina Regeneration
-    private void StaminaUpdate()
-    {
-        if (isSprinting == false && Time.time > lastStaminaUseTime + staminaRegenStartDelay)
-        {
-            if (Time.time > lastStaminaRegenTime + staminaRegenDelay)
-            {
-                lastStaminaRegenTime = Time.time;
-                stamina += 1;
-                stamina = Math.Clamp(stamina,0,staminaMax);
-            }
-        }
-        if (isSprinting == true && stamina > 0)
-        {
-            if (Time.time > lastStaminaSprintDrainTime + staminaSprintDrainDelay)
-            {
-                lastStaminaSprintDrainTime = Time.time;
-                stamina -= 1;
-                stamina = Math.Clamp(stamina,0,staminaMax);
-            }
-        }
+        playerRefHudManager.weightBar.barText.text = playerStatWeight.ToString("0.##", CultureInfo.InvariantCulture);
+        playerRefHudManager.weightBar.barTextMax.text = playerStatWeightMax.ToString("0.##", CultureInfo.InvariantCulture);
+        playerRefHudManager.weightBar.barSlider.maxValue = playerStatWeightMax;
+        playerRefHudManager.weightBar.barSlider.value = playerStatWeight;
+        playerRefHudManager.weightBar.SetWeightClass(playerStatWeightClass);
     }
 
     // Handle Food and Water Drain
-
     private void FoodHungerUpdate()
     {
         // Hunger
         // Hunger Drains faster if Health is low
-        float hungerDrainRateDelayFinal = hungerDrainRateDelay;
-        if (entStatHealth <= (entStatHealthMax / 2))
+        float hungerDrainRateDelayFinal = playerStatHungerDrainRateDelay;
+        if (entStatHealth <= entStatHealthMax * playerSurvivalLowStatRatio)
         {
-            hungerDrainRateDelayFinal = hungerDrainRateDelay/2;
+            hungerDrainRateDelayFinal = playerStatHungerDrainRateDelay / playerSurvivalFastDrainDivisor;
         }
-        if (Time.time > lastHungerDrainTime + hungerDrainRateDelayFinal)
+        if (Time.time > playerLastHungerDrainTime + hungerDrainRateDelayFinal)
         {
-            lastHungerDrainTime = Time.time;
-            hunger -= 1;
-            hunger = Math.Clamp(hunger,0,hungerMax);
+            playerLastHungerDrainTime = Time.time;
+            playerStatHunger = Math.Clamp(playerStatHunger - playerSurvivalStepAmount, playerSurvivalStatFloor, playerStatHungerMax);
         }
 
         // Thirst
         // Thirst Drains faster if Stamina is below half
-        float thirstDrainRateDelayFinal = thirstDrainRateDelay;
-        if (stamina <= (staminaMax / 2))
+        float thirstDrainRateDelayFinal = playerStatThirstDrainRateDelay;
+        if (characterStatStamina <= characterStatStaminaMax * playerSurvivalLowStatRatio)
         {
-            thirstDrainRateDelayFinal = thirstDrainRateDelay/2;
+            thirstDrainRateDelayFinal = playerStatThirstDrainRateDelay / playerSurvivalFastDrainDivisor;
         }
-        if (Time.time > lastThirstDrainTime + thirstDrainRateDelayFinal)
+        if (Time.time > playerLastThirstDrainTime + thirstDrainRateDelayFinal)
         {
-            lastThirstDrainTime = Time.time;
-            thirst -= 1;
-            thirst = Math.Clamp(thirst,0,thirstMax);
+            playerLastThirstDrainTime = Time.time;
+            playerStatThirst = Math.Clamp(playerStatThirst - playerSurvivalStepAmount, playerSurvivalStatFloor, playerStatThirstMax);
         }
-        
     }
 }
