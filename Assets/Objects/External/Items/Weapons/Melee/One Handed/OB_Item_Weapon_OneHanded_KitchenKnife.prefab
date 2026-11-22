@@ -176,7 +176,7 @@ MonoBehaviour:
   weaponDeployEndSound: {fileID: 8300000, guid: c9c17effdfdaef84395aee8fefe75926, type: 3}
   weaponBreakSound: {fileID: 8300000, guid: 263289bb386566e42b36bb7f691e6e79, type: 3}
   weaponDryFireSound: {fileID: 8300000, guid: d0e21b6671c1c6a40ae0ac0f08847ce2, type: 3}
-  weaponDamage: 15
+  weaponDamage: 10
   weaponDamageType: 0
   weaponDeployDelay: 10
   weaponDurabilityCurrent: 100
@@ -184,9 +184,11 @@ MonoBehaviour:
   weaponDurabilityLostPerUse: 1
   meleeSwingSound: {fileID: 8300000, guid: 073585afb116b6840ba4494a3c89eab0, type: 3}
   meleeSwingLoudness: 1
-  meleeSwingDelay: 0.4
+  meleeWindUpDelay: 0.1
+  meleeSwingDuration: 0.1
+  meleeReturnDelay: 0.1
   meleeRange: 1.2
-  meleeSwingArcDegrees: 70
+  meleeSwingArcDegrees: 0
   meleeCleaveAmount: 1
   meleeKnockbackAmount: 2
   meleeStaminaCost: 8

@@ -9,8 +9,8 @@ public class F_PlayerHeldWeapon : MonoBehaviour
     public F_playerHeldWeaponIndividual heldWeaponCurrentlySelected;
     public F_playerHeldWeaponIndividual heldWeaponGunBig;
     public F_playerHeldWeaponIndividual heldWeaponGunSmall;
-    public F_playerHeldWeaponIndividual heldWeaponMeleeBig;
-    public F_playerHeldWeaponIndividual heldWeaponMeleeSmall;
+    // Draws and swings the selected melee weapon's sprite, which is also its hitbox
+    public F_Character_MeleeHitbox heldWeaponMeleeHitbox;
 
 
     [Header("Constants Private")]
@@ -128,13 +128,19 @@ public class F_PlayerHeldWeapon : MonoBehaviour
         }
     }
 
-    // Swings from the held arm's fire position when one is assigned, otherwise from the holder, in the aim direction.
+    // Starts the swing on the weapon (stamina, durability, sound), then physically swings the held sprite hitbox.
     private void SwingMeleeWeapon(F_Item_Weapon_Melee meleeItem)
     {
-        Transform swingTransform = heldWeaponCurrentlySelected != null && heldWeaponCurrentlySelected.firePosition != null
-            ? heldWeaponCurrentlySelected.firePosition
-            : GetHolderTransform();
-        meleeItem.TrySwing(GetWeaponHolder(), swingTransform.position, swingTransform.right);
+        if (heldWeaponMeleeHitbox == null)
+        {
+            return;
+        }
+
+        F_Character weaponHolder = GetWeaponHolder();
+        if (meleeItem.TrySwing(weaponHolder, heldWeaponMeleeHitbox.transform.position))
+        {
+            heldWeaponMeleeHitbox.BeginSwing(weaponHolder);
+        }
     }
 
     // Fires a burst of shots from the firearm, with each shot spawning the configured number of spread projectiles.
@@ -272,13 +278,7 @@ public class F_PlayerHeldWeapon : MonoBehaviour
         return holderController != null ? holderController.playerStats : null;
     }
 
-    private Transform GetHolderTransform()
-    {
-        F_PlayerController holderController = GetHolderController();
-        return holderController != null ? holderController.transform : transform;
-    }
-
-    /// <summary>Refreshes the held weapon visual from the selected inventory item's type.</summary>
+    /// <summary>Refreshes the held weapon visual: firearms show their held arms, melee weapons show their own sprite in front of the holder.</summary>
     public void UpdateHeldWeaponSprite()
     {
         F_playerHeldWeaponIndividual weaponToShow = GetHeldWeaponForSelectedItem();
@@ -286,8 +286,11 @@ public class F_PlayerHeldWeapon : MonoBehaviour
         heldWeaponCurrentlySelected = weaponToShow;
         SetWeaponVisible(heldWeaponGunBig, weaponToShow == heldWeaponGunBig);
         SetWeaponVisible(heldWeaponGunSmall, weaponToShow == heldWeaponGunSmall);
-        SetWeaponVisible(heldWeaponMeleeBig, weaponToShow == heldWeaponMeleeBig);
-        SetWeaponVisible(heldWeaponMeleeSmall, weaponToShow == heldWeaponMeleeSmall);
+
+        if (heldWeaponMeleeHitbox != null)
+        {
+            heldWeaponMeleeHitbox.SetHeldWeapon(GetSelectedWeaponItem() as F_Item_Weapon_Melee);
+        }
     }
 
     private F_playerHeldWeaponIndividual GetHeldWeaponForSelectedItem()
@@ -303,10 +306,6 @@ public class F_PlayerHeldWeapon : MonoBehaviour
                 return heldWeaponGunBig;
             case enumItemType.WeaponGunOneHanded:
                 return heldWeaponGunSmall;
-            case enumItemType.WeaponMeleeTwoHanded:
-                return heldWeaponMeleeBig;
-            case enumItemType.WeaponMeleeOneHanded:
-                return heldWeaponMeleeSmall;
             default:
                 return null;
         }

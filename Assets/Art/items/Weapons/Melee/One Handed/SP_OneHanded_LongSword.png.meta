@@ -1,7 +1,10 @@
 fileFormatVersion: 2
-guid: b14e0493e1fe105489039d47840b9045
+guid: ea339076e1f18ff44b79f98f3719b014
 TextureImporter:
-  internalIDToNameTable: []
+  internalIDToNameTable:
+  - first:
+      213: 3417162066166862718
+    second: SP_OneHanded_LongSword_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -108,37 +111,53 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: SP_OneHanded_LongSword_0
+      rect:
+        serializedVersion: 2
+        x: 13
+        y: 13
+        width: 38
+        height: 38
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e73d0d55bc23c6f20800000000000000
+      internalID: 3417162066166862718
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape:
-    - - {x: -15, y: -20}
-      - {x: -14, y: -19}
-      - {x: -9, y: -19}
-      - {x: -8, y: -18}
-      - {x: -1, y: -18}
-      - {x: -1, y: -22}
-      - {x: 5, y: -22}
-      - {x: 5, y: -16}
-      - {x: 6, y: -15}
-      - {x: 6, y: -11}
-      - {x: 5, y: -10}
-      - {x: 5, y: 16}
-      - {x: -1, y: 16}
-      - {x: -1, y: -9}
-      - {x: -2, y: -10}
-      - {x: -6, y: -10}
-      - {x: -7, y: -11}
-      - {x: -18, y: -11}
-      - {x: -19, y: -12}
-      - {x: -27, y: -12}
-      - {x: -28, y: -13}
-      - {x: -32, y: -13}
-      - {x: -32, y: -24}
-      - {x: -28, y: -24}
-      - {x: -24, y: -21}
-      - {x: -21, y: -21}
-      - {x: -20, y: -20}
+    - - {x: -3, y: -11}
+      - {x: -3, y: -9}
+      - {x: -4, y: -8}
+      - {x: 16, y: 12}
+      - {x: 18, y: 16}
+      - {x: 18, y: 18}
+      - {x: 16, y: 18}
+      - {x: 12, y: 16}
+      - {x: -8, y: -4}
+      - {x: -9, y: -3}
+      - {x: -11, y: -3}
+      - {x: -12, y: -4}
+      - {x: -12, y: -5}
+      - {x: -10, y: -7}
+      - {x: -17, y: -14}
+      - {x: -18, y: -14}
+      - {x: -18, y: -18}
+      - {x: -14, y: -18}
+      - {x: -7, y: -10}
+      - {x: -5, y: -12}
+      - {x: -4, y: -12}
     bones: []
     spriteID: 5e97eb03825dee720800000000000000
     internalID: 1537655665

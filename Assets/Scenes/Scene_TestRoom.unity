@@ -956,72 +956,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c4134c11ffbd6704dbe14693fbb51230, type: 3}
---- !u!1001 &217347716
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 952946906}
-    m_Modifications:
-    - target: {fileID: 4347186304033204569, guid: b929ad96510336143b748728c06ed87f, type: 3}
-      propertyPath: m_Name
-      value: OB_Item_Weapon_OneHanded_KitchenKnife
-      objectReference: {fileID: 0}
-    - target: {fileID: 5890606236839781758, guid: b929ad96510336143b748728c06ed87f, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5890606236839781758, guid: b929ad96510336143b748728c06ed87f, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5890606236839781758, guid: b929ad96510336143b748728c06ed87f, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5890606236839781758, guid: b929ad96510336143b748728c06ed87f, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5890606236839781758, guid: b929ad96510336143b748728c06ed87f, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5890606236839781758, guid: b929ad96510336143b748728c06ed87f, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5890606236839781758, guid: b929ad96510336143b748728c06ed87f, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5890606236839781758, guid: b929ad96510336143b748728c06ed87f, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5890606236839781758, guid: b929ad96510336143b748728c06ed87f, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5890606236839781758, guid: b929ad96510336143b748728c06ed87f, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8175982676517353981, guid: b929ad96510336143b748728c06ed87f, type: 3}
-      propertyPath: meleeSwingSound
-      value: 
-      objectReference: {fileID: 8300000, guid: 073585afb116b6840ba4494a3c89eab0, type: 3}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: b929ad96510336143b748728c06ed87f, type: 3}
---- !u!4 &217347717 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 5890606236839781758, guid: b929ad96510336143b748728c06ed87f, type: 3}
-  m_PrefabInstance: {fileID: 217347716}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &225562317
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1084,6 +1018,67 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6549032229521922957, guid: 6dbd2932d4a7ee744b70fae0b947e1aa, type: 3}
   m_PrefabInstance: {fileID: 225562317}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &227617056
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4347186304033204569, guid: 2ca70a939e1a9e94c92511ad53421378, type: 3}
+      propertyPath: m_Name
+      value: OB_Item_Weapon_OneHanded_BaseBallBat
+      objectReference: {fileID: 0}
+    - target: {fileID: 4604588311398740270, guid: 2ca70a939e1a9e94c92511ad53421378, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: ff8120af70707744f86b81ec15325e9c, type: 3}
+    - target: {fileID: 5890606236839781758, guid: 2ca70a939e1a9e94c92511ad53421378, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5890606236839781758, guid: 2ca70a939e1a9e94c92511ad53421378, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5890606236839781758, guid: 2ca70a939e1a9e94c92511ad53421378, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5890606236839781758, guid: 2ca70a939e1a9e94c92511ad53421378, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5890606236839781758, guid: 2ca70a939e1a9e94c92511ad53421378, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5890606236839781758, guid: 2ca70a939e1a9e94c92511ad53421378, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5890606236839781758, guid: 2ca70a939e1a9e94c92511ad53421378, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5890606236839781758, guid: 2ca70a939e1a9e94c92511ad53421378, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5890606236839781758, guid: 2ca70a939e1a9e94c92511ad53421378, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5890606236839781758, guid: 2ca70a939e1a9e94c92511ad53421378, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 2ca70a939e1a9e94c92511ad53421378, type: 3}
 --- !u!4 &251256939 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8789547702566620522, guid: c4134c11ffbd6704dbe14693fbb51230, type: 3}
@@ -2215,6 +2210,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 79d6a8feb7a23834fb7f3471b38c24a5, type: 3}
+--- !u!4 &663356288 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5890606236839781758, guid: b929ad96510336143b748728c06ed87f, type: 3}
+  m_PrefabInstance: {fileID: 776799133}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &666822884
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2401,6 +2401,67 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8812358987963803557, guid: b5f070bd894baf044bfcff0915b4bdb9, type: 3}
   m_PrefabInstance: {fileID: 726351244}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &776799133
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 952946906}
+    m_Modifications:
+    - target: {fileID: 4347186304033204569, guid: b929ad96510336143b748728c06ed87f, type: 3}
+      propertyPath: m_Name
+      value: OB_Item_Weapon_OneHanded_KitchenKnife
+      objectReference: {fileID: 0}
+    - target: {fileID: 5890606236839781758, guid: b929ad96510336143b748728c06ed87f, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5890606236839781758, guid: b929ad96510336143b748728c06ed87f, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5890606236839781758, guid: b929ad96510336143b748728c06ed87f, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5890606236839781758, guid: b929ad96510336143b748728c06ed87f, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5890606236839781758, guid: b929ad96510336143b748728c06ed87f, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5890606236839781758, guid: b929ad96510336143b748728c06ed87f, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5890606236839781758, guid: b929ad96510336143b748728c06ed87f, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5890606236839781758, guid: b929ad96510336143b748728c06ed87f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5890606236839781758, guid: b929ad96510336143b748728c06ed87f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5890606236839781758, guid: b929ad96510336143b748728c06ed87f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8175982676517353981, guid: b929ad96510336143b748728c06ed87f, type: 3}
+      propertyPath: weaponDeployDelay
+      value: 40
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: b929ad96510336143b748728c06ed87f, type: 3}
 --- !u!1 &777413682
 GameObject:
   m_ObjectHideFlags: 0
@@ -3056,7 +3117,7 @@ Transform:
   - {fileID: 1014690076}
   - {fileID: 1520275332}
   - {fileID: 1404439181}
-  - {fileID: 217347717}
+  - {fileID: 663356288}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &960504205
@@ -7636,3 +7697,4 @@ SceneRoots:
   - {fileID: 1237586594}
   - {fileID: 807406877}
   - {fileID: 952946906}
+  - {fileID: 227617056}

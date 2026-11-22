@@ -1,7 +1,10 @@
 fileFormatVersion: 2
-guid: ef1aaa535e616e245ade5bfae642bded
+guid: ff8120af70707744f86b81ec15325e9c
 TextureImporter:
-  internalIDToNameTable: []
+  internalIDToNameTable:
+  - first:
+      213: -6762070512224678082
+    second: SP_TwoHanded_BaseBallBat_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -108,48 +111,56 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: SP_TwoHanded_BaseBallBat_0
+      rect:
+        serializedVersion: 2
+        x: 10
+        y: 10
+        width: 45
+        height: 45
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e3f44b432bc4822a0800000000000000
+      internalID: -6762070512224678082
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape:
-    - - {x: -16, y: -24}
-      - {x: -12, y: -20}
-      - {x: -10, y: -21}
-      - {x: -8, y: -21}
-      - {x: -8, y: -19}
-      - {x: -6, y: -17}
-      - {x: -6, y: -13}
-      - {x: 28, y: 21}
-      - {x: 28, y: 23}
-      - {x: 25, y: 26}
-      - {x: 24, y: 26}
-      - {x: 3, y: 5}
-      - {x: 1, y: 7}
-      - {x: -4, y: 7}
-      - {x: -5, y: 6}
-      - {x: -14, y: 6}
-      - {x: -15, y: 7}
-      - {x: -20, y: 7}
-      - {x: -21, y: 8}
-      - {x: -24, y: 8}
-      - {x: -28, y: 11}
-      - {x: -32, y: 11}
-      - {x: -32, y: 0}
-      - {x: -28, y: 0}
-      - {x: -27, y: -1}
-      - {x: -19, y: -1}
-      - {x: -18, y: -2}
-      - {x: -6, y: -2}
-      - {x: -5, y: -3}
-      - {x: -14, y: -12}
-      - {x: -27, y: -12}
-      - {x: -28, y: -13}
-      - {x: -32, y: -13}
-      - {x: -32, y: -24}
-      - {x: -28, y: -24}
-      - {x: -24, y: -21}
-      - {x: -20, y: -21}
-      - {x: -17, y: -24}
+    - - {x: 8, y: 4}
+      - {x: 9, y: 4}
+      - {x: 14, y: 8}
+      - {x: 19, y: 13}
+      - {x: 20, y: 13}
+      - {x: 22, y: 15}
+      - {x: 22, y: 19}
+      - {x: 19, y: 22}
+      - {x: 15, y: 22}
+      - {x: 13, y: 20}
+      - {x: 13, y: 19}
+      - {x: 8, y: 14}
+      - {x: 8, y: 13}
+      - {x: -1, y: 3}
+      - {x: -1, y: 2}
+      - {x: -18, y: -15}
+      - {x: -20, y: -15}
+      - {x: -21, y: -16}
+      - {x: -21, y: -17}
+      - {x: -17, y: -21}
+      - {x: -15, y: -20}
+      - {x: -15, y: -18}
+      - {x: 2, y: -1}
+      - {x: 3, y: -1}
     bones: []
     spriteID: 5e97eb03825dee720800000000000000
     internalID: 1537655665
