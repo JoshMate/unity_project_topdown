@@ -60,9 +60,7 @@ public class F_GUI_Durability_Bar : MonoBehaviour
             gameObject.SetActive(true);
         }
 
-        float currentFraction = weapon.weaponDurabilityMax <= 0f
-            ? 0f
-            : Mathf.Clamp01(Mathf.Min(weapon.weaponDurabilityCurrent, weapon.GetDurabilityMaxEffective()) / weapon.weaponDurabilityMax);
+        float currentFraction = weapon.GetDurabilityCurrentFullFraction();
         float lostFraction = weapon.GetDurabilityLostFraction();
 
         fillRect.anchorMin = Vector2.zero;

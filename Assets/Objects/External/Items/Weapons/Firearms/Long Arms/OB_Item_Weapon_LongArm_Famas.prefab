@@ -86,6 +86,7 @@ MonoBehaviour:
   weaponSpreadRecoilImpulse: 0.01
   weaponSpreadRecoilRecoveryAmount: 0.01
   weaponSpreadRecoilRecoveryDelay: 0.1
+  weaponSpreadMovementMult: 1.5
   weaponIsReverseRecoilImpulse: 0
   weaponUsesAmmo: 1
   weaponAmmoType: 4
@@ -95,10 +96,9 @@ MonoBehaviour:
   weaponShotLoudness: 30
   weaponIsReloadOneBulletPerReload: 0
   weaponDeployDelay: 65
-  weaponDurabilityCurrent: 1000
-  weaponDurabilityMax: 1000
-  weaponDurabilityLost: 0
-  weaponDurabilityLostPerShot: 10
+  weaponDurabilityCurrent: 100
+  weaponDurabilityMaxLost: 0
+  weaponDurabilityLostPerShot: 1
 --- !u!212 &3257486541222685028
 SpriteRenderer:
   serializedVersion: 2

@@ -96,10 +96,9 @@ MonoBehaviour:
   weaponShotLoudness: 30
   weaponIsReloadOneBulletPerReload: 0
   weaponDeployDelay: 65
-  weaponDurabilityCurrent: 1000
-  weaponDurabilityMax: 1000
-  weaponDurabilityLost: 0
-  weaponDurabilityLostPerShot: 10
+  weaponDurabilityCurrent: 100
+  weaponDurabilityMaxLost: 0
+  weaponDurabilityLostPerShot: 1
 --- !u!212 &3257486541222685028
 SpriteRenderer:
   serializedVersion: 2

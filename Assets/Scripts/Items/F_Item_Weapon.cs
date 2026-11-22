@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class F_Item_Weapon : F_Item
 {
@@ -103,12 +104,14 @@ public class F_Item_Weapon : F_Item
     
     [Header("Weapon Durability Stats")]
     // How much durability the weapon currently has left
-    public float weaponDurabilityCurrent = 1000f;
-    // How much durability the weapon can ever have
-    public float weaponDurabilityMax = 1000f;
-    // How much durability the weapon has lost permanently and becomes the new max taken away from the max
-    public float weaponDurabilityLost = 0f;
-    // How much durability the weapon loses per time its shot
+    [Range(0f, 100f)]
+    public float weaponDurabilityCurrent = 100f;
+    // How much durability the weapon has permanently lost from its fixed maximum
+    [FormerlySerializedAs("weaponDurabilityLost")]
+    [InspectorName("Durability Max Lost")]
+    [Range(0f, 100f)]
+    public float weaponDurabilityMaxLost = 0f;
+    // How much durability the weapon loses each time it is shot
     public float weaponDurabilityLostPerShot = 10f;
 
     
@@ -116,6 +119,7 @@ public class F_Item_Weapon : F_Item
 
 
     [Header("Constants Private")]
+    private const float weaponDurabilityMax = 100f;
     private const string defaultBreakSoundAssetPath = "Assets/Sound/Interface/SD_Interface_Weapon_Break.ogg";
     private const string defaultDryFireSoundAssetPath = "Assets/Sound/Interface/SD_Interface_Weapon_Click.ogg";
     private const string defaultDeployStartSoundAssetPath = "Assets/Sound/Interface/SD_Interface_Deploy_Weapon_Start.wav";
@@ -288,7 +292,8 @@ public class F_Item_Weapon : F_Item
     /// <summary>Maximum durability currently available after permanent losses are removed.</summary>
     public float GetDurabilityMaxEffective()
     {
-        return Mathf.Max(0f, weaponDurabilityMax - weaponDurabilityLost);
+        float maxLost = Mathf.Clamp(weaponDurabilityMaxLost, 0f, weaponDurabilityMax);
+        return weaponDurabilityMax - maxLost;
     }
 
     /// <summary>Current durability as a fraction of the effective maximum (0-1).</summary>
@@ -303,10 +308,16 @@ public class F_Item_Weapon : F_Item
         return Mathf.Clamp01(Mathf.Min(weaponDurabilityCurrent, effectiveMax) / effectiveMax);
     }
 
+    /// <summary>Current durability as a fraction of the fixed full maximum (0-1).</summary>
+    public float GetDurabilityCurrentFullFraction()
+    {
+        return Mathf.Clamp01(Mathf.Min(weaponDurabilityCurrent, GetDurabilityMaxEffective()) / weaponDurabilityMax);
+    }
+
     /// <summary>Permanently lost durability as a fraction of the full maximum (0-1).</summary>
     public float GetDurabilityLostFraction()
     {
-        return weaponDurabilityMax <= 0f ? 0f : Mathf.Clamp01(weaponDurabilityLost / weaponDurabilityMax);
+        return Mathf.Clamp01(Mathf.Clamp(weaponDurabilityMaxLost, 0f, weaponDurabilityMax) / weaponDurabilityMax);
     }
 
     /// <summary>Whether the weapon has no durability left and cannot be used.</summary>
