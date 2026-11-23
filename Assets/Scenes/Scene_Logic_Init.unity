@@ -1063,17 +1063,9 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 1276024397223561960, guid: 154db6adcc85c79499312ed6d4c982e2, type: 3}
-      propertyPath: hudManager
-      value: 
-      objectReference: {fileID: 1030426464}
-    - target: {fileID: 1276024397223561960, guid: 154db6adcc85c79499312ed6d4c982e2, type: 3}
       propertyPath: playerRefHudManager
       value: 
       objectReference: {fileID: 1030426464}
-    - target: {fileID: 1276024397223561960, guid: 154db6adcc85c79499312ed6d4c982e2, type: 3}
-      propertyPath: characterScreenManager
-      value: 
-      objectReference: {fileID: 1262635912}
     - target: {fileID: 1276024397223561960, guid: 154db6adcc85c79499312ed6d4c982e2, type: 3}
       propertyPath: playerRefCharacterScreenManager
       value: 

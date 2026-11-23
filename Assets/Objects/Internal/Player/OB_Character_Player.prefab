@@ -269,6 +269,7 @@ MonoBehaviour:
   heldWeaponCurrentlySelected: {fileID: 0}
   heldWeaponFirearm: {fileID: 8144892090398788070}
   heldWeaponMeleeHitbox: {fileID: 4521137995606548284}
+  playerEquippedWeaponUnarmed: {fileID: 8175982676517353981, guid: 89c151c4c2b6ac645884d554bd81716b, type: 3}
 --- !u!1 &3640740095013228936
 GameObject:
   m_ObjectHideFlags: 0
@@ -454,6 +455,7 @@ MonoBehaviour:
   characterStatStaminaRegenDelay: 0.1
   characterStatStaminaSprintDrainDelay: 0.05
   characterStatStaminaIsInfinite: 0
+  characterStatStaminaCanSprint: 0
   characterStatSpeedMove: 2
   characterStatSpeedSprint: 4
   characterFeatureFootstepsEnabled: 1

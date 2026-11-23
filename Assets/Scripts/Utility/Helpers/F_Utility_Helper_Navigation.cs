@@ -50,6 +50,38 @@ public static class F_Utility_Helper_Navigation
         return false;
     }
 
+    /// <summary>
+    /// Whether a complete NavMesh route links two points. When it doesn't, routeEnd is where the closest partial route
+    /// stops. A destination too far from the NavMesh to judge counts as reachable.
+    /// </summary>
+    /// <param name="from">Where the route starts; must be on the NavMesh.</param>
+    /// <param name="to">Where the route should end.</param>
+    /// <param name="areaMask">NavMesh areas the route may use, such as an agent's areaMask.</param>
+    /// <param name="path">Reusable path the route is calculated into, so checks don't allocate a new one.</param>
+    /// <param name="routeEnd">Where the calculated route ends, or the start when there is no route at all.</param>
+    /// <returns>True when the destination can be fully reached.</returns>
+    public static bool HasCompletePath(Vector2 from, Vector2 to, int areaMask, NavMeshPath path, out Vector2 routeEnd)
+    {
+        routeEnd = from;
+        if (!TrySamplePosition(to, out Vector2 navTo))
+        {
+            return true;
+        }
+
+        if (!NavMesh.CalculatePath(new Vector3(from.x, from.y, 0f), new Vector3(navTo.x, navTo.y, 0f), areaMask, path))
+        {
+            return false;
+        }
+
+        Vector3[] routeCorners = path.corners;
+        if (routeCorners.Length > 0)
+        {
+            routeEnd = routeCorners[routeCorners.Length - 1];
+        }
+
+        return path.status == NavMeshPathStatus.PathComplete;
+    }
+
     /// <summary>Whether a position is on, or within the sample distance of, the NavMesh.</summary>
     /// <param name="position">World position to check.</param>
     /// <returns>True when the NavMesh is close enough to the position.</returns>

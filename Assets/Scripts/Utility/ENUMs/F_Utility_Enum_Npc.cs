@@ -120,6 +120,18 @@ public enum enumNpcPersonalityCombatMemory
     Infinite
 }
 
+/// <summary>Whether an engaged NPC attacks walls and obstacles that stand between it and its target.</summary>
+/// <remarks>Serialised by index: only append new values at the end, never reorder or remove existing ones.</remarks>
+public enum enumNpcPersonalityCombatWallBehaviour
+{
+    // Attacks whatever blocks its line to the target (targets it can shoot directly always come first), and breaks out when trapped
+    BreakAllObstacles,
+    // Only attacks obstacles when no route reaches its target, such as being shut in a room with no exits
+    BreakOnlyIfTrapped,
+    // Never attacks walls or obstacles; when trapped it stays trapped
+    NeverBreakAnything
+}
+
 /// <summary>How an NPC moves when it wants to close the distance to its target.</summary>
 /// <remarks>Serialised by index: only append new values at the end, never reorder or remove existing ones.</remarks>
 public enum enumNpcApproachMode

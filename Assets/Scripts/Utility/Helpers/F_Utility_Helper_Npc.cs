@@ -260,12 +260,25 @@ public static class F_Utility_Helper_Npc
     /// <param name="targetColliders">The target's colliders; triggers and disabled colliders are skipped.</param>
     public static float GetDistanceToBody(Vector2 fromPosition, Transform target, Collider2D[] targetColliders)
     {
-        float closestDistance = Vector2.Distance(fromPosition, target.position);
+        return Vector2.Distance(fromPosition, GetClosestPointOnBody(fromPosition, target, targetColliders));
+    }
+
+    /// <summary>
+    /// The closest point on a target's solid colliders to a position (the position itself when inside one), so large
+    /// targets such as long walls are aimed at where they are nearest. Falls back to the target's centre when it has no solid colliders.
+    /// </summary>
+    /// <param name="fromPosition">Where the closest point is measured from, such as an attacker's centre.</param>
+    /// <param name="target">The target being measured to.</param>
+    /// <param name="targetColliders">The target's colliders; triggers and disabled colliders are skipped.</param>
+    public static Vector2 GetClosestPointOnBody(Vector2 fromPosition, Transform target, Collider2D[] targetColliders)
+    {
+        Vector2 closestPoint = target.position;
         if (targetColliders == null)
         {
-            return closestDistance;
+            return closestPoint;
         }
 
+        float closestDistanceSqr = (closestPoint - fromPosition).sqrMagnitude;
         for (int colliderIndex = 0; colliderIndex < targetColliders.Length; colliderIndex++)
         {
             Collider2D targetCollider = targetColliders[colliderIndex];
@@ -274,11 +287,62 @@ public static class F_Utility_Helper_Npc
                 continue;
             }
 
-            float edgeDistance = Vector2.Distance(fromPosition, targetCollider.ClosestPoint(fromPosition));
-            closestDistance = Mathf.Min(closestDistance, edgeDistance);
+            Vector2 edgePoint = targetCollider.ClosestPoint(fromPosition);
+            float edgeDistanceSqr = (edgePoint - fromPosition).sqrMagnitude;
+            if (edgeDistanceSqr < closestDistanceSqr)
+            {
+                closestDistanceSqr = edgeDistanceSqr;
+                closestPoint = edgePoint;
+            }
         }
 
-        return closestDistance;
+        return closestPoint;
+    }
+
+    /// <summary>
+    /// Finds the closest obstacle a breaker could break along a line: a living, non-character ent that blocks movement,
+    /// can be hit by weapons (not shoot-over) and isn't friendly to the breaker. Characters and ents that don't block
+    /// movement are skipped. Fails when nothing breakable blocks the line, or when unbreakable geometry (a collider with
+    /// no ent) blocks it first, since breaking anything behind that wouldn't help.
+    /// </summary>
+    /// <param name="breaker">The character looking for something to break; its faction decides what counts as friendly.</param>
+    /// <param name="from">Where the line starts.</param>
+    /// <param name="to">Where the line ends, such as the breaker's target.</param>
+    /// <param name="target">The breaker's target, ignored by the line check.</param>
+    /// <param name="obstacle">The obstacle found, or null.</param>
+    /// <returns>True when a breakable obstacle was found.</returns>
+    public static bool TryFindBreakableObstacle(F_Character breaker, Vector2 from, Vector2 to, Transform target, out F_Ent obstacle)
+    {
+        obstacle = null;
+        ContactFilter2D lineFilter = new ContactFilter2D { useTriggers = false };
+        lineFilter.SetLayerMask(GetLineCheckLayerMask());
+        npcLineHits.Clear();
+        Physics2D.Linecast(from, to, lineFilter, npcLineHits);
+
+        for (int hitIndex = 0; hitIndex < npcLineHits.Count; hitIndex++)
+        {
+            Collider2D hitCollider = npcLineHits[hitIndex].collider;
+            if (hitCollider == null || IsPartOf(hitCollider.transform, breaker.transform) || IsPartOf(hitCollider.transform, target))
+            {
+                continue;
+            }
+
+            F_Ent hitEnt = hitCollider.GetComponentInParent<F_Ent>();
+            if (hitEnt == null)
+            {
+                return false;
+            }
+
+            bool isBreakable = !hitEnt.IsDead && !(hitEnt is F_Character) && hitEnt.BlocksNavigation && !hitEnt.entFeatureCanShootOver &&
+                               !F_Utility_Helper_Faction.IsFriendly(breaker, hitEnt);
+            if (isBreakable)
+            {
+                obstacle = hitEnt;
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /// <summary>Finds the closest NavMesh point to a search origin that the target can't shoot.</summary>

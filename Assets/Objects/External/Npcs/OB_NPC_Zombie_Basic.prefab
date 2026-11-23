@@ -79,14 +79,16 @@ MonoBehaviour:
   characterStatSpeedMove: 1.5
   characterStatSpeedSprint: 2.5
   characterFeatureFootstepsEnabled: 1
-  npcEquippedWeaponMelee: {fileID: 8175982676517353981, guid: 7377f3a45f3bfe34092067c197c66708, type: 3}
   npcEquippedWeaponFirearm: {fileID: 0}
-  npcEquippedWeaponAmmoCount: 30
+  npcEquippedWeaponAmmoCount: 0
+  npcEquippedWeaponMelee: {fileID: 0}
+  npcEquippedWeaponUnarmed: {fileID: 8175982676517353981, guid: 7377f3a45f3bfe34092067c197c66708, type: 3}
   npcPersonalityCombatApproach: 1
   npcPersonalityCombatSkillAiming: 1
   npcPersonalityCombatSightRange: 3
   npcPersonalityCombatAwareness: 1
   npcPersonalityCombatMemory: 2
+  npcPersonalityCombatWallBehaviour: 0
   npcPersonalityCombatLOSConeSize: 120
   npcIdleWanderRange: 4
   npcStatWanderWaitTimeMin: 1

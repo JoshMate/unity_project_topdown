@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 /// <summary>Shared weapon classification rules and melee swing maths, so weapon logic lives in one place.</summary>
 public static class F_Utility_Helper_Weapon
@@ -21,6 +22,28 @@ public static class F_Utility_Helper_Weapon
     {
         return itemType == enumItemType.WeaponMeleeOneHanded ||
                itemType == enumItemType.WeaponMeleeTwoHanded;
+    }
+
+    /// <summary>
+    /// Spawns a private instance of a weapon prefab for a character to hold without it being a physical inventory item
+    /// (such as equipped NPC weapons or an unarmed attack). The instance stays out of the world like a stored inventory
+    /// item, so it keeps its own state (ammo, durability, delays), and is moved into the owner's scene so it is not
+    /// destroyed when the active scene (which can be a loading scene) unloads.
+    /// </summary>
+    /// <param name="weaponPrefab">The weapon prefab to spawn; null spawns nothing.</param>
+    /// <param name="ownerScene">The scene of the character that owns the weapon.</param>
+    /// <returns>The spawned weapon instance, or null when no prefab was given.</returns>
+    public static T SpawnStoredWeaponInstance<T>(T weaponPrefab, Scene ownerScene) where T : F_Item_Weapon
+    {
+        if (weaponPrefab == null)
+        {
+            return null;
+        }
+
+        T weaponInstance = Object.Instantiate(weaponPrefab);
+        SceneManager.MoveGameObjectToScene(weaponInstance.gameObject, ownerScene);
+        weaponInstance.SetInventoryStoredState(true);
+        return weaponInstance;
     }
 
     /// <summary>

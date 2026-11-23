@@ -142,6 +142,8 @@ public static class F_Utility_Config_Npc
     public const float cfgNpcAimTurnSpeed = 540f;
     // An NPC only attacks when facing within this many degrees of its target
     public const float cfgNpcAimToleranceDegrees = 12f;
+    // Degrees per second an NPC turns to track a target it is noticing (before it engages)
+    public const float cfgNpcNoticeTurnSpeed = 270f;
 
     // Constants Public: Attacking
     // Fraction of firearm range an NPC closes to before it counts as in range
@@ -171,6 +173,10 @@ public static class F_Utility_Config_Npc
     public const float cfgNpcFlankAngleDegrees = 75f;
     // Fraction of its current distance a flanking NPC keeps from its target while circling round
     public const float cfgNpcFlankDistanceFraction = 0.7f;
+
+    // Constants Public: Obstacle breaking (see enumNpcPersonalityCombatWallBehaviour)
+    // How far in front of the obstacle's surface, towards itself, an NPC heads when moving up to break it
+    public const float cfgNpcObstacleApproachOffset = 0.5f;
 
     // Constants Public: Cover
     // Furthest distance from itself an NPC looks for cover

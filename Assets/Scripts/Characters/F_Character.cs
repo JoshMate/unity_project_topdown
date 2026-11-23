@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 /// <summary>
 /// Generic base for all characters (player, NPCs, enemies). Adds stamina, movement speeds, sprinting
@@ -23,6 +24,9 @@ public class F_Character : F_Ent
     public float characterStatStaminaSprintDrainDelay;
     // When true, stamina is never checked or spent: sprinting and stamina actions (such as melee swings) always succeed.
     public bool characterStatStaminaIsInfinite = false;
+    // Whether this character may sprint at all; for NPCs, when false their personality's sprinting is ignored.
+    [FormerlySerializedAs("npcCanSprint")]
+    public bool characterStatStaminaCanSprint = false;
 
     [Header("Character Movement Stats")]
     // Normal movement speed.

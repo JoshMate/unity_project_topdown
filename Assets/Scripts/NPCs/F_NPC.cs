@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 
 /// <summary>
@@ -33,13 +32,16 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
     private const float npcDefaultSightConeSize = npcSightConeSizeMax;
 
     [Header("NPC Equipped Weapons")]
-    // Melee weapon prefab this NPC spawns holding; leave empty for none
-    public F_Item_Weapon_Melee npcEquippedWeaponMelee;
     // Firearm prefab this NPC spawns holding; leave empty for none
     public F_Item_Weapon_Firearm npcEquippedWeaponFirearm;
     // Virtual reserve rounds the firearm reloads from, instead of inventory ammo items; counts down as it reloads
     [Min(0)]
     public int npcEquippedWeaponAmmoCount = npcDefaultEquippedWeaponAmmoCount;
+    // Melee weapon prefab this NPC spawns holding; leave empty for none
+    public F_Item_Weapon_Melee npcEquippedWeaponMelee;
+    // Unarmed attack (such as fists or claws) used just like the melee weapon, but only when there is no melee weapon or it is broken; leave empty for none
+    public F_Item_Weapon_Melee npcEquippedWeaponUnarmed;
+    
 
     [Header("NPC Personality")]
     // How this NPC fights once it notices a target (see enumNpcPersonalityCombatApproach and F_Utility_Config_Npc)
@@ -54,10 +56,12 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
     public enumNpcPersonalityCombatAwareness npcPersonalityCombatAwareness = enumNpcPersonalityCombatAwareness.Instant;
     // How long this NPC remembers its target after losing sight of it, searching where it was last seen before forgetting it (see F_Utility_Config_Npc)
     public enumNpcPersonalityCombatMemory npcPersonalityCombatMemory = enumNpcPersonalityCombatMemory.Medium;
+    // Whether this NPC attacks walls and obstacles between it and its target, or only to escape when trapped (see enumNpcPersonalityCombatWallBehaviour)
+    public enumNpcPersonalityCombatWallBehaviour npcPersonalityCombatWallBehaviour = enumNpcPersonalityCombatWallBehaviour.NeverBreakAnything;
     // How wide, in degrees centred on its facing, this NPC can spot targets: 360 sees all around (even behind), lower values only see what is in front
     [Range(npcSightConeSizeMin, npcSightConeSizeMax)]
     public float npcPersonalityCombatLOSConeSize = npcDefaultSightConeSize;
-
+    
     [Header("NPC Wander Stats")]
     // How far from its spawn point this NPC randomly wanders when it has no target (0 = stands still)
     [FormerlySerializedAs("npcStatWanderRadius")]
@@ -71,8 +75,6 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
     public float npcStatWanderSpeedMultiplier = npcDefaultWanderSpeedMultiplier;
 
     [Header("NPC Movement Stats")]
-    // Whether this NPC may sprint at all; when false its personality's sprinting is ignored
-    public bool npcCanSprint = false;
     // Seconds between chase destination updates and combat decisions
     public float npcStatRepathInterval = npcDefaultRepathInterval;
     // How close this NPC gets to its destination before stopping
@@ -98,6 +100,7 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
     // Combat
     private F_Character_HeldWeapon npcHeldWeapon;
     private F_Item_Weapon_Melee npcMeleeInstance;
+    private F_Item_Weapon_Melee npcUnarmedInstance;
     private F_Item_Weapon_Firearm npcFirearmInstance;
     private enumNpcWeaponChoice npcWeaponChoice = enumNpcWeaponChoice.None;
     private bool npcIsEngaged;
@@ -142,6 +145,15 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
     private readonly List<F_Character> npcForgottenHostiles = new List<F_Character>();
     // Thought icon shown above this NPC's head
     private F_NPC_Thought npcThought;
+    // Obstacle breaking: the wall or obstacle attacked instead of the target, or null when none
+    private F_Ent npcObstacleTarget;
+    private Collider2D[] npcObstacleColliders;
+    // Closest point on the obstacle to this NPC, which it aims at and moves towards
+    private Vector2 npcObstaclePoint;
+    private float npcObstacleReachDistance;
+    private bool npcHasLineOfFireToObstacle;
+    // Reusable path for checking whether any route still reaches the target
+    private NavMeshPath npcTrappedCheckPath;
 
     // Where and when a known hostile was last seen (or last revealed itself by attacking).
     private struct NpcKnownHostile
@@ -183,6 +195,10 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
     // Seconds this NPC remembers its target after losing sight of it; read live so it can be changed at runtime.
     private float CombatMemoryDuration => F_Utility_Config_Npc.GetCombatMemoryDuration(npcPersonalityCombatMemory);
 
+    // The melee weapon the NPC fights with: its melee weapon while usable, otherwise its unarmed attack when it has one.
+    private F_Item_Weapon_Melee ActiveMeleeWeapon =>
+        IsWeaponUsable(npcMeleeInstance) || npcUnarmedInstance == null ? npcMeleeInstance : npcUnarmedInstance;
+
     // Whether the NPC is currently holding a firearm, so its aiming skill applies.
     private bool IsHoldingFirearm => npcHeldWeapon != null && npcHeldWeapon.SelectedWeaponItem is F_Item_Weapon_Firearm;
 
@@ -194,6 +210,24 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
 
     // Whether a friendly is in the line of fire and the NPC is holding its fire because of it.
     private bool IsAvoidingFriendlyFire => npcIsFriendlyInLineOfFire && !npcIsFriendlyFireShotAllowed;
+
+    // Whether the NPC is breaking a wall or obstacle instead of attacking its target directly.
+    private bool IsBreakingObstacle => npcObstacleTarget != null;
+
+    // The point the NPC attacks: the obstacle it is breaking, otherwise its target.
+    private Vector2 AttackPoint => IsBreakingObstacle ? npcObstaclePoint : (Vector2)npcTarget.position;
+
+    // Distance to the edge of whatever the NPC attacks, for melee reach.
+    private float AttackReachDistance => IsBreakingObstacle ? npcObstacleReachDistance : npcTargetReachDistance;
+
+    // Distance to whatever the NPC attacks, for firearm range.
+    private float AttackDistance => IsBreakingObstacle ? npcObstacleReachDistance : npcTargetDistance;
+
+    // Whether the NPC can see what it attacks (an obstacle being broken is always known).
+    private bool CanSeeAttackPoint => IsBreakingObstacle || npcCanSeeTarget;
+
+    // Whether the NPC may fire at what it attacks now.
+    private bool CanShootAttackPoint => IsBreakingObstacle ? npcHasLineOfFireToObstacle : CanShootTarget;
 
     protected override void Awake()
     {
@@ -207,6 +241,7 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
         npcAgent.stoppingDistance = npcStatStoppingDistance;
         npcAgent.enabled = false;
         npcSpawnPosition = npcRigidbody.position;
+        npcTrappedCheckPath = new NavMeshPath();
         npcThought = GetComponent<F_NPC_Thought>();
         if (npcThought == null)
         {
@@ -265,6 +300,7 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
         npcIsAimTracking = false;
         npcIsFriendlyInLineOfFire = false;
         npcFriendlyFireMeleeUntilTime = 0f;
+        ClearObstacleTarget();
         if (!isCombatSwitch)
         {
             StopNoticingTarget();
@@ -312,6 +348,7 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
 
         UpdateGuardWard();
         UpdateTargetAwareness();
+        UpdateObstacleTarget();
         UpdateAimLock();
         UpdateCombatWeapon();
 
@@ -331,10 +368,15 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
             return;
         }
 
-        bool isAimingAtTarget = npcIsEngaged && npcCanSeeTarget;
+        bool isAimingAtTarget = npcIsEngaged && CanSeeAttackPoint;
+        bool isTrackingNoticedTarget = !npcIsEngaged && npcIsNoticingTarget;
         if (isAimingAtTarget)
         {
             AimAtTarget();
+        }
+        else if (isTrackingNoticedTarget)
+        {
+            TrackNoticedTarget();
         }
 
         if (!IsAgentUsable)
@@ -352,7 +394,7 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
         npcRigidbody.linearVelocity = npcVelocity + KnockbackVelocity;
         npcAgent.nextPosition = npcRigidbody.position;
 
-        if (!isAimingAtTarget && npcVelocity.sqrMagnitude > npcVelocityStopThreshold * npcVelocityStopThreshold)
+        if (!isAimingAtTarget && !isTrackingNoticedTarget && npcVelocity.sqrMagnitude > npcVelocityStopThreshold * npcVelocityStopThreshold)
         {
             npcRigidbody.rotation = Mathf.Atan2(npcVelocity.y, npcVelocity.x) * Mathf.Rad2Deg + npcStatRotationOffset;
         }
@@ -393,7 +435,7 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
     // Spawns the shared held weapon rig and private instances of the equipped weapon prefabs, holding the firearm first.
     private void EquipWeapons()
     {
-        if (npcEquippedWeaponMelee == null && npcEquippedWeaponFirearm == null)
+        if (npcEquippedWeaponMelee == null && npcEquippedWeaponUnarmed == null && npcEquippedWeaponFirearm == null)
         {
             return;
         }
@@ -418,23 +460,15 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
         }
 
         npcMeleeInstance = SpawnEquippedWeapon(npcEquippedWeaponMelee);
+        npcUnarmedInstance = SpawnEquippedWeapon(npcEquippedWeaponUnarmed);
         npcFirearmInstance = SpawnEquippedWeapon(npcEquippedWeaponFirearm);
-        npcHeldWeapon.SelectWeapon(npcFirearmInstance != null ? (F_Item_Weapon)npcFirearmInstance : npcMeleeInstance);
+        npcHeldWeapon.SelectWeapon(npcFirearmInstance != null ? (F_Item_Weapon)npcFirearmInstance : ActiveMeleeWeapon);
     }
 
-    // Weapon instances stay out of the world like inventory items, so they keep their own state (ammo, durability, delays).
-    // They are moved into this NPC's scene, as the active scene can be a loading scene that unloads and destroys them.
+    // Spawns a private, out-of-world instance of an equipped weapon prefab in this NPC's scene.
     private T SpawnEquippedWeapon<T>(T weaponPrefab) where T : F_Item_Weapon
     {
-        if (weaponPrefab == null)
-        {
-            return null;
-        }
-
-        T weaponInstance = Instantiate(weaponPrefab);
-        SceneManager.MoveGameObjectToScene(weaponInstance.gameObject, gameObject.scene);
-        weaponInstance.SetInventoryStoredState(true);
-        return weaponInstance;
+        return F_Utility_Helper_Weapon.SpawnStoredWeaponInstance(weaponPrefab, gameObject.scene);
     }
 
     private void DestroyEquippedWeapons()
@@ -443,6 +477,12 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
         {
             Destroy(npcMeleeInstance.gameObject);
             npcMeleeInstance = null;
+        }
+
+        if (npcUnarmedInstance != null)
+        {
+            Destroy(npcUnarmedInstance.gameObject);
+            npcUnarmedInstance = null;
         }
 
         if (npcFirearmInstance != null)
@@ -801,6 +841,7 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
         npcHasLineOfFire = false;
         npcIsFriendlyInLineOfFire = false;
         StopNoticingTarget();
+        ClearObstacleTarget();
         if (!npcIsEngaged)
         {
             return;
@@ -831,7 +872,7 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
         if (!npcIsEngaged)
         {
             npcWeaponChoice = enumNpcWeaponChoice.None;
-            HoldWeapon(IsWeaponUsable(npcFirearmInstance) ? (F_Item_Weapon)npcFirearmInstance : npcMeleeInstance);
+            HoldWeapon(IsWeaponUsable(npcFirearmInstance) ? (F_Item_Weapon)npcFirearmInstance : ActiveMeleeWeapon);
             ReloadHeldFirearmIfNotFull();
             return;
         }
@@ -844,7 +885,7 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
         }
         else if (npcWeaponChoice == enumNpcWeaponChoice.Melee)
         {
-            HoldWeapon(npcMeleeInstance);
+            HoldWeapon(ActiveMeleeWeapon);
         }
 
         F_Item_Weapon heldWeapon = npcHeldWeapon.SelectedWeaponItem;
@@ -864,10 +905,11 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
     {
         UpdateMeleeExhaustion();
         bool hasFirearmAmmo = HasFirearmAmmo();
-        bool isMeleeUsable = IsWeaponUsable(npcMeleeInstance);
+        F_Item_Weapon_Melee activeMeleeWeapon = ActiveMeleeWeapon;
+        bool isMeleeUsable = IsWeaponUsable(activeMeleeWeapon);
         bool isMeleePreferred = isMeleeUsable && !(npcIsMeleeExhausted && hasFirearmAmmo);
         bool isFriendlyFireMeleeMode = Time.time < npcFriendlyFireMeleeUntilTime;
-        if (isMeleePreferred && (isFriendlyFireMeleeMode || npcTargetReachDistance <= GetMeleeReadyRange(npcMeleeInstance)))
+        if (isMeleePreferred && (isFriendlyFireMeleeMode || AttackReachDistance <= GetMeleeReadyRange(activeMeleeWeapon)))
         {
             return enumNpcWeaponChoice.Melee;
         }
@@ -894,13 +936,14 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
     // the resume margin (never exhausted with infinite stamina).
     private void UpdateMeleeExhaustion()
     {
-        if (npcMeleeInstance == null)
+        F_Item_Weapon_Melee activeMeleeWeapon = ActiveMeleeWeapon;
+        if (activeMeleeWeapon == null)
         {
             npcIsMeleeExhausted = false;
             return;
         }
 
-        float meleeSwingCost = npcMeleeInstance.meleeStaminaCost;
+        float meleeSwingCost = activeMeleeWeapon.meleeStaminaCost;
         if (!HasStamina(meleeSwingCost))
         {
             npcIsMeleeExhausted = true;
@@ -953,14 +996,14 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
     // once locked on and no faster than its aiming skill allows.
     private void FirearmAttackUpdate(F_Item_Weapon_Firearm heldFirearm, F_NpcCombatProfile combatProfile)
     {
-        if (heldFirearm.IsFireBlockedByBrokenOrEmpty() || !npcCanSeeTarget)
+        if (heldFirearm.IsFireBlockedByBrokenOrEmpty() || !CanSeeAttackPoint)
         {
             ReloadHeldFirearmIfNotFull();
         }
 
-        bool isInRange = combatProfile.profileAttacksOutOfRange || npcTargetDistance <= heldFirearm.weaponRange;
+        bool isInRange = combatProfile.profileAttacksOutOfRange || AttackDistance <= heldFirearm.weaponRange;
         bool isAimReady = Time.time >= npcAimLockedOnTime && Time.time >= npcNextFirearmShotTime;
-        if (!CanShootTarget || !isInRange || !isAimReady || !IsAimedAtTarget())
+        if (!CanShootAttackPoint || !isInRange || !isAimReady || !IsAimedAtTarget())
         {
             return;
         }
@@ -984,8 +1027,8 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
     private void MeleeAttackUpdate(F_Item_Weapon_Melee heldMelee, F_NpcCombatProfile combatProfile)
     {
         float meleeReach = heldMelee.meleeRange * F_Utility_Config_Npc.cfgNpcMeleeEngageRangeFraction;
-        bool isInReach = combatProfile.profileAttacksOutOfRange || npcTargetReachDistance <= meleeReach;
-        if (!npcCanSeeTarget || !isInReach || !IsAimedAtTarget())
+        bool isInReach = combatProfile.profileAttacksOutOfRange || AttackReachDistance <= meleeReach;
+        if (!CanSeeAttackPoint || !isInReach || !IsAimedAtTarget())
         {
             return;
         }
@@ -999,7 +1042,7 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
     // Each time the NPC starts tracking a visible target, it has to lock on again before firing and rolls a fresh shot aim.
     private void UpdateAimLock()
     {
-        bool isTracking = npcIsEngaged && npcCanSeeTarget;
+        bool isTracking = npcIsEngaged && CanSeeAttackPoint;
         if (isTracking && !npcIsAimTracking)
         {
             F_NpcAimingProfile aimingProfile = AimingProfile;
@@ -1026,10 +1069,10 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
     }
 
     // World angle the NPC wants to face. With a firearm it aims at where the target will be when its projectile
-    // arrives (when leading this shot), offset by its aim error; otherwise straight at the target.
+    // arrives (when leading this shot), offset by its aim error; otherwise straight at what it attacks. Obstacles don't move, so are never led.
     private float GetDesiredAimAngle()
     {
-        Vector2 aimPoint = IsHoldingFirearm && npcIsAimLeading ? GetLeadAimPoint() : (Vector2)npcTarget.position;
+        Vector2 aimPoint = IsHoldingFirearm && npcIsAimLeading && !IsBreakingObstacle ? GetLeadAimPoint() : AttackPoint;
         Vector2 toAimPoint = aimPoint - npcRigidbody.position;
         float aimAngle = Mathf.Atan2(toAimPoint.y, toAimPoint.x) * Mathf.Rad2Deg;
         return IsHoldingFirearm ? aimAngle + npcAimErrorDegrees : aimAngle;
@@ -1056,15 +1099,166 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
     // Turns towards the aim angle: at the aiming skill's speed with a firearm, otherwise at the configured melee speed.
     private void AimAtTarget()
     {
-        float desiredAngle = GetDesiredAimAngle() + npcStatRotationOffset;
         float aimTurnSpeed = IsHoldingFirearm ? AimingProfile.profileAimTurnSpeed : F_Utility_Config_Npc.cfgNpcAimTurnSpeed;
-        npcRigidbody.rotation = Mathf.MoveTowardsAngle(npcRigidbody.rotation, desiredAngle, aimTurnSpeed * Time.fixedDeltaTime);
+        TurnTowardsAngle(GetDesiredAimAngle(), aimTurnSpeed);
+    }
+
+    // Keeps facing the target it is noticing, so it stays in the sight cone until the NPC engages or loses sight of it.
+    private void TrackNoticedTarget()
+    {
+        if (npcTarget == null)
+        {
+            return;
+        }
+
+        Vector2 toTarget = (Vector2)npcTarget.position - npcRigidbody.position;
+        TurnTowardsAngle(Mathf.Atan2(toTarget.y, toTarget.x) * Mathf.Rad2Deg, F_Utility_Config_Npc.cfgNpcNoticeTurnSpeed);
+    }
+
+    // Turns towards a world angle (sprite rotation offset applied) at the given degrees per second.
+    private void TurnTowardsAngle(float worldAngle, float turnSpeed)
+    {
+        float desiredRotation = worldAngle + npcStatRotationOffset;
+        npcRigidbody.rotation = Mathf.MoveTowardsAngle(npcRigidbody.rotation, desiredRotation, turnSpeed * Time.fixedDeltaTime);
     }
 
     private bool IsAimedAtTarget()
     {
         float facingAngle = FacingAngle;
         return Mathf.Abs(Mathf.DeltaAngle(facingAngle, GetDesiredAimAngle())) <= F_Utility_Config_Npc.cfgNpcAimToleranceDegrees;
+    }
+
+    // ---------- Obstacle breaking ----------
+
+    // Drops the obstacle once it is gone, the fight is over or the target can be shot directly (targets in sight come
+    // first); otherwise tracks the closest point on it and whether that point can be shot.
+    private void UpdateObstacleTarget()
+    {
+        bool isObstacleInvalid = IsBreakingObstacle && (npcObstacleTarget.IsDead || !npcIsEngaged || npcTarget == null || npcHasLineOfFire);
+        if (isObstacleInvalid)
+        {
+            ClearObstacleTarget();
+        }
+
+        if (!IsBreakingObstacle)
+        {
+            return;
+        }
+
+        Vector2 npcPosition = npcRigidbody.position;
+        npcObstaclePoint = F_Utility_Helper_Npc.GetClosestPointOnBody(npcPosition, npcObstacleTarget.transform, npcObstacleColliders);
+        npcObstacleReachDistance = Vector2.Distance(npcPosition, npcObstaclePoint);
+        npcHasLineOfFireToObstacle = F_Utility_Helper_Npc.GetLineOfFireStatus(this, npcPosition, npcObstaclePoint, npcObstacleTarget.transform) ==
+                                     enumNpcLineOfFire.Clear;
+    }
+
+    private void ClearObstacleTarget()
+    {
+        npcObstacleTarget = null;
+        npcObstacleColliders = null;
+        npcHasLineOfFireToObstacle = false;
+    }
+
+    // Picks the obstacle to break from the wall behaviour personality and moves to attack it. Returns false when there
+    // is nothing to break or no weapon that can damage it, so the NPC fights as normal.
+    private bool TryBreakObstacle(F_NpcCombatProfile combatProfile)
+    {
+        F_Ent obstacle = GetChosenWeaponReach() > 0f ? FindObstacleToBreak() : null;
+        if (obstacle == null)
+        {
+            ClearObstacleTarget();
+            return false;
+        }
+
+        if (obstacle != npcObstacleTarget)
+        {
+            npcObstacleTarget = obstacle;
+            npcObstacleColliders = obstacle.GetComponentsInChildren<Collider2D>();
+            UpdateObstacleTarget();
+        }
+
+        ObstacleMovement(combatProfile);
+        return true;
+    }
+
+    // Break All Obstacles breaks whatever blocks its line to the target, then whatever traps it; Break Only If Trapped
+    // only breaks out when no route reaches the target; Never Break Anything never breaks anything. Nothing is broken
+    // while the target can be shot directly.
+    private F_Ent FindObstacleToBreak()
+    {
+        if (npcTarget == null || npcHasLineOfFire)
+        {
+            return null;
+        }
+
+        Vector2 npcPosition = npcRigidbody.position;
+        Vector2 targetPosition = npcTarget.position;
+        switch (npcPersonalityCombatWallBehaviour)
+        {
+            case enumNpcPersonalityCombatWallBehaviour.BreakAllObstacles:
+                F_Ent obstacleInLine = FindObstacleOnLine(npcPosition, targetPosition);
+                return obstacleInLine != null ? obstacleInLine : FindTrappingObstacle(npcPosition, targetPosition);
+            case enumNpcPersonalityCombatWallBehaviour.BreakOnlyIfTrapped:
+                return FindTrappingObstacle(npcPosition, targetPosition);
+            default:
+                return null;
+        }
+    }
+
+    // The closest breakable obstacle on the line between two points, or null.
+    private F_Ent FindObstacleOnLine(Vector2 from, Vector2 to)
+    {
+        return F_Utility_Helper_Npc.TryFindBreakableObstacle(this, from, to, npcTarget, out F_Ent obstacle) ? obstacle : null;
+    }
+
+    // When no route reaches the target, the obstacle between the end of the closest route and the target (falling back
+    // to the one between this NPC and the target). Null when a route reaches the target.
+    private F_Ent FindTrappingObstacle(Vector2 npcPosition, Vector2 targetPosition)
+    {
+        if (F_Utility_Helper_Navigation.HasCompletePath(npcPosition, targetPosition, npcAgent.areaMask, npcTrappedCheckPath, out Vector2 routeEnd))
+        {
+            return null;
+        }
+
+        F_Ent obstacleFromRouteEnd = FindObstacleOnLine(routeEnd, targetPosition);
+        return obstacleFromRouteEnd != null ? obstacleFromRouteEnd : FindObstacleOnLine(npcPosition, targetPosition);
+    }
+
+    // How close the NPC must be to damage something with its chosen weapon, or 0 when it has nothing that can.
+    private float GetChosenWeaponReach()
+    {
+        if (npcWeaponChoice == enumNpcWeaponChoice.Firearm && HasFirearmAmmo())
+        {
+            return npcFirearmInstance.weaponRange * F_Utility_Config_Npc.cfgNpcFiringRangeFraction;
+        }
+
+        F_Item_Weapon_Melee activeMeleeWeapon = ActiveMeleeWeapon;
+        if (npcWeaponChoice == enumNpcWeaponChoice.Melee && activeMeleeWeapon != null)
+        {
+            return activeMeleeWeapon.meleeRange * F_Utility_Config_Npc.cfgNpcMeleeEngageRangeFraction;
+        }
+
+        return 0f;
+    }
+
+    // Stands and attacks the obstacle once within its weapon's reach (with a clear shot for firearms), otherwise moves
+    // up to just in front of it. Personalities that never move only attack it from where they stand.
+    private void ObstacleMovement(F_NpcCombatProfile combatProfile)
+    {
+        bool isInWeaponReach = npcObstacleReachDistance <= GetChosenWeaponReach();
+        bool canAttackFromHere = isInWeaponReach && (npcWeaponChoice == enumNpcWeaponChoice.Melee || npcHasLineOfFireToObstacle);
+        if (canAttackFromHere || !combatProfile.profileCanMove)
+        {
+            HoldPosition(canAttackFromHere ? enumNpcState.Attack : enumNpcState.Hold);
+            return;
+        }
+
+        Vector2 obstacleToSelf = npcRigidbody.position - npcObstaclePoint;
+        Vector2 approachDirection = obstacleToSelf.sqrMagnitude > 0f ? obstacleToSelf.normalized : Vector2.zero;
+        Vector2 approachPoint = npcObstaclePoint + approachDirection * F_Utility_Config_Npc.cfgNpcObstacleApproachOffset;
+        npcIsSprintRequested = characterStatStaminaCanSprint && combatProfile.profileSprintsWhenApproaching &&
+                               npcObstacleReachDistance > F_Utility_Config_Npc.cfgNpcSprintMinDistance;
+        MoveTo(approachPoint, enumNpcState.Chase, false);
     }
 
     // ---------- Movement ----------
@@ -1134,7 +1328,7 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
         float arriveDistance = CombatProfile.profileGuardFollowDistance * F_Utility_Config_Npc.cfgNpcGuardFollowArriveFraction;
         Vector2 arrivePoint = wardPosition + wardToSelf / wardDistance * arriveDistance;
         Vector2 destination = F_Utility_Helper_Navigation.TrySamplePosition(arrivePoint, out Vector2 navArrivePoint) ? navArrivePoint : wardPosition;
-        npcIsSprintRequested = npcCanSprint && wardDistance > F_Utility_Config_Npc.cfgNpcGuardSprintDistance;
+        npcIsSprintRequested = characterStatStaminaCanSprint && wardDistance > F_Utility_Config_Npc.cfgNpcGuardSprintDistance;
         MoveTo(destination, enumNpcState.Follow, false);
         return true;
     }
@@ -1175,6 +1369,11 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
 
         npcNextRepathTime = Time.time + npcStatRepathInterval;
         F_NpcCombatProfile combatProfile = CombatProfile;
+        if (TryBreakObstacle(combatProfile))
+        {
+            return;
+        }
+
         if (!combatProfile.profileCanMove)
         {
             HoldPosition(npcCanSeeTarget ? enumNpcState.Attack : enumNpcState.Hold);
@@ -1253,7 +1452,7 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
             return true;
         }
 
-        if (combatProfile.profileApproachMelee == enumNpcApproachMode.None || !IsWeaponUsable(npcMeleeInstance))
+        if (combatProfile.profileApproachMelee == enumNpcApproachMode.None || !IsWeaponUsable(ActiveMeleeWeapon))
         {
             return false;
         }
@@ -1266,8 +1465,9 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
     // Melee only, out of ammo or unarmed: stops to swing when in reach, otherwise closes in, or hides if it never closes in.
     private void MeleeMovement(F_NpcCombatProfile combatProfile)
     {
-        bool isMeleeHeld = npcWeaponChoice == enumNpcWeaponChoice.Melee && npcMeleeInstance != null;
-        if (isMeleeHeld && npcTargetReachDistance <= npcMeleeInstance.meleeRange * F_Utility_Config_Npc.cfgNpcMeleeEngageRangeFraction)
+        F_Item_Weapon_Melee activeMeleeWeapon = ActiveMeleeWeapon;
+        bool isMeleeHeld = npcWeaponChoice == enumNpcWeaponChoice.Melee && activeMeleeWeapon != null;
+        if (isMeleeHeld && npcTargetReachDistance <= activeMeleeWeapon.meleeRange * F_Utility_Config_Npc.cfgNpcMeleeEngageRangeFraction)
         {
             HoldPosition(enumNpcState.Attack);
             return;
@@ -1296,14 +1496,14 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
             return;
         }
 
-        npcIsSprintRequested = npcCanSprint && combatProfile.profileSprintsWhenApproaching && toLastSeenPosition.magnitude > F_Utility_Config_Npc.cfgNpcSprintMinDistance;
+        npcIsSprintRequested = characterStatStaminaCanSprint && combatProfile.profileSprintsWhenApproaching && toLastSeenPosition.magnitude > F_Utility_Config_Npc.cfgNpcSprintMinDistance;
         MoveTo(npcTargetLastSeenPosition, enumNpcState.Search, false);
     }
 
     // Closes in on the target: flanking and cover hopping give way to a straight charge once close enough.
     private void Approach(enumNpcApproachMode approachMode, F_NpcCombatProfile combatProfile)
     {
-        npcIsSprintRequested = npcCanSprint && combatProfile.profileSprintsWhenApproaching && npcTargetDistance > F_Utility_Config_Npc.cfgNpcSprintMinDistance;
+        npcIsSprintRequested = characterStatStaminaCanSprint && combatProfile.profileSprintsWhenApproaching && npcTargetDistance > F_Utility_Config_Npc.cfgNpcSprintMinDistance;
         bool isCloseEnoughToCharge = npcTargetDistance <= F_Utility_Config_Npc.cfgNpcChargeDistance;
 
         if (!isCloseEnoughToCharge && approachMode == enumNpcApproachMode.Flank &&
@@ -1375,9 +1575,10 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
     // can never overshoot the reserve between decisions.
     private void UpdateSprint()
     {
-        bool isSprintAllowed = npcCanSprint && npcIsSprintRequested && CanSprint;
-        float staminaReserve = npcMeleeInstance != null
-            ? npcMeleeInstance.meleeStaminaCost * F_Utility_Config_Npc.cfgNpcSprintStaminaReserveMultiplier
+        bool isSprintAllowed = characterStatStaminaCanSprint && npcIsSprintRequested && CanSprint;
+        F_Item_Weapon_Melee activeMeleeWeapon = ActiveMeleeWeapon;
+        float staminaReserve = activeMeleeWeapon != null
+            ? activeMeleeWeapon.meleeStaminaCost * F_Utility_Config_Npc.cfgNpcSprintStaminaReserveMultiplier
             : 0f;
 
         if (IsSprinting)
@@ -1395,9 +1596,17 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
     }
 
     // Waits at the current spot, then walks to a random NavMesh point within the wander range of the wander centre
-    // (the spawn point, or a body guard's ward).
+    // (the spawn point, or a body guard's ward). While noticing a target it stops to watch it (facing is tracked in
+    // FixedUpdate), then pauses before wandering again once it engages or loses sight.
     private void WanderUpdate(Vector2 wanderCentre, float wanderRange)
     {
+        if (npcIsNoticingTarget)
+        {
+            HoldPosition(enumNpcState.Idle);
+            ScheduleNextWander();
+            return;
+        }
+
         if (IsCombatState(npcStatusState))
         {
             StopAndWait();

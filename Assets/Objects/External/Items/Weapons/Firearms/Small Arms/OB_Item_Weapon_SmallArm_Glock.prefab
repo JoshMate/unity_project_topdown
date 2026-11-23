@@ -86,7 +86,7 @@ MonoBehaviour:
   weaponIsRangeReverseFallOff: 0
   weaponIsBoltAction: 0
   weaponBoltActionDelay: 1
-  weaponSpreadStart: 0.1
+  weaponSpreadStart: 0.05
   weaponSpreadMax: 0.3
   weaponSpreadRecoilImpulse: 0.1
   weaponSpreadRecoilRecoveryAmount: 0.01
