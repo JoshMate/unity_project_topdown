@@ -42,6 +42,9 @@ public class F_Logic_Audio : MonoBehaviour
     // Fired for every spatial sound with a loudness radius: world position, loudness radius in world units, the character
     // that made it (null when no character owns it). Hearing systems such as F_NPC listen to this.
     public static event Action<Vector2, float, F_Character> OnWorldSoundPlayed;
+    // Fired for every spatial sound, including ones hearing systems ignore: world position and hearing radius in world
+    // units (0 when nobody can hear it). Player-only presentation such as the sneak sound rings listens to this.
+    public static event Action<Vector2, float> OnSpatialSoundPlayed;
 
     private void Awake()
     {
@@ -118,7 +121,9 @@ public class F_Logic_Audio : MonoBehaviour
 
         if (soundType == EnumSoundType.Spatial)
         {
-            BroadcastWorldSound(soundSource, GetSoundRadiusDistance(soundRadius), soundOwner);
+            float soundRadiusDistance = GetSoundRadiusDistance(soundRadius);
+            OnSpatialSoundPlayed?.Invoke(new Vector2(soundSource.x, soundSource.y), soundRadiusDistance);
+            BroadcastWorldSound(soundSource, soundRadiusDistance, soundOwner);
         }
 
         F_Logic_Audio audioManager = GetInstance();

@@ -69,6 +69,11 @@ public class F_PlayerController : MonoBehaviour
             return;
         }
 
+        if (controls.IsSneakPressed())
+        {
+            playerStats.SneakToggle();
+        }
+
         ProcessWeaponSlotSelectionInputs();
         bool primaryActionRequested = playerHeldWeapon.IsCurrentWeaponContinuous
             ? controls.IsPrimaryActionHeld()

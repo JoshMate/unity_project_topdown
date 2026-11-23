@@ -392,6 +392,7 @@ GameObject:
   - component: {fileID: 3875096689088246730}
   - component: {fileID: 1114442104280523001}
   - component: {fileID: 3922247443306317720}
+  - component: {fileID: 4992738484083669667}
   m_Layer: 0
   m_Name: OB_Character_Player
   m_TagString: Tag_Ent
@@ -702,3 +703,15 @@ CircleCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
   m_Radius: 0.28
+--- !u!114 &4992738484083669667
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3723274957530582772}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e9ff59e22692084d8afb8446a48c891, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::F_PlayerStealth

@@ -34,6 +34,11 @@ public static class F_Utility_Config_Colours
     public static readonly Color32 cfgColourCursorCrosshair = cfgColourWhite;
     public static readonly Color32 cfgColourCursorReloadRing = cfgColourWhite;
 
+    // Constants Public: Stealth
+    // Alpha sets how dark the sneak vignette gets at the screen edges
+    public static readonly Color32 cfgColourStealthVignette = new Color32(0, 0, 0, 150);
+    public static readonly Color32 cfgColourStealthSoundRing = cfgColourWhite;
+
     // Constants Public: HUD weapon ammo
     public static readonly Color32 cfgColourHudAmmoEmptyText = new Color32(217, 77, 77, opaqueAlpha);
 

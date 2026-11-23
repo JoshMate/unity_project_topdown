@@ -98,6 +98,12 @@ public class F_Logic_Controls : MonoBehaviour
         return Input.mousePosition;
     }
 
+    /// <summary>Returns whether the configured sneak key was pressed this frame.</summary>
+    public bool IsSneakPressed()
+    {
+        return Input.GetKeyDown(sneakKey);
+    }
+
     /// <summary>Returns whether the configured sneak key is currently held.</summary>
     public bool IsSneakHeld()
     {

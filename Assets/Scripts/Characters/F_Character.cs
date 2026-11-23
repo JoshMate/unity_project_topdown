@@ -52,6 +52,8 @@ public class F_Character : F_Ent
     [Header("Privates")]
     // Whether this character is currently trying to sprint.
     private bool characterStatusIsSprinting;
+    // Whether this character is currently sneaking (slower movement, which also quietens footsteps).
+    private bool characterStatusIsSneaking;
     private float characterLastStaminaUseTime = 0f;
     private float characterLastStaminaRegenTime = 0f;
     private float characterLastStaminaSprintDrainTime = 0f;
@@ -65,6 +67,9 @@ public class F_Character : F_Ent
 
     /// <summary>Whether this character is currently sprinting.</summary>
     public bool IsSprinting => characterStatusIsSprinting;
+
+    /// <summary>Whether this character is currently sneaking.</summary>
+    public bool IsSneaking => characterStatusIsSneaking;
 
     /// <summary>Whether this character has stamina left to sprint with.</summary>
     public bool CanSprint => characterStatStaminaIsInfinite || characterStatStamina > characterStatFloor;
@@ -141,11 +146,25 @@ public class F_Character : F_Ent
         characterStatusIsSprinting = false;
     }
 
-    /// <summary>Returns the sprint speed while sprinting with stamina remaining, otherwise the normal move speed.</summary>
+    /// <summary>Sets whether this character is sneaking.</summary>
+    /// <param name="isSneaking">True to start sneaking, false to stop.</param>
+    public void SetSneaking(bool isSneaking)
+    {
+        characterStatusIsSneaking = isSneaking;
+    }
+
+    /// <summary>Toggles sneaking on or off.</summary>
+    public void SneakToggle()
+    {
+        SetSneaking(!characterStatusIsSneaking);
+    }
+
+    /// <summary>Returns the sprint speed while sprinting with stamina remaining, otherwise the normal move speed, scaled down while sneaking.</summary>
     /// <returns>The speed this character should currently move at.</returns>
     public float GetCurrentMoveSpeed()
     {
-        return characterStatusIsSprinting && CanSprint ? characterStatSpeedSprint : characterStatSpeedMove;
+        float baseSpeed = characterStatusIsSprinting && CanSprint ? characterStatSpeedSprint : characterStatSpeedMove;
+        return characterStatusIsSneaking ? baseSpeed * F_Utility_Config_Stealth.cfgStealthSneakSpeedMultiplier : baseSpeed;
     }
 
     // Handles stamina regeneration while resting and drain while sprinting.
