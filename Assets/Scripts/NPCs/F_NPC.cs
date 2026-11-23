@@ -6,7 +6,8 @@ using UnityEngine.Serialization;
 /// <summary>
 /// Generic base for all NPCs. Wanders around its spawn point, targets the closest character its faction is hostile to
 /// when it can see it (see F_Utility_Config_Factions), then fights using
-/// its equipped weapons and combat personality. Weapons work exactly like the player's (deploy, fire rate, reloads,
+/// its equipped weapons and combat personality. While idle it investigates hostile sounds it hears (see
+/// npcPersonalityCombatHearing and F_Logic_Audio.OnWorldSoundPlayed). Weapons work exactly like the player's (deploy, fire rate, reloads,
 /// stamina, durability) but firearms reload from the virtual ammo count instead of an inventory. Uses the NavMesh to plan
 /// paths while its Rigidbody2D stays in charge of movement and collisions.
 /// New NPC types are prefabs with tuned values; subclass only for genuinely new behaviour.
@@ -51,12 +52,14 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
     public enumNpcPersonalityCombatSkillAiming npcPersonalityCombatSkillAiming = enumNpcPersonalityCombatSkillAiming.Medium;
     // How far this NPC can see in line of sight; it notices targets within this range and loses sight of them beyond it multiplied by cfgNpcSightLoseTargetRangeMultiplier
     public enumNpcPersonalityCombatSightRange npcPersonalityCombatSightRange = enumNpcPersonalityCombatSightRange.VeryClose;
+    // How far this NPC can hear; idle, it investigates hostile sounds within both this range and the sound's own loudness radius (see F_Utility_Config_Npc)
+    public enumNpcPersonalityCombatHearing npcPersonalityCombatHearing = enumNpcPersonalityCombatHearing.Medium;
     // How long a target must stay in this NPC's sight before it is noticed; breaking sight starts the wait again (see F_Utility_Config_Npc)
     [FormerlySerializedAs("npcPersonalityCombatAwarenessLevel")]
     public enumNpcPersonalityCombatAwareness npcPersonalityCombatAwareness = enumNpcPersonalityCombatAwareness.Instant;
     // How long this NPC remembers its target after losing sight of it, searching where it was last seen before forgetting it (see F_Utility_Config_Npc)
     public enumNpcPersonalityCombatMemory npcPersonalityCombatMemory = enumNpcPersonalityCombatMemory.Medium;
-    // Whether this NPC attacks walls and obstacles between it and its target, or only to escape when trapped (see enumNpcPersonalityCombatWallBehaviour)
+    // Whether this NPC attacks walls and obstacles between it and its target or a heard sound, or only to escape when trapped (see enumNpcPersonalityCombatWallBehaviour)
     public enumNpcPersonalityCombatWallBehaviour npcPersonalityCombatWallBehaviour = enumNpcPersonalityCombatWallBehaviour.NeverBreakAnything;
     // How wide, in degrees centred on its facing, this NPC can spot targets: 360 sees all around (even behind), lower values only see what is in front
     [Range(npcSightConeSizeMin, npcSightConeSizeMax)]
@@ -138,6 +141,14 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
     // Memory: where and when the target was last seen (or last revealed itself by attacking)
     private Vector2 npcTargetLastSeenPosition;
     private float npcTargetLastSeenTime;
+    // Hearing: investigating the latest hostile sound heard while idle; a newer sound replaces it
+    private bool npcIsInvestigating;
+    private Vector2 npcInvestigatePosition;
+    // When the sound was heard; the NPC remembers it (and keeps investigating) for its combat memory duration
+    private float npcInvestigateHeardTime;
+    // Whether it has reached the sound and is looking around, and since when
+    private bool npcHasReachedInvestigatePosition;
+    private float npcInvestigateArrivedTime;
     // Multiple hostiles: every hostile this NPC knows about while engaged, so it moves straight on to the next one
     private readonly Dictionary<F_Character, NpcKnownHostile> npcKnownHostiles = new Dictionary<F_Character, NpcKnownHostile>();
     // Reusable buffers for combat target selection, so scans don't allocate
@@ -189,6 +200,9 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
     // Beyond this distance an NPC loses sight of its target.
     private float LoseTargetRange => SightRange * F_Utility_Config_Npc.cfgNpcSightLoseTargetRangeMultiplier;
 
+    // How far this NPC hears sounds, from its hearing level; read live so it can be changed at runtime.
+    private float HearingRange => F_Utility_Config_Npc.GetHearingRange(npcPersonalityCombatHearing);
+
     // Seconds a target must stay in sight before this NPC notices it; read live so it can be changed at runtime.
     private float AwarenessDelay => F_Utility_Config_Npc.GetAwarenessDelay(npcPersonalityCombatAwareness);
 
@@ -213,6 +227,9 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
 
     // Whether the NPC is breaking a wall or obstacle instead of attacking its target directly.
     private bool IsBreakingObstacle => npcObstacleTarget != null;
+
+    // Whether the NPC is using its weapons: fighting its target, or breaking an obstacle in its way (also while investigating).
+    private bool IsUsingWeapons => npcIsEngaged || IsBreakingObstacle;
 
     // The point the NPC attacks: the obstacle it is breaking, otherwise its target.
     private Vector2 AttackPoint => IsBreakingObstacle ? npcObstaclePoint : (Vector2)npcTarget.position;
@@ -254,6 +271,7 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
         base.OnEnable();
         F_Logic_Navigation.OnNavMeshReady += HandleNavMeshReady;
         OnAnyEntDamaged += HandleAnyEntDamaged;
+        F_Logic_Audio.OnWorldSoundPlayed += HandleWorldSoundPlayed;
     }
 
     protected override void OnDisable()
@@ -261,6 +279,7 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
         base.OnDisable();
         F_Logic_Navigation.OnNavMeshReady -= HandleNavMeshReady;
         OnAnyEntDamaged -= HandleAnyEntDamaged;
+        F_Logic_Audio.OnWorldSoundPlayed -= HandleWorldSoundPlayed;
     }
 
     protected override void Start()
@@ -300,7 +319,12 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
         npcIsAimTracking = false;
         npcIsFriendlyInLineOfFire = false;
         npcFriendlyFireMeleeUntilTime = 0f;
-        ClearObstacleTarget();
+        // A fight re-picks its obstacle for the new target; an investigation's obstacle doesn't depend on the target
+        if (npcIsEngaged)
+        {
+            ClearObstacleTarget();
+        }
+
         if (!isCombatSwitch)
         {
             StopNoticingTarget();
@@ -368,7 +392,7 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
             return;
         }
 
-        bool isAimingAtTarget = npcIsEngaged && CanSeeAttackPoint;
+        bool isAimingAtTarget = IsUsingWeapons && CanSeeAttackPoint;
         bool isTrackingNoticedTarget = !npcIsEngaged && npcIsNoticingTarget;
         if (isAimingAtTarget)
         {
@@ -747,11 +771,14 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
         }
     }
 
-    // Stops the awareness wait and hides the suspicious thought it shows.
+    // Stops the awareness wait and hides the suspicious thought it shows, unless an investigation is still showing it.
     private void StopNoticingTarget()
     {
         npcIsNoticingTarget = false;
-        npcThought.ClearThought(enumNpcThought.Suspicious);
+        if (!npcIsInvestigating)
+        {
+            npcThought.ClearThought(enumNpcThought.Suspicious);
+        }
     }
 
     // Every scan interval: while engaged, re-picks the closest known hostile; while idle, switches to the closest visible hostile character.
@@ -820,9 +847,63 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
         }
     }
 
+    // ---------- Hearing ----------
+
+    // An idle NPC investigates a hostile character's sound when it is within both its hearing range and the sound's
+    // loudness radius; a newer sound replaces the one it was investigating. Targets in sight come first, so sounds are
+    // ignored while noticing or fighting. Sounds made by allies, neutrals or nobody are ignored, as are all sounds for
+    // personalities whose combat profile doesn't investigate sounds (e.g. close body guards).
+    private void HandleWorldSoundPlayed(Vector2 soundPosition, float soundRadius, F_Character soundOwner)
+    {
+        if (IsDead || npcIsEngaged || npcIsNoticingTarget || !CombatProfile.profileInvestigatesSounds)
+        {
+            return;
+        }
+
+        if (soundOwner == null || soundOwner == this || soundOwner.IsDead || !F_Utility_Helper_Faction.IsHostile(this, soundOwner))
+        {
+            return;
+        }
+
+        float audibleRange = Mathf.Min(soundRadius, HearingRange);
+        if (audibleRange <= 0f || (soundPosition - npcRigidbody.position).sqrMagnitude > audibleRange * audibleRange)
+        {
+            return;
+        }
+
+        StartInvestigating(soundPosition);
+    }
+
+    // Heads for a heard sound with a question mark above its head, replacing any previous investigation.
+    private void StartInvestigating(Vector2 soundPosition)
+    {
+        npcIsInvestigating = true;
+        npcInvestigatePosition = soundPosition;
+        npcInvestigateHeardTime = Time.time;
+        npcHasReachedInvestigatePosition = false;
+        npcNextRepathTime = 0f;
+        npcThought.ShowThought(enumNpcThought.Suspicious);
+    }
+
+    // Ends the investigation and hides its question mark, unless a target in sight is still being noticed.
+    private void StopInvestigating()
+    {
+        if (!npcIsInvestigating)
+        {
+            return;
+        }
+
+        npcIsInvestigating = false;
+        if (!npcIsNoticingTarget)
+        {
+            npcThought.ClearThought(enumNpcThought.Suspicious);
+        }
+    }
+
     private void Engage()
     {
         npcIsEngaged = true;
+        StopInvestigating();
         StopNoticingTarget();
         // The noticed target is the first entry in the combat memory
         RememberTargetPosition();
@@ -841,12 +922,13 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
         npcHasLineOfFire = false;
         npcIsFriendlyInLineOfFire = false;
         StopNoticingTarget();
-        ClearObstacleTarget();
         if (!npcIsEngaged)
         {
             return;
         }
 
+        // Only the fight's obstacle is dropped; an investigation keeps breaking towards its sound without a target
+        ClearObstacleTarget();
         npcIsEngaged = false;
         npcKnownHostiles.Clear();
         npcThought.ClearThought(enumNpcThought.Alerted);
@@ -860,7 +942,7 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
 
     // ---------- Weapon use ----------
 
-    // Picks, readies and uses the right weapon while engaged; while idle, holds the firearm and tops it up.
+    // Picks, readies and uses the right weapon while engaged or breaking an obstacle; otherwise holds the firearm and tops it up.
     private void UpdateCombatWeapon()
     {
         if (npcHeldWeapon == null)
@@ -869,7 +951,7 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
             return;
         }
 
-        if (!npcIsEngaged)
+        if (!IsUsingWeapons)
         {
             npcWeaponChoice = enumNpcWeaponChoice.None;
             HoldWeapon(IsWeaponUsable(npcFirearmInstance) ? (F_Item_Weapon)npcFirearmInstance : ActiveMeleeWeapon);
@@ -1042,7 +1124,7 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
     // Each time the NPC starts tracking a visible target, it has to lock on again before firing and rolls a fresh shot aim.
     private void UpdateAimLock()
     {
-        bool isTracking = npcIsEngaged && CanSeeAttackPoint;
+        bool isTracking = IsUsingWeapons && CanSeeAttackPoint;
         if (isTracking && !npcIsAimTracking)
         {
             F_NpcAimingProfile aimingProfile = AimingProfile;
@@ -1130,11 +1212,15 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
 
     // ---------- Obstacle breaking ----------
 
-    // Drops the obstacle once it is gone, the fight is over or the target can be shot directly (targets in sight come
-    // first); otherwise tracks the closest point on it and whether that point can be shot.
+    // Drops the obstacle once it is gone or the NPC no longer needs to get past it: while engaged, once the target is lost
+    // or can be shot directly (targets in sight come first); otherwise once the investigation ends or a target is being
+    // noticed. Otherwise tracks the closest point on it and whether that point can be shot.
     private void UpdateObstacleTarget()
     {
-        bool isObstacleInvalid = IsBreakingObstacle && (npcObstacleTarget.IsDead || !npcIsEngaged || npcTarget == null || npcHasLineOfFire);
+        bool isGoalLost = npcIsEngaged
+            ? npcTarget == null || npcHasLineOfFire
+            : !npcIsInvestigating || npcIsNoticingTarget;
+        bool isObstacleInvalid = IsBreakingObstacle && (npcObstacleTarget.IsDead || isGoalLost);
         if (isObstacleInvalid)
         {
             ClearObstacleTarget();
@@ -1159,11 +1245,12 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
         npcHasLineOfFireToObstacle = false;
     }
 
-    // Picks the obstacle to break from the wall behaviour personality and moves to attack it. Returns false when there
-    // is nothing to break or no weapon that can damage it, so the NPC fights as normal.
-    private bool TryBreakObstacle(F_NpcCombatProfile combatProfile)
+    // Picks the obstacle standing between the NPC and its goal from the wall behaviour personality and moves to attack it.
+    // Returns false when there is nothing to break or no weapon that can damage it, so the NPC carries on as normal.
+    // goalTransform is ignored by the line checks (the target while fighting, null for a heard sound).
+    private bool TryBreakObstacle(F_NpcCombatProfile combatProfile, Vector2 goalPosition, Transform goalTransform, enumNpcState movingState)
     {
-        F_Ent obstacle = GetChosenWeaponReach() > 0f ? FindObstacleToBreak() : null;
+        F_Ent obstacle = GetChosenWeaponReach() > 0f ? FindObstacleToBreak(goalPosition, goalTransform) : null;
         if (obstacle == null)
         {
             ClearObstacleTarget();
@@ -1177,63 +1264,84 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
             UpdateObstacleTarget();
         }
 
-        ObstacleMovement(combatProfile);
+        ObstacleMovement(combatProfile, movingState);
         return true;
     }
 
-    // Break All Obstacles breaks whatever blocks its line to the target, then whatever traps it; Break Only If Trapped
-    // only breaks out when no route reaches the target; Never Break Anything never breaks anything. Nothing is broken
-    // while the target can be shot directly.
-    private F_Ent FindObstacleToBreak()
+    // Break All Obstacles breaks whatever blocks its line to the goal, then whatever traps it; Break Only If Trapped
+    // only breaks out when no route reaches the goal; Never Break Anything never breaks anything. Nothing is broken
+    // while engaged and the target can be shot directly.
+    private F_Ent FindObstacleToBreak(Vector2 goalPosition, Transform goalTransform)
     {
-        if (npcTarget == null || npcHasLineOfFire)
+        if (npcIsEngaged && (npcTarget == null || npcHasLineOfFire))
         {
             return null;
         }
 
         Vector2 npcPosition = npcRigidbody.position;
-        Vector2 targetPosition = npcTarget.position;
         switch (npcPersonalityCombatWallBehaviour)
         {
             case enumNpcPersonalityCombatWallBehaviour.BreakAllObstacles:
-                F_Ent obstacleInLine = FindObstacleOnLine(npcPosition, targetPosition);
-                return obstacleInLine != null ? obstacleInLine : FindTrappingObstacle(npcPosition, targetPosition);
+                F_Ent obstacleInLine = FindObstacleOnLine(npcPosition, goalPosition, goalTransform);
+                return obstacleInLine != null ? obstacleInLine : FindTrappingObstacle(npcPosition, goalPosition, goalTransform);
             case enumNpcPersonalityCombatWallBehaviour.BreakOnlyIfTrapped:
-                return FindTrappingObstacle(npcPosition, targetPosition);
+                return FindTrappingObstacle(npcPosition, goalPosition, goalTransform);
             default:
                 return null;
         }
     }
 
-    // The closest breakable obstacle on the line between two points, or null.
-    private F_Ent FindObstacleOnLine(Vector2 from, Vector2 to)
+    // The closest breakable obstacle on the line between two points, ignoring the goal transform, or null.
+    private F_Ent FindObstacleOnLine(Vector2 from, Vector2 to, Transform goalTransform)
     {
-        return F_Utility_Helper_Npc.TryFindBreakableObstacle(this, from, to, npcTarget, out F_Ent obstacle) ? obstacle : null;
+        return F_Utility_Helper_Npc.TryFindBreakableObstacle(this, from, to, goalTransform, out F_Ent obstacle) ? obstacle : null;
     }
 
-    // When no route reaches the target, the obstacle between the end of the closest route and the target (falling back
-    // to the one between this NPC and the target). Null when a route reaches the target.
-    private F_Ent FindTrappingObstacle(Vector2 npcPosition, Vector2 targetPosition)
+    // When no route reaches the goal, the obstacle between the end of the closest route and the goal (falling back
+    // to the one between this NPC and the goal). Null when a route reaches the goal.
+    private F_Ent FindTrappingObstacle(Vector2 npcPosition, Vector2 goalPosition, Transform goalTransform)
     {
-        if (F_Utility_Helper_Navigation.HasCompletePath(npcPosition, targetPosition, npcAgent.areaMask, npcTrappedCheckPath, out Vector2 routeEnd))
+        if (F_Utility_Helper_Navigation.HasCompletePath(npcPosition, goalPosition, npcAgent.areaMask, npcTrappedCheckPath, out Vector2 routeEnd))
         {
             return null;
         }
 
-        F_Ent obstacleFromRouteEnd = FindObstacleOnLine(routeEnd, targetPosition);
-        return obstacleFromRouteEnd != null ? obstacleFromRouteEnd : FindObstacleOnLine(npcPosition, targetPosition);
+        F_Ent obstacleFromRouteEnd = FindObstacleOnLine(routeEnd, goalPosition, goalTransform);
+        return obstacleFromRouteEnd != null ? obstacleFromRouteEnd : FindObstacleOnLine(npcPosition, goalPosition, goalTransform);
     }
 
-    // How close the NPC must be to damage something with its chosen weapon, or 0 when it has nothing that can.
+    // The weapon used against obstacles: the combat choice once made, otherwise (such as when an investigation first
+    // meets an obstacle) whichever usable weapon is currently held.
+    private enumNpcWeaponChoice ObstacleWeaponChoice
+    {
+        get
+        {
+            if (npcWeaponChoice != enumNpcWeaponChoice.None || npcHeldWeapon == null)
+            {
+                return npcWeaponChoice;
+            }
+
+            F_Item_Weapon heldWeapon = npcHeldWeapon.SelectedWeaponItem;
+            if (heldWeapon != null && heldWeapon == npcFirearmInstance)
+            {
+                return enumNpcWeaponChoice.Firearm;
+            }
+
+            return heldWeapon != null && heldWeapon == ActiveMeleeWeapon ? enumNpcWeaponChoice.Melee : enumNpcWeaponChoice.None;
+        }
+    }
+
+    // How close the NPC must be to damage something with its obstacle weapon, or 0 when it has nothing that can.
     private float GetChosenWeaponReach()
     {
-        if (npcWeaponChoice == enumNpcWeaponChoice.Firearm && HasFirearmAmmo())
+        enumNpcWeaponChoice weaponChoice = ObstacleWeaponChoice;
+        if (weaponChoice == enumNpcWeaponChoice.Firearm && HasFirearmAmmo())
         {
             return npcFirearmInstance.weaponRange * F_Utility_Config_Npc.cfgNpcFiringRangeFraction;
         }
 
         F_Item_Weapon_Melee activeMeleeWeapon = ActiveMeleeWeapon;
-        if (npcWeaponChoice == enumNpcWeaponChoice.Melee && activeMeleeWeapon != null)
+        if (weaponChoice == enumNpcWeaponChoice.Melee && IsWeaponUsable(activeMeleeWeapon))
         {
             return activeMeleeWeapon.meleeRange * F_Utility_Config_Npc.cfgNpcMeleeEngageRangeFraction;
         }
@@ -1242,11 +1350,12 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
     }
 
     // Stands and attacks the obstacle once within its weapon's reach (with a clear shot for firearms), otherwise moves
-    // up to just in front of it. Personalities that never move only attack it from where they stand.
-    private void ObstacleMovement(F_NpcCombatProfile combatProfile)
+    // up to just in front of it in the given moving state (sprinting only while fighting). Personalities that never
+    // move only attack it from where they stand.
+    private void ObstacleMovement(F_NpcCombatProfile combatProfile, enumNpcState movingState)
     {
         bool isInWeaponReach = npcObstacleReachDistance <= GetChosenWeaponReach();
-        bool canAttackFromHere = isInWeaponReach && (npcWeaponChoice == enumNpcWeaponChoice.Melee || npcHasLineOfFireToObstacle);
+        bool canAttackFromHere = isInWeaponReach && (ObstacleWeaponChoice == enumNpcWeaponChoice.Melee || npcHasLineOfFireToObstacle);
         if (canAttackFromHere || !combatProfile.profileCanMove)
         {
             HoldPosition(canAttackFromHere ? enumNpcState.Attack : enumNpcState.Hold);
@@ -1256,19 +1365,24 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
         Vector2 obstacleToSelf = npcRigidbody.position - npcObstaclePoint;
         Vector2 approachDirection = obstacleToSelf.sqrMagnitude > 0f ? obstacleToSelf.normalized : Vector2.zero;
         Vector2 approachPoint = npcObstaclePoint + approachDirection * F_Utility_Config_Npc.cfgNpcObstacleApproachOffset;
-        npcIsSprintRequested = characterStatStaminaCanSprint && combatProfile.profileSprintsWhenApproaching &&
+        npcIsSprintRequested = npcIsEngaged && characterStatStaminaCanSprint && combatProfile.profileSprintsWhenApproaching &&
                                npcObstacleReachDistance > F_Utility_Config_Npc.cfgNpcSprintMinDistance;
-        MoveTo(approachPoint, enumNpcState.Chase, false);
+        MoveTo(approachPoint, movingState, false);
     }
 
     // ---------- Movement ----------
 
-    // Fights the target while engaged, otherwise follows its ward when guarding one, otherwise idles and wanders.
+    // Fights the target while engaged, otherwise investigates a heard sound, otherwise follows its ward when guarding
+    // one, otherwise idles and wanders.
     private void UpdateState()
     {
         if (npcIsEngaged)
         {
             CombatMovementUpdate();
+        }
+        else if (npcIsInvestigating)
+        {
+            InvestigateUpdate();
         }
         else if (npcGuardWard != null)
         {
@@ -1277,6 +1391,68 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
         else
         {
             WanderUpdate(npcSpawnPosition, npcIdleWanderRange);
+        }
+    }
+
+    // Heads to the heard sound, then looks around there for the investigate wait time before going back to idling. Stops
+    // to watch a target it spots on the way (facing is tracked in FixedUpdate), which engages as normal once noticed.
+    // Walls and obstacles in the way are broken according to its wall behaviour personality. Gives up when the sound
+    // can't be reached or it has gone unheard for longer than its combat memory (hearing it again refreshes the memory).
+    private void InvestigateUpdate()
+    {
+        if (npcIsNoticingTarget)
+        {
+            ClearObstacleTarget();
+            HoldPosition(enumNpcState.Idle);
+            npcNextRepathTime = 0f;
+            return;
+        }
+
+        if (npcHasReachedInvestigatePosition)
+        {
+            if (Time.time - npcInvestigateArrivedTime >= F_Utility_Config_Npc.cfgNpcHearingInvestigateWaitTime)
+            {
+                StopInvestigating();
+                StopAndWait();
+            }
+
+            return;
+        }
+
+        if (Time.time - npcInvestigateHeardTime > CombatMemoryDuration)
+        {
+            StopInvestigating();
+            StopAndWait();
+            return;
+        }
+
+        if (Time.time >= npcNextRepathTime)
+        {
+            npcNextRepathTime = Time.time + npcStatRepathInterval;
+            npcIsSprintRequested = false;
+            if (TryBreakObstacle(CombatProfile, npcInvestigatePosition, null, enumNpcState.Investigate))
+            {
+                return;
+            }
+
+            if (npcAgent.SetDestination(npcInvestigatePosition))
+            {
+                npcStatusState = enumNpcState.Investigate;
+            }
+            else
+            {
+                StopInvestigating();
+                StopAndWait();
+            }
+
+            return;
+        }
+
+        if (!IsBreakingObstacle && npcStatusState == enumNpcState.Investigate && HasArrived())
+        {
+            npcHasReachedInvestigatePosition = true;
+            npcInvestigateArrivedTime = Time.time;
+            HoldPosition(enumNpcState.Idle);
         }
     }
 
@@ -1369,7 +1545,7 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
 
         npcNextRepathTime = Time.time + npcStatRepathInterval;
         F_NpcCombatProfile combatProfile = CombatProfile;
-        if (TryBreakObstacle(combatProfile))
+        if (npcTarget != null && TryBreakObstacle(combatProfile, npcTarget.position, npcTarget, enumNpcState.Chase))
         {
             return;
         }
@@ -1648,7 +1824,7 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
     {
         return state == enumNpcState.Chase || state == enumNpcState.Attack || state == enumNpcState.Cover ||
                state == enumNpcState.Flank || state == enumNpcState.Hold || state == enumNpcState.Reposition ||
-               state == enumNpcState.Follow || state == enumNpcState.Search;
+               state == enumNpcState.Follow || state == enumNpcState.Search || state == enumNpcState.Investigate;
     }
 
     // Clears the current path, goes idle and schedules the next wander.
@@ -1671,7 +1847,7 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
         return !npcAgent.pathPending && (!npcAgent.hasPath || npcAgent.remainingDistance <= npcAgent.stoppingDistance);
     }
 
-    // Full (or sprint) move speed while moving in combat, reduced while wandering, none while standing.
+    // Full (or sprint) move speed while moving in combat, reduced while wandering or investigating, none while standing.
     private float GetStateSpeed()
     {
         switch (npcStatusState)
@@ -1683,6 +1859,8 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
             case enumNpcState.Follow:
             case enumNpcState.Search:
                 return GetCurrentMoveSpeed();
+            case enumNpcState.Investigate:
+                return GetCurrentMoveSpeed() * F_Utility_Config_Npc.cfgNpcHearingInvestigateSpeedMultiplier;
             case enumNpcState.Wander:
                 return GetCurrentMoveSpeed() * npcStatWanderSpeedMultiplier;
             default:

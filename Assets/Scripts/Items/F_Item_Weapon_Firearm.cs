@@ -307,9 +307,10 @@ public class F_Item_Weapon_Firearm : F_Item_Weapon
         F_Logic_Audio.PlaySound(
             weaponBoltActionSound,
             HeldSoundType,
-            weaponShotLoudness,
+            weaponHandlingSoundLoudness,
             100f,
-            firePositionWorld);
+            firePositionWorld,
+            HeldSoundOwner);
     }
 
     private bool TryConsumeAmmoForShot()
@@ -339,7 +340,8 @@ public class F_Item_Weapon_Firearm : F_Item_Weapon
                 HeldSoundType,
                 weaponShotLoudness,
                 100f,
-                firePositionWorld);
+                firePositionWorld,
+                HeldSoundOwner);
         }
     }
 

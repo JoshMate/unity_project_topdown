@@ -14,9 +14,6 @@ public class F_PlayerHeldWeapon : F_Character_HeldWeapon
     private F_GUI_Inventory_Slot selectedWeaponSlot;
     private F_Item_Weapon_Melee playerUnarmedInstance;
 
-    /// <summary>The player always hears their own weapon clearly.</summary>
-    protected override EnumSoundType HeldWeaponSoundType => EnumSoundType.Direct;
-
     protected override void Start()
     {
         // Spawned in the player's own scene so it persists with the player between scenes

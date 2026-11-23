@@ -17,6 +17,8 @@ public class F_Ent_Container : F_Ent
     private const int containerDropSearchRadius = 5;
     private const string containerDefaultOpenSoundAssetPath = "Assets/Sound/Ents/Container/SD_Container_Open.ogg";
     private const float containerSoundVolume = 100f;
+    // How far hearing systems hear the container being opened
+    private const EnumSoundLoudness containerSoundOpenLoudness = EnumSoundLoudness.EffectImpactTiny;
 
     [Header("Container Art")]
     // Played when the container is opened; defaults to SD_Container_Open when left empty
@@ -58,12 +60,13 @@ public class F_Ent_Container : F_Ent
             containerSpriteRenderer != null ? containerSpriteRenderer.sprite : null);
     }
 
-    /// <summary>Plays this container's open sound at its position.</summary>
-    public void PlayOpenSound()
+    /// <summary>Plays this container's open sound at its position, credited to whoever opened it.</summary>
+    /// <param name="openedBy">The object opening the container (such as the player), or null when unknown.</param>
+    public void PlayOpenSound(GameObject openedBy)
     {
         if (containerSoundOpen != null)
         {
-            F_Logic_Audio.PlaySound(containerSoundOpen, EnumSoundType.Spatial, EnumSoundLoudness.NoSound, containerSoundVolume, transform.position);
+            F_Logic_Audio.PlaySound(containerSoundOpen, EnumSoundType.Spatial, containerSoundOpenLoudness, containerSoundVolume, transform.position, openedBy);
         }
     }
 

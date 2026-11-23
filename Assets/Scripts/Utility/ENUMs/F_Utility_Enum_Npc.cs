@@ -18,7 +18,9 @@ public enum enumNpcState
     // Following the ally it guards
     Follow,
     // Heading to where it last saw its target, which it can no longer see
-    Search
+    Search,
+    // Heading to the last hostile sound it heard, while not engaged
+    Investigate
 }
 
 /// <summary>What stands between an NPC and its target along its line of fire.</summary>
@@ -84,6 +86,24 @@ public enum enumNpcPersonalityCombatSightRange
 }
 
 /// <summary>
+/// How far an NPC can hear, in world units. A spatial sound is heard when it is within both this range and the sound's
+/// own loudness radius (EnumSoundLoudness). Each value maps to a range in F_Utility_Config_Npc.
+/// </summary>
+/// <remarks>Serialised by index: only append new values at the end, never reorder or remove existing ones.</remarks>
+public enum enumNpcPersonalityCombatHearing
+{
+    // Hears nothing at all
+    Deaf,
+    VeryLow,
+    Low,
+    Medium,
+    High,
+    VeryHigh,
+    // Hears any sound that reaches it, however far away
+    Infinite
+}
+
+/// <summary>
 /// How quickly an NPC notices a target in sight. A target must stay in sight for the whole delay to be noticed.
 /// Each value maps to a delay in F_Utility_Config_Npc.
 /// </summary>
@@ -120,13 +140,13 @@ public enum enumNpcPersonalityCombatMemory
     Infinite
 }
 
-/// <summary>Whether an engaged NPC attacks walls and obstacles that stand between it and its target.</summary>
+/// <summary>Whether an NPC attacks walls and obstacles that stand between it and its goal: its target while engaged, or a heard sound while investigating.</summary>
 /// <remarks>Serialised by index: only append new values at the end, never reorder or remove existing ones.</remarks>
 public enum enumNpcPersonalityCombatWallBehaviour
 {
-    // Attacks whatever blocks its line to the target (targets it can shoot directly always come first), and breaks out when trapped
+    // Attacks whatever blocks its line to the goal (targets it can shoot directly always come first), and breaks out when trapped
     BreakAllObstacles,
-    // Only attacks obstacles when no route reaches its target, such as being shut in a room with no exits
+    // Only attacks obstacles when no route reaches its goal, such as being shut in a room with no exits
     BreakOnlyIfTrapped,
     // Never attacks walls or obstacles; when trapped it stays trapped
     NeverBreakAnything

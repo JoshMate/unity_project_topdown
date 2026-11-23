@@ -73,6 +73,9 @@ public class F_Ent : MonoBehaviour
     private const float entResistanceMin = 0f;
     private const float entResistanceMax = 1f;
     private const float entSoundVolume = 100f;
+    // How far hearing systems hear this ent being hit (bullet and melee impacts) and being destroyed
+    private const EnumSoundLoudness entSoundHitLoudness = EnumSoundLoudness.EffectImpactSmall;
+    private const EnumSoundLoudness entSoundDestroyLoudness = EnumSoundLoudness.EffectImpactMedium;
     private const float entKnockbackMinimumDirectionSqr = 0.0001f;
 
     [Header("Privates")]
@@ -205,8 +208,8 @@ public class F_Ent : MonoBehaviour
     // Whether this ent walks or slides around and so passes through walk-through ents; override to true for the player and npcs.
     protected virtual bool IsMover => false;
 
-    // Plays a random non-empty clip from the array, falling back when no clips are configured.
-    private void PlayEntSound(AudioClip[] sounds, AudioClip[] fallbackSounds = null)
+    // Plays a random non-empty clip from the array at this ent, credited to whoever caused it, falling back when no clips are configured.
+    private void PlayEntSound(AudioClip[] sounds, EnumSoundLoudness soundLoudness, GameObject soundOwner, AudioClip[] fallbackSounds = null)
     {
         if (sounds == null || sounds.Length == 0)
         {
@@ -221,7 +224,7 @@ public class F_Ent : MonoBehaviour
         AudioClip sound = sounds[UnityEngine.Random.Range(0, sounds.Length)];
         if (sound != null)
         {
-            F_Logic_Audio.PlaySound(sound, EnumSoundType.Spatial, EnumSoundLoudness.NoSound, entSoundVolume, transform.position);
+            F_Logic_Audio.PlaySound(sound, EnumSoundType.Spatial, soundLoudness, entSoundVolume, transform.position, soundOwner);
         }
     }
 
@@ -288,7 +291,7 @@ public class F_Ent : MonoBehaviour
             entStatToxic = Mathf.Clamp(entStatToxic + finalDamage, entHealthFloor, entStatToxicMax);
             OnDamaged?.Invoke(this, finalDamage, damageType);
             OnAnyEntDamaged?.Invoke(this, finalDamage, damageType, damageSource);
-            PlayEntSound(entMaterialHitSounds);
+            PlayEntSound(entMaterialHitSounds, entSoundHitLoudness, damageSource);
             return finalDamage;
         }
 
@@ -298,11 +301,11 @@ public class F_Ent : MonoBehaviour
 
         if (entStatHealth <= entHealthFloor)
         {
-            Die();
+            Die(damageSource);
         }
         else
         {
-            PlayEntSound(entMaterialHitSounds);
+            PlayEntSound(entMaterialHitSounds, entSoundHitLoudness, damageSource);
         }
 
         return finalDamage;
@@ -346,12 +349,13 @@ public class F_Ent : MonoBehaviour
         return previousToxic - entStatToxic;
     }
 
-    private void Die()
+    // Kills this ent; the killer is credited with the destroy sound.
+    private void Die(GameObject killSource)
     {
         entIsDead = true;
         OnDied?.Invoke(this);
         OnAnyEntDied?.Invoke(this);
-        PlayEntSound(entMaterialDestroySounds, entMaterialHitSounds);
+        PlayEntSound(entMaterialDestroySounds, entSoundDestroyLoudness, killSource, entMaterialHitSounds);
         if (entFeatureCreateDecalOnDestroy)
         {
             CreateDestroyDecal();

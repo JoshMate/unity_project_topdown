@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -36,6 +37,11 @@ public class F_Logic_Audio : MonoBehaviour
     [SerializeField] private float spatialFalloffDistance = defaultSpatialFalloffDistance;
     private static F_Logic_Audio instance;
     private F_Logic_GameManager gameManager;
+
+    // Events (Header attributes are not valid on events)
+    // Fired for every spatial sound with a loudness radius: world position, loudness radius in world units, the character
+    // that made it (null when no character owns it). Hearing systems such as F_NPC listen to this.
+    public static event Action<Vector2, float, F_Character> OnWorldSoundPlayed;
 
     private void Awake()
     {
@@ -76,20 +82,23 @@ public class F_Logic_Audio : MonoBehaviour
     }
 
     /// <summary>
-    /// Plays a direct 2D sound or a centered spatial sound at the supplied world position.
-    /// The sound-loudness enum is converted to a world-distance radius for hearing systems, independently of playback volume.
+    /// Plays a direct 2D sound (GUI and non-diegetic sounds) or a spatial sound at the supplied world position (anything
+    /// made in the world). Spatial sounds with a loudness radius are also broadcast through OnWorldSoundPlayed so hearing
+    /// systems can react, credited to the character that owns them.
     /// </summary>
     /// <param name="soundFile">Audio clip to play.</param>
     /// <param name="soundType">Playback type; invalid values default to Direct.</param>
-    /// <param name="soundRadius">Reserved for stealth and hearing systems; it does not affect playback volume.</param>
+    /// <param name="soundRadius">How far hearing systems can hear the sound; it does not affect playback volume.</param>
     /// <param name="soundVolume">Volume from 0 to 100; invalid values default to 100.</param>
-    /// <param name="soundSource">World position associated with the sound; used for spatial playback and hearing metadata.</param>
+    /// <param name="soundSource">World position the sound is made at; used for spatial playback and hearing.</param>
+    /// <param name="soundOwner">Object credited with making the sound (a character, or anything held or fired by one); null when nobody made it.</param>
     public static void PlaySound(
         AudioClip soundFile,
         EnumSoundType soundType = EnumSoundType.Direct,
         EnumSoundLoudness soundRadius = EnumSoundLoudness.NoSound,
         float soundVolume = 100f,
-        Vector3 soundSource = default)
+        Vector3 soundSource = default,
+        GameObject soundOwner = null)
     {
         if (soundFile == null)
         {
@@ -97,16 +106,19 @@ public class F_Logic_Audio : MonoBehaviour
             return;
         }
 
-        if (!System.Enum.IsDefined(typeof(EnumSoundType), soundType))
+        if (!Enum.IsDefined(typeof(EnumSoundType), soundType))
         {
             soundType = EnumSoundType.Direct;
         }
 
-        float soundRadiusDistance = GetSoundRadiusDistance(soundRadius);
-
         if (float.IsNaN(soundVolume) || float.IsInfinity(soundVolume) || soundVolume < 0f || soundVolume > 100f)
         {
             soundVolume = 100f;
+        }
+
+        if (soundType == EnumSoundType.Spatial)
+        {
+            BroadcastWorldSound(soundSource, GetSoundRadiusDistance(soundRadius), soundOwner);
         }
 
         F_Logic_Audio audioManager = GetInstance();
@@ -116,7 +128,19 @@ public class F_Logic_Audio : MonoBehaviour
             return;
         }
 
-        audioManager.CreateAndPlaySound(soundFile, soundType, soundRadiusDistance, soundVolume / 100f, soundSource);
+        audioManager.CreateAndPlaySound(soundFile, soundType, soundVolume / 100f, soundSource);
+    }
+
+    // Tells hearing systems about a sound made in the world; silent sounds are never heard.
+    private static void BroadcastWorldSound(Vector3 soundSource, float soundRadiusDistance, GameObject soundOwner)
+    {
+        if (soundRadiusDistance <= 0f)
+        {
+            return;
+        }
+
+        F_Character soundOwnerCharacter = F_Utility_Helper_Faction.GetSourceCharacter(soundOwner);
+        OnWorldSoundPlayed?.Invoke(new Vector2(soundSource.x, soundSource.y), soundRadiusDistance, soundOwnerCharacter);
     }
 
     private static F_Logic_Audio GetInstance()
@@ -131,7 +155,7 @@ public class F_Logic_Audio : MonoBehaviour
 
     private static float GetSoundRadiusDistance(EnumSoundLoudness soundLoudness)
     {
-        return System.Enum.IsDefined(typeof(EnumSoundLoudness), soundLoudness)
+        return Enum.IsDefined(typeof(EnumSoundLoudness), soundLoudness)
             ? (int)soundLoudness
             : 0f;
     }
@@ -139,23 +163,19 @@ public class F_Logic_Audio : MonoBehaviour
     private void CreateAndPlaySound(
         AudioClip soundFile,
         EnumSoundType soundType,
-        float soundRadius,
         float normalizedVolume,
         Vector3 soundSource)
     {
-        // Radius is carried through sound generation for stealth/hearing systems, not playback attenuation.
-        _ = soundRadius;
-
         GameObject soundObject = new GameObject($"Audio_{soundFile.name}");
         AudioSource audioSource = soundObject.AddComponent<AudioSource>();
         audioSource.clip = soundFile;
         audioSource.playOnAwake = false;
         audioSource.loop = false;
         audioSource.volume = normalizedVolume;
+        audioSource.spatialBlend = 0f;
 
         if (soundType == EnumSoundType.Spatial)
         {
-            audioSource.spatialBlend = 0f;
             audioSource.panStereo = 0f;
 
             SpatialSoundPlayback spatialSound = new SpatialSoundPlayback(
@@ -164,10 +184,6 @@ public class F_Logic_Audio : MonoBehaviour
                 normalizedVolume);
             spatialSound.UpdateVolume(GetListenerPosition(), GetSpatialAttenuationDistance());
             activeSpatialSounds.Add(spatialSound);
-        }
-        else
-        {
-            audioSource.spatialBlend = 0f;
         }
 
         audioSource.Play();

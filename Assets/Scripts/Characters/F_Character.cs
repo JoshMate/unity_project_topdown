@@ -227,6 +227,6 @@ public class F_Character : F_Ent
         }
 
         AudioClip footstepClip = footstepSounds[UnityEngine.Random.Range(0, footstepSounds.Length)];
-        F_Logic_Audio.PlaySound(footstepClip, EnumSoundType.Spatial, loudness, volume, transform.position);
+        F_Logic_Audio.PlaySound(footstepClip, EnumSoundType.Spatial, loudness, volume, transform.position, gameObject);
     }
 }

@@ -76,6 +76,7 @@ MonoBehaviour:
   characterStatStaminaRegenDelay: 0.1
   characterStatStaminaSprintDrainDelay: 0.05
   characterStatStaminaIsInfinite: 1
+  characterStatStaminaCanSprint: 0
   characterStatSpeedMove: 1.5
   characterStatSpeedSprint: 2.5
   characterFeatureFootstepsEnabled: 1
@@ -86,6 +87,7 @@ MonoBehaviour:
   npcPersonalityCombatApproach: 1
   npcPersonalityCombatSkillAiming: 1
   npcPersonalityCombatSightRange: 3
+  npcPersonalityCombatHearing: 2
   npcPersonalityCombatAwareness: 1
   npcPersonalityCombatMemory: 2
   npcPersonalityCombatWallBehaviour: 0
@@ -94,7 +96,6 @@ MonoBehaviour:
   npcStatWanderWaitTimeMin: 1
   npcStatWanderWaitTimeMax: 3
   npcStatWanderSpeedMultiplier: 0.5
-  npcCanSprint: 0
   npcStatRepathInterval: 0.25
   npcStatStoppingDistance: 0.4
   npcStatRotationOffset: 0

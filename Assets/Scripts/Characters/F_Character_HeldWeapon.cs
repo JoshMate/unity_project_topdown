@@ -118,7 +118,7 @@ public class F_Character_HeldWeapon : MonoBehaviour
         return firearmItem.weaponProjectileSpeed / heldWeaponProjectileBody.mass;
     }
 
-    /// <summary>How held weapon sounds play: spatial by default so other characters' weapons fade with distance.</summary>
+    /// <summary>How held weapon sounds play: spatial, so every character's weapon exists in the world and can be heard by hearing systems.</summary>
     protected virtual EnumSoundType HeldWeaponSoundType => EnumSoundType.Spatial;
 
     protected virtual void Start()
@@ -143,17 +143,19 @@ public class F_Character_HeldWeapon : MonoBehaviour
         OnSelectedWeaponChanged(previousWeaponItem);
     }
 
-    /// <summary>Starts the newly held weapon's deploy and refreshes the held state and visuals. Call after changing the held weapon.</summary>
+    /// <summary>Refreshes the held state, starts the newly held weapon's deploy and updates the visuals. Call after changing the held weapon.</summary>
     /// <param name="previousWeaponItem">The weapon held before the change.</param>
     protected void OnSelectedWeaponChanged(F_Item_Weapon previousWeaponItem)
     {
+        // Sync first so the weapon knows its holder before deploying, letting the deploy sound play at the holder
+        SyncHeldWeaponItem();
+
         F_Item_Weapon newWeaponItem = GetSelectedWeaponItem();
         if (newWeaponItem != null && newWeaponItem != previousWeaponItem)
         {
             newWeaponItem.BeginDeploy();
         }
 
-        SyncHeldWeaponItem();
         UpdateHeldWeaponSprite();
     }
 

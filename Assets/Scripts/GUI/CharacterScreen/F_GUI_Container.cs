@@ -103,7 +103,8 @@ public class F_GUI_Container : MonoBehaviour
         UpdateContainerWeightText();
 
         gameObject.SetActive(true);
-        container.PlayOpenSound();
+        bool hasPlayer = containerGuiCursor != null && containerGuiCursor.playerController != null;
+        container.PlayOpenSound(hasPlayer ? containerGuiCursor.playerController.gameObject : null);
     }
 
     /// <summary>Writes the slots back to the open container, unbinds them and hides the panel.</summary>

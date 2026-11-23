@@ -143,7 +143,7 @@ public class F_Item_Weapon_Melee : F_Item_Weapon
             return;
         }
 
-        F_Logic_Audio.PlaySound(meleeSwingSound, HeldSoundType, meleeSwingLoudness, meleeSwingSoundVolume, swingPosition);
+        F_Logic_Audio.PlaySound(meleeSwingSound, HeldSoundType, meleeSwingLoudness, meleeSwingSoundVolume, swingPosition, HeldSoundOwner);
     }
 
     /// <summary>Melee weapons may only use the melee item types, so they only fit the matching melee weapon slots.</summary>

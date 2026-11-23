@@ -34,12 +34,16 @@ public readonly struct F_NpcCombatProfile
     public readonly float profileGuardLeashDistance;
     // While not fighting and within its follow distance, whether the guard wanders around its guarded ally instead of standing beside it
     public readonly bool profileGuardWandersNearWard;
+    // Whether the NPC leaves what it is doing to investigate hostile sounds it hears
+    public readonly bool profileInvestigatesSounds;
 
     public F_NpcCombatProfile(bool canMove, enumNpcApproachMode approachFirearm, enumNpcApproachMode approachMelee,
         bool holdsAtFiringRange, bool coverWhenReloading, bool coverWhenHit, bool coverWhenNoticed, float coverHoldTime,
         bool sprintsWhenApproaching, bool attacksOutOfRange, bool dryFiresWhenEmpty,
-        bool guardsAlly, float guardFollowDistance, float guardLeashDistance, bool guardWandersNearWard)
+        bool guardsAlly, float guardFollowDistance, float guardLeashDistance, bool guardWandersNearWard,
+        bool investigatesSounds)
     {
+        profileInvestigatesSounds = investigatesSounds;
         profileGuardWandersNearWard = guardWandersNearWard;
         profileCanMove = canMove;
         profileApproachFirearm = approachFirearm;
@@ -89,7 +93,7 @@ public readonly struct F_NpcAimingProfile
     }
 }
 
-/// <summary>Global NPC AI tuning, the behaviour profile for each combat personality, the aiming profile for each aiming skill, the range for each sight range, the delay for each awareness level and the duration for each combat memory.</summary>
+/// <summary>Global NPC AI tuning, the behaviour profile for each combat personality, the aiming profile for each aiming skill, the range for each sight range, the range for each hearing level, the delay for each awareness level and the duration for each combat memory.</summary>
 public static class F_Utility_Config_Npc
 {
     // Constants Public: Decisions (combat decisions run every NPC's npcStatRepathInterval)
@@ -118,6 +122,21 @@ public static class F_Utility_Config_Npc
     private const float cfgNpcSightRangeExtremelyFar = 30f;
     private const float cfgNpcSightRangeInfinitelyFar = 999f;
 
+    // Constants Public: Hearing
+    // Seconds an NPC stays at a heard sound's position, looking around, before giving up its investigation
+    public const float cfgNpcHearingInvestigateWaitTime = 3f;
+    // Fraction of the current move speed used while heading to a heard sound
+    public const float cfgNpcHearingInvestigateSpeedMultiplier = 0.75f;
+
+    // Constants Private: Hearing range values in world units
+    private const float cfgNpcHearingRangeDeaf = 0f;
+    private const float cfgNpcHearingRangeVeryLow = 3f;
+    private const float cfgNpcHearingRangeLow = 8f;
+    private const float cfgNpcHearingRangeMedium = 15f;
+    private const float cfgNpcHearingRangeHigh = 25f;
+    private const float cfgNpcHearingRangeVeryHigh = 50f;
+    private const float cfgNpcHearingRangeInfinite = 9999f;
+
     // Constants Private: Awareness delays in seconds a target must stay in sight before it is noticed
     private const float cfgNpcAwarenessDelaySlowest = 3f;
     private const float cfgNpcAwarenessDelayVerySlow = 2.5f;
@@ -128,7 +147,7 @@ public static class F_Utility_Config_Npc
     private const float cfgNpcAwarenessDelayExtremelyFast = 0.25f;
     private const float cfgNpcAwarenessDelayInstant = 0f;
 
-    // Constants Private: Combat memory durations in seconds an engaged NPC remembers a target after losing sight of it
+    // Constants Private: Combat memory durations in seconds an NPC remembers a target after losing sight of it, or a heard sound it is investigating
     private const float cfgNpcCombatMemoryDurationNone = 0f;
     private const float cfgNpcCombatMemoryDurationVeryShort = 2f;
     private const float cfgNpcCombatMemoryDurationShort = 5f;
@@ -225,6 +244,12 @@ public static class F_Utility_Config_Npc
     private const float cfgNpcProfileGuardLeashDistanceClose = 5f;
     // No leash: the guard fights freely and only follows again once the threat has gone
     private const float cfgNpcProfileGuardLeashDistanceUnlimited = float.MaxValue;
+
+    // Constants Private: Hearing profile values (whether a personality leaves what it is doing to investigate hostile sounds)
+    private const bool cfgNpcProfileInvestigatesSoundsDefault = true;
+    // A close body guard never leaves its ally to chase a sound
+    private const bool cfgNpcProfileInvestigatesSoundsBodyGuardClose = false;
+    private const bool cfgNpcProfileInvestigatesSoundsBodyGuardLoose = true;
 
     // Constants Private: Profile values (the personality profiles below are built from these)
     private const float cfgNpcProfileCoverHoldTimeBalanced = 1.5f;
@@ -328,6 +353,29 @@ public static class F_Utility_Config_Npc
         }
     }
 
+    /// <summary>Returns how far, in world units, an NPC with a hearing level can hear.</summary>
+    /// <param name="hearing">The NPC's hearing.</param>
+    public static float GetHearingRange(enumNpcPersonalityCombatHearing hearing)
+    {
+        switch (hearing)
+        {
+            case enumNpcPersonalityCombatHearing.Deaf:
+                return cfgNpcHearingRangeDeaf;
+            case enumNpcPersonalityCombatHearing.VeryLow:
+                return cfgNpcHearingRangeVeryLow;
+            case enumNpcPersonalityCombatHearing.Low:
+                return cfgNpcHearingRangeLow;
+            case enumNpcPersonalityCombatHearing.High:
+                return cfgNpcHearingRangeHigh;
+            case enumNpcPersonalityCombatHearing.VeryHigh:
+                return cfgNpcHearingRangeVeryHigh;
+            case enumNpcPersonalityCombatHearing.Infinite:
+                return cfgNpcHearingRangeInfinite;
+            default:
+                return cfgNpcHearingRangeMedium;
+        }
+    }
+
     /// <summary>Returns how many seconds a target must stay in sight before an NPC with an awareness level notices it.</summary>
     /// <param name="awareness">The NPC's awareness.</param>
     public static float GetAwarenessDelay(enumNpcPersonalityCombatAwareness awareness)
@@ -385,33 +433,40 @@ public static class F_Utility_Config_Npc
             case enumNpcPersonalityCombatApproach.ChargerAggressive:
                 return new F_NpcCombatProfile(true, enumNpcApproachMode.Direct, enumNpcApproachMode.Direct,
                     false, false, false, false, cfgNpcProfileCoverHoldTimeNone, true, false, false,
-                    cfgNpcProfileGuardsAllyNone, cfgNpcProfileGuardFollowDistanceNone, cfgNpcProfileGuardLeashDistanceUnlimited, cfgNpcProfileGuardWandersNearWardNone);
+                    cfgNpcProfileGuardsAllyNone, cfgNpcProfileGuardFollowDistanceNone, cfgNpcProfileGuardLeashDistanceUnlimited, cfgNpcProfileGuardWandersNearWardNone,
+                    cfgNpcProfileInvestigatesSoundsDefault);
             case enumNpcPersonalityCombatApproach.ChargerFlanker:
                 return new F_NpcCombatProfile(true, enumNpcApproachMode.Flank, enumNpcApproachMode.Flank,
                     false, true, false, false, cfgNpcProfileCoverHoldTimeNone, true, false, false,
-                    cfgNpcProfileGuardsAllyNone, cfgNpcProfileGuardFollowDistanceNone, cfgNpcProfileGuardLeashDistanceUnlimited, cfgNpcProfileGuardWandersNearWardNone);
+                    cfgNpcProfileGuardsAllyNone, cfgNpcProfileGuardFollowDistanceNone, cfgNpcProfileGuardLeashDistanceUnlimited, cfgNpcProfileGuardWandersNearWardNone,
+                    cfgNpcProfileInvestigatesSoundsDefault);
             case enumNpcPersonalityCombatApproach.DefensiveMobile:
                 return new F_NpcCombatProfile(true, enumNpcApproachMode.None, enumNpcApproachMode.None,
                     true, true, true, true, cfgNpcProfileCoverHoldTimeDefensive, false, false, false,
-                    cfgNpcProfileGuardsAllyNone, cfgNpcProfileGuardFollowDistanceNone, cfgNpcProfileGuardLeashDistanceUnlimited, cfgNpcProfileGuardWandersNearWardNone);
+                    cfgNpcProfileGuardsAllyNone, cfgNpcProfileGuardFollowDistanceNone, cfgNpcProfileGuardLeashDistanceUnlimited, cfgNpcProfileGuardWandersNearWardNone,
+                    cfgNpcProfileInvestigatesSoundsDefault);
             case enumNpcPersonalityCombatApproach.DefensiveStationary:
                 return new F_NpcCombatProfile(false, enumNpcApproachMode.None, enumNpcApproachMode.None,
                     true, false, false, false, cfgNpcProfileCoverHoldTimeNone, false, true, true,
-                    cfgNpcProfileGuardsAllyNone, cfgNpcProfileGuardFollowDistanceNone, cfgNpcProfileGuardLeashDistanceUnlimited, cfgNpcProfileGuardWandersNearWardNone);
+                    cfgNpcProfileGuardsAllyNone, cfgNpcProfileGuardFollowDistanceNone, cfgNpcProfileGuardLeashDistanceUnlimited, cfgNpcProfileGuardWandersNearWardNone,
+                    cfgNpcProfileInvestigatesSoundsDefault);
             // Sticks to its ally: holds and shoots beside it, only closes in for melee within its short leash, never leaves for cover, never wanders
             case enumNpcPersonalityCombatApproach.BodyGuardClose:
                 return new F_NpcCombatProfile(true, enumNpcApproachMode.None, enumNpcApproachMode.Direct,
                     true, false, false, false, cfgNpcProfileCoverHoldTimeNone, true, false, false,
-                    true, cfgNpcProfileGuardFollowDistanceClose, cfgNpcProfileGuardLeashDistanceClose, false);
+                    true, cfgNpcProfileGuardFollowDistanceClose, cfgNpcProfileGuardLeashDistanceClose, false,
+                    cfgNpcProfileInvestigatesSoundsBodyGuardClose);
             // Wanders near its ally, fights on its own with a defensive focus (cover, peeking, cover hopping), then returns to its ally once the threat has gone
             case enumNpcPersonalityCombatApproach.BodyGuardLoose:
                 return new F_NpcCombatProfile(true, enumNpcApproachMode.None, enumNpcApproachMode.CoverHop,
                     true, true, true, true, cfgNpcProfileCoverHoldTimeBalanced, false, false, false,
-                    true, cfgNpcProfileGuardFollowDistanceLoose, cfgNpcProfileGuardLeashDistanceUnlimited, true);
+                    true, cfgNpcProfileGuardFollowDistanceLoose, cfgNpcProfileGuardLeashDistanceUnlimited, true,
+                    cfgNpcProfileInvestigatesSoundsBodyGuardLoose);
             default:
                 return new F_NpcCombatProfile(true, enumNpcApproachMode.Direct, enumNpcApproachMode.CoverHop,
                     true, true, true, false, cfgNpcProfileCoverHoldTimeBalanced, true, false, false,
-                    cfgNpcProfileGuardsAllyNone, cfgNpcProfileGuardFollowDistanceNone, cfgNpcProfileGuardLeashDistanceUnlimited, cfgNpcProfileGuardWandersNearWardNone);
+                    cfgNpcProfileGuardsAllyNone, cfgNpcProfileGuardFollowDistanceNone, cfgNpcProfileGuardLeashDistanceUnlimited, cfgNpcProfileGuardWandersNearWardNone,
+                    cfgNpcProfileInvestigatesSoundsDefault);
         }
     }
 }

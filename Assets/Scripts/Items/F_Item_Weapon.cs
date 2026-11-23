@@ -49,6 +49,8 @@ public abstract class F_Item_Weapon : F_Item
     private const float weaponDeployDelayHundredthsPerSecond = 100f;
     private const float weaponMinimumDelay = 0f;
     private const float weaponSoundVolume = 100f;
+    // How far hearing systems hear handling sounds (deploying, reloading, bolt cycling, breaking and dry-fire clicks)
+    protected const EnumSoundLoudness weaponHandlingSoundLoudness = EnumSoundLoudness.EffectImpactTiny;
     private const string weaponDefaultBreakSoundAssetPath = "Assets/Sound/Interface/Weapon Handling/SD_Interface_Weapon_Break.ogg";
     private const string weaponDefaultDryFireSoundAssetPath = "Assets/Sound/Interface/Weapon Handling/SD_Interface_Weapon_Click.ogg";
     private const string weaponDefaultDeployStartSoundAssetPath = "Assets/Sound/Interface/Weapon Handling/SD_Interface_Deploy_Weapon_Start.wav";
@@ -62,8 +64,8 @@ public abstract class F_Item_Weapon : F_Item
     // Held clock state: delays run on HeldTime so they only progress while this weapon is held
     private bool weaponIsHeld;
     private Rigidbody2D weaponHeldByRigidbody;
-    // Direct for the player so their weapon sounds are always heard clearly, Spatial for NPCs so theirs fade with distance
-    private EnumSoundType weaponHeldSoundType = EnumSoundType.Direct;
+    // Spatial for every holder, so weapon sounds exist in the world and can be heard by hearing systems
+    private EnumSoundType weaponHeldSoundType = EnumSoundType.Spatial;
     private float weaponHeldSinceTime;
     private float weaponAccumulatedHeldTime;
 
@@ -78,6 +80,9 @@ public abstract class F_Item_Weapon : F_Item
 
     /// <summary>World position this weapon's sounds play from: the holder while held, otherwise the weapon itself.</summary>
     protected Vector3 HeldSoundPosition => weaponHeldByRigidbody != null ? (Vector3)weaponHeldByRigidbody.position : transform.position;
+
+    /// <summary>Object credited with this weapon's sounds: the holder while held, otherwise the weapon itself.</summary>
+    protected GameObject HeldSoundOwner => weaponHeldByRigidbody != null ? weaponHeldByRigidbody.gameObject : gameObject;
 
     /// <summary>Seconds this weapon has spent held. All weapon delays run on this clock so they only progress while the weapon is held.</summary>
     public float HeldTime => weaponAccumulatedHeldTime + (weaponIsHeld ? Time.time - weaponHeldSinceTime : 0f);
@@ -193,14 +198,14 @@ public abstract class F_Item_Weapon : F_Item
         PlayWeaponSound(weaponDeployEndSound);
     }
 
-    /// <summary>Plays a weapon sound for the current holder (direct for the player, spatial for NPCs) when one is assigned.</summary>
+    /// <summary>Plays a weapon sound at its holder, credited to the holder, when one is assigned.</summary>
     /// <param name="weaponSound">The clip to play.</param>
     /// <param name="weaponSoundLoudness">How far away the sound can be heard by hearing systems.</param>
-    protected void PlayWeaponSound(AudioClip weaponSound, EnumSoundLoudness weaponSoundLoudness = EnumSoundLoudness.NoSound)
+    protected void PlayWeaponSound(AudioClip weaponSound, EnumSoundLoudness weaponSoundLoudness = weaponHandlingSoundLoudness)
     {
         if (weaponSound != null)
         {
-            F_Logic_Audio.PlaySound(weaponSound, weaponHeldSoundType, weaponSoundLoudness, weaponSoundVolume, HeldSoundPosition);
+            F_Logic_Audio.PlaySound(weaponSound, weaponHeldSoundType, weaponSoundLoudness, weaponSoundVolume, HeldSoundPosition, HeldSoundOwner);
         }
     }
 
