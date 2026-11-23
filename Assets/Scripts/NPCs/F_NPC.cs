@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.SceneManagement;
@@ -134,8 +135,20 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
     // Memory: where and when the target was last seen (or last revealed itself by attacking)
     private Vector2 npcTargetLastSeenPosition;
     private float npcTargetLastSeenTime;
+    // Multiple hostiles: every hostile this NPC knows about while engaged, so it moves straight on to the next one
+    private readonly Dictionary<F_Character, NpcKnownHostile> npcKnownHostiles = new Dictionary<F_Character, NpcKnownHostile>();
+    // Reusable buffers for combat target selection, so scans don't allocate
+    private readonly List<F_Character> npcVisibleHostiles = new List<F_Character>();
+    private readonly List<F_Character> npcForgottenHostiles = new List<F_Character>();
     // Thought icon shown above this NPC's head
     private F_NPC_Thought npcThought;
+
+    // Where and when a known hostile was last seen (or last revealed itself by attacking).
+    private struct NpcKnownHostile
+    {
+        public Vector2 knownHostileLastSeenPosition;
+        public float knownHostileLastSeenTime;
+    }
 
     /// <summary>What this NPC is currently doing.</summary>
     public enumNpcState NpcState => npcStatusState;
@@ -235,6 +248,13 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
     /// <param name="target">The transform to fight, or null.</param>
     public void SetTarget(Transform target)
     {
+        ChangeTarget(target, false);
+    }
+
+    // Swaps the target. A combat switch moves straight on to the new target while staying engaged; otherwise a new
+    // target has to be noticed from scratch and a null target disengages.
+    private void ChangeTarget(Transform target, bool isCombatSwitch)
+    {
         if (target == npcTarget)
         {
             return;
@@ -245,8 +265,11 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
         npcIsAimTracking = false;
         npcIsFriendlyInLineOfFire = false;
         npcFriendlyFireMeleeUntilTime = 0f;
-        // A new target has to be noticed from scratch
-        StopNoticingTarget();
+        if (!isCombatSwitch)
+        {
+            StopNoticingTarget();
+        }
+
         npcTargetEnt = target != null ? target.GetComponent<F_Ent>() : null;
         npcTargetRigidbody = target != null ? target.GetComponent<Rigidbody2D>() : null;
         npcTargetColliders = target != null ? target.GetComponentsInChildren<Collider2D>() : null;
@@ -258,6 +281,7 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
         {
             // Whatever drew attention to a new target reveals where it is right now
             RememberTargetPosition();
+            npcNextRepathTime = 0f;
         }
     }
 
@@ -374,10 +398,10 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
             return;
         }
 
-        GameObject heldWeaponRigPrefab = Resources.Load<GameObject>(F_Utility_Config_Npc.cfgNpcHeldWeaponRigResourcePath);
+        GameObject heldWeaponRigPrefab = F_Utility_Config_HeldWeapons.GetNpcRigPrefab();
         if (heldWeaponRigPrefab == null)
         {
-            Debug.LogWarning($"F_NPC: no held weapon rig found at Resources/{F_Utility_Config_Npc.cfgNpcHeldWeaponRigResourcePath}, so {name} can't use its weapons.");
+            Debug.LogWarning($"F_NPC: no NPC held weapon rig is assigned in the held weapon config (cfgHeldWeaponNpcRigPrefab), so {name} can't use its weapons.");
             return;
         }
 
@@ -463,11 +487,12 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
     }
 
     // Picks hostile targets, notices the target on sight within detection range, remembers where it was last seen, and
-    // forgets it once out of sight for longer than its combat memory or when it dies.
+    // forgets it once out of sight for longer than its combat memory or when it dies. While engaged, a lost target is
+    // replaced straight away by the next known hostile so the fight carries on without re-noticing anyone.
     private void UpdateTargetAwareness()
     {
         bool isTargetInvalid = npcTarget != null && (npcTargetEnt == null || npcTargetEnt.IsDead || !F_Utility_Helper_Faction.IsHostile(this, npcTargetEnt));
-        if (isTargetInvalid)
+        if (isTargetInvalid && !(npcIsEngaged && TrySelectCombatTarget(true)))
         {
             SetTarget(null);
         }
@@ -511,7 +536,7 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
         {
             UpdateNoticeTarget();
         }
-        else if (!npcCanSeeTarget && Time.time - npcTargetLastSeenTime > CombatMemoryDuration)
+        else if (!npcCanSeeTarget && Time.time - npcTargetLastSeenTime > CombatMemoryDuration && !TrySelectCombatTarget(true))
         {
             Disengage();
             SetTarget(null);
@@ -523,6 +548,138 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
     {
         npcTargetLastSeenPosition = npcTarget.position;
         npcTargetLastSeenTime = Time.time;
+        if (npcIsEngaged && npcTargetEnt is F_Character targetCharacter)
+        {
+            RememberHostile(targetCharacter);
+        }
+    }
+
+    // Records where a hostile is right now in this NPC's combat memory.
+    private void RememberHostile(F_Character hostile)
+    {
+        npcKnownHostiles[hostile] = new NpcKnownHostile
+        {
+            knownHostileLastSeenPosition = hostile.transform.position,
+            knownHostileLastSeenTime = Time.time
+        };
+    }
+
+    // Drops known hostiles that died, stopped being hostile or haven't been seen for longer than the combat memory.
+    private void ForgetLostHostiles()
+    {
+        npcForgottenHostiles.Clear();
+        float combatMemoryDuration = CombatMemoryDuration;
+        foreach (KeyValuePair<F_Character, NpcKnownHostile> knownHostile in npcKnownHostiles)
+        {
+            F_Character hostile = knownHostile.Key;
+            bool isLost = hostile == null || hostile.IsDead || !F_Utility_Helper_Faction.IsHostile(this, hostile) ||
+                          Time.time - knownHostile.Value.knownHostileLastSeenTime > combatMemoryDuration;
+            if (isLost)
+            {
+                npcForgottenHostiles.Add(hostile);
+            }
+        }
+
+        for (int forgottenIndex = 0; forgottenIndex < npcForgottenHostiles.Count; forgottenIndex++)
+        {
+            npcKnownHostiles.Remove(npcForgottenHostiles[forgottenIndex]);
+        }
+    }
+
+    // Updates the combat memory with every hostile in sight (alert to all sides while engaged), then fights the closest
+    // one in sight, otherwise the one last seen closest. A target still in sight is only dropped for a visible hostile
+    // closer by cfgNpcCombatRetargetCloserMargin, and one out of sight is chased until a visible hostile turns up.
+    // Returns false when there is no hostile left to fight.
+    private bool TrySelectCombatTarget(bool isCurrentTargetLost)
+    {
+        Vector2 npcPosition = npcRigidbody.position;
+        float combatSightConeSize = Mathf.Max(npcPersonalityCombatLOSConeSize, F_Utility_Config_Npc.cfgNpcCombatAlertSightConeSize);
+        F_Utility_Helper_Npc.FindVisibleHostiles(this, npcPosition, LoseTargetRange, FacingAngle, combatSightConeSize, npcVisibleHostiles);
+        for (int visibleIndex = 0; visibleIndex < npcVisibleHostiles.Count; visibleIndex++)
+        {
+            RememberHostile(npcVisibleHostiles[visibleIndex]);
+        }
+
+        ForgetLostHostiles();
+        Transform excludedTarget = isCurrentTargetLost ? npcTarget : null;
+        F_Character bestHostile = FindClosestVisibleHostile(npcPosition, excludedTarget, out float bestHostileDistance);
+        bool isBestHostileVisible = bestHostile != null;
+        if (!isBestHostileVisible)
+        {
+            bestHostile = FindClosestRememberedHostile(npcPosition, excludedTarget);
+        }
+
+        if (bestHostile == null)
+        {
+            return false;
+        }
+
+        if (bestHostile.transform == npcTarget)
+        {
+            return true;
+        }
+
+        bool isKeepingCurrentTarget = !isCurrentTargetLost && npcTarget != null &&
+            (!isBestHostileVisible || (npcCanSeeTarget && bestHostileDistance > npcTargetDistance - F_Utility_Config_Npc.cfgNpcCombatRetargetCloserMargin));
+        if (!isKeepingCurrentTarget)
+        {
+            SwitchCombatTarget(bestHostile);
+        }
+
+        return true;
+    }
+
+    // The closest hostile seen in the latest combat scan, skipping the excluded target.
+    private F_Character FindClosestVisibleHostile(Vector2 npcPosition, Transform excludedTarget, out float closestDistance)
+    {
+        F_Character closestHostile = null;
+        float closestDistanceSqr = float.MaxValue;
+        for (int visibleIndex = 0; visibleIndex < npcVisibleHostiles.Count; visibleIndex++)
+        {
+            F_Character candidate = npcVisibleHostiles[visibleIndex];
+            float distanceSqr = ((Vector2)candidate.transform.position - npcPosition).sqrMagnitude;
+            if (candidate.IsDead || candidate.transform == excludedTarget || distanceSqr >= closestDistanceSqr)
+            {
+                continue;
+            }
+
+            closestDistanceSqr = distanceSqr;
+            closestHostile = candidate;
+        }
+
+        closestDistance = closestHostile != null ? Mathf.Sqrt(closestDistanceSqr) : float.MaxValue;
+        return closestHostile;
+    }
+
+    // The known hostile whose last seen position is closest, skipping the excluded target.
+    private F_Character FindClosestRememberedHostile(Vector2 npcPosition, Transform excludedTarget)
+    {
+        F_Character closestHostile = null;
+        float closestDistanceSqr = float.MaxValue;
+        foreach (KeyValuePair<F_Character, NpcKnownHostile> knownHostile in npcKnownHostiles)
+        {
+            float distanceSqr = (knownHostile.Value.knownHostileLastSeenPosition - npcPosition).sqrMagnitude;
+            if (knownHostile.Key.transform == excludedTarget || distanceSqr >= closestDistanceSqr)
+            {
+                continue;
+            }
+
+            closestDistanceSqr = distanceSqr;
+            closestHostile = knownHostile.Key;
+        }
+
+        return closestHostile;
+    }
+
+    // Moves straight on to another known hostile while staying engaged, carrying over where it was last seen.
+    private void SwitchCombatTarget(F_Character hostile)
+    {
+        ChangeTarget(hostile.transform, true);
+        if (npcKnownHostiles.TryGetValue(hostile, out NpcKnownHostile knownHostile))
+        {
+            npcTargetLastSeenPosition = knownHostile.knownHostileLastSeenPosition;
+            npcTargetLastSeenTime = knownHostile.knownHostileLastSeenTime;
+        }
     }
 
     // Engages once the target has stayed in sight within sight range and inside the sight cone for the whole awareness
@@ -557,30 +714,29 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
         npcThought.ClearThought(enumNpcThought.Suspicious);
     }
 
-    // Every scan interval, while idle or while the current target is out of sight, switches to the closest visible hostile character.
+    // Every scan interval: while engaged, re-picks the closest known hostile; while idle, switches to the closest visible hostile character.
     private void UpdateTargetScan()
     {
-        if (Time.time < npcNextTargetScanTime || (npcIsEngaged && npcCanSeeTarget))
+        if (Time.time < npcNextTargetScanTime)
         {
             return;
         }
 
         npcNextTargetScanTime = Time.time + F_Utility_Config_Npc.cfgNpcTargetScanInterval;
+        if (npcIsEngaged)
+        {
+            TrySelectCombatTarget(false);
+            return;
+        }
+
         F_Character closestHostile = F_Utility_Helper_Npc.FindClosestVisibleHostile(this, npcRigidbody.position, SightRange,
             FacingAngle, npcPersonalityCombatLOSConeSize);
-        if (closestHostile != null)
-        {
-            SetTarget(closestHostile.transform);
-        }
-        else if (!npcIsEngaged)
-        {
-            SetTarget(null);
-        }
+        SetTarget(closestHostile != null ? closestHostile.transform : null);
     }
 
     // Being hit by a hostile character (or a body guard's ward being hit) makes the NPC notice it (switching to it when
-    // idle or unable to see its target), and sends cover-seeking personalities to cover when it was the one hit.
-    // Hits from allies and neutrals are ignored.
+    // idle or unable to see its target, otherwise remembering it to deal with next), and sends cover-seeking
+    // personalities to cover when it was the one hit. Hits from allies and neutrals are ignored.
     private void HandleAnyEntDamaged(F_Ent damagedEnt, float damageAmount, enumDamageType damageType, GameObject damageSource)
     {
         bool isSelfDamaged = damagedEnt == this;
@@ -598,11 +754,13 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
 
         if (attackerCharacter.transform != npcTarget && (!npcIsEngaged || !npcCanSeeTarget))
         {
-            SetTarget(attackerCharacter.transform);
+            ChangeTarget(attackerCharacter.transform, npcIsEngaged);
         }
 
         if (attackerCharacter.transform != npcTarget)
         {
+            // Busy with a target in sight: remember the attacker so the closest-first scan can deal with it
+            RememberHostile(attackerCharacter);
             return;
         }
 
@@ -626,6 +784,8 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
     {
         npcIsEngaged = true;
         StopNoticingTarget();
+        // The noticed target is the first entry in the combat memory
+        RememberTargetPosition();
         npcThought.ShowThought(enumNpcThought.Alerted);
         npcNextRepathTime = 0f;
         F_NpcCombatProfile combatProfile = CombatProfile;
@@ -647,6 +807,7 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
         }
 
         npcIsEngaged = false;
+        npcKnownHostiles.Clear();
         npcThought.ClearThought(enumNpcThought.Alerted);
         npcCoverUntilTime = 0f;
         npcIsSprintRequested = false;

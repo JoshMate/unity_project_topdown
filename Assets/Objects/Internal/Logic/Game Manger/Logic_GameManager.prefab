@@ -7648,6 +7648,7 @@ MonoBehaviour:
   cursorSpriteReload: {fileID: 21300000, guid: a78dc02322e8c1d4dbb95101a3601ead, type: 3}
   cursorSpriteOkay: {fileID: 21300000, guid: 184716f0a2c7c8c4eb10ecbdf66e99e9, type: 3}
   cursorSpriteDeploy: {fileID: -7514872439172890611, guid: 73cefd04e760ddc4e8b4b21170e7f77d, type: 3}
+  cursorSpriteBlocked: {fileID: 21300000, guid: a78dc02322e8c1d4dbb95101a3601ead, type: 3}
 --- !u!212 &4501256581976965609
 SpriteRenderer:
   serializedVersion: 2

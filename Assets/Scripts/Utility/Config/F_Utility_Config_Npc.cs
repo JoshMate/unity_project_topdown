@@ -92,15 +92,17 @@ public readonly struct F_NpcAimingProfile
 /// <summary>Global NPC AI tuning, the behaviour profile for each combat personality, the aiming profile for each aiming skill, the range for each sight range, the delay for each awareness level and the duration for each combat memory.</summary>
 public static class F_Utility_Config_Npc
 {
-    // Constants Public: Held weapons
-    // Resources path of the held weapon rig prefab spawned on NPCs that have an equipped weapon
-    public const string cfgNpcHeldWeaponRigResourcePath = "OB_Character_HeldWeapon_NPC";
-
     // Constants Public: Decisions (combat decisions run every NPC's npcStatRepathInterval)
     // Seconds an NPC keeps its current weapon before it may switch again
     public const float cfgNpcWeaponSwitchCooldown = 1f;
-    // Seconds between an NPC's searches for the closest visible hostile character, while idle or unable to see its target
+    // Seconds between an NPC's searches for the closest visible hostile character; while engaged this also re-picks the closest known hostile
     public const float cfgNpcTargetScanInterval = 0.3f;
+
+    // Constants Public: Combat targeting
+    // An engaged NPC only drops a target it can see for another hostile in sight that is at least this much closer, so its focus doesn't flicker between enemies at similar distances
+    public const float cfgNpcCombatRetargetCloserMargin = 1.5f;
+    // Sight cone width in degrees an engaged NPC uses to keep track of every hostile around it (360 = alert to all sides); never narrower than its own sight cone
+    public const float cfgNpcCombatAlertSightConeSize = 360f;
 
     // Constants Public: Sight
     // An NPC loses sight of its target beyond its sight range multiplied by this, which starts its combat memory running out

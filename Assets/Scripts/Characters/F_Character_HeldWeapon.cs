@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 /// <summary>
 /// Shared held weapon logic for any character (player, NPCs): shows the held weapon, fires firearms (bursts, spread,
@@ -12,8 +13,9 @@ public class F_Character_HeldWeapon : MonoBehaviour
     public GameObject projectileObject;
     public GameObject projectileImpactObject;
     public F_playerHeldWeaponIndividual heldWeaponCurrentlySelected;
-    public F_playerHeldWeaponIndividual heldWeaponGunBig;
-    public F_playerHeldWeaponIndividual heldWeaponGunSmall;
+    // Draws the held firearm's configured held sprite and owns its fire position at the barrel tip
+    [FormerlySerializedAs("heldWeaponGunSmall")]
+    public F_playerHeldWeaponIndividual heldWeaponFirearm;
     // Draws and swings the selected melee weapon's sprite, which is also its hitbox
     public F_Character_MeleeHitbox heldWeaponMeleeHitbox;
 
@@ -23,9 +25,14 @@ public class F_Character_HeldWeapon : MonoBehaviour
     private const float minimumBurstDelay = 0f;
     // How many sorting orders below the holder's body sprite every held weapon sprite is drawn
     private const int heldWeaponSortingOrderBelowHolder = 1;
+    // Shortest time between obstructed fire attempt feedback (click and blocked cursor), so held triggers don't spam it
+    private const float heldWeaponObstructedFeedbackIntervalMin = 0.1f;
 
     [Header("Privates")]
     private bool isBurstFiring;
+    private float heldWeaponNextObstructedFeedbackTime = float.NegativeInfinity;
+    // Distance from the holder's centre to the front edge of its body sprite, where held firearm sprites start drawing
+    private float heldWeaponHolderFrontEdgeDistance;
     private F_Item_Weapon heldWeaponItemTracked;
     private F_Item_Weapon heldWeaponSelectedItem;
     private F_Character heldWeaponHolder;
@@ -63,6 +70,29 @@ public class F_Character_HeldWeapon : MonoBehaviour
     /// <summary>Where projectiles from the held firearm spawn, or null when it has no fire position.</summary>
     public Transform CurrentFirePosition => heldWeaponCurrentlySelected != null ? heldWeaponCurrentlySelected.firePosition : null;
 
+    /// <summary>Time.time of the last fire attempt stopped by an obstruction, used to show blocked feedback.</summary>
+    public float LastFireObstructedTime { get; private set; } = float.NegativeInfinity;
+
+    /// <summary>
+    /// Whether something that can't be shot over lies between the holder's centre and the held firearm's fire position,
+    /// such as the barrel poking into a wall. Always false when no firearm is held.
+    /// </summary>
+    public bool IsFireObstructed
+    {
+        get
+        {
+            Transform firePosition = CurrentFirePosition;
+            if (!(GetSelectedWeaponItem() is F_Item_Weapon_Firearm) || firePosition == null)
+            {
+                return false;
+            }
+
+            F_Character weaponHolder = GetWeaponHolder();
+            Transform holderTransform = weaponHolder != null ? weaponHolder.transform : transform;
+            return !F_Utility_Helper_Npc.HasLineOfFire(holderTransform.position, firePosition.position, holderTransform, null);
+        }
+    }
+
     /// <summary>
     /// Speed in units per second the firearm's projectiles leave the barrel at: its launch impulse divided by the
     /// projectile prefab's Rigidbody2D mass. Returns 0 when the projectile has no Rigidbody2D, as it then never moves.
@@ -94,6 +124,7 @@ public class F_Character_HeldWeapon : MonoBehaviour
     protected virtual void Start()
     {
         ApplyHolderSorting();
+        heldWeaponHolderFrontEdgeDistance = GetHolderBodyFrontEdgeDistance();
         UpdateHeldWeaponSprite();
     }
 
@@ -185,27 +216,37 @@ public class F_Character_HeldWeapon : MonoBehaviour
     // Draws every held weapon sprite just underneath the holder's body, whatever sorting layer the holder uses.
     private void ApplyHolderSorting()
     {
-        F_Character weaponHolder = GetWeaponHolder();
-        if (weaponHolder == null || !TryGetHolderBodySorting(weaponHolder, out int bodySortingLayerId, out int bodySortingOrder))
+        SpriteRenderer bodyRenderer = GetHolderBodyRenderer();
+        if (bodyRenderer == null)
         {
             return;
         }
 
-        int weaponSortingOrder = bodySortingOrder - heldWeaponSortingOrderBelowHolder;
+        int weaponSortingOrder = bodyRenderer.sortingOrder - heldWeaponSortingOrderBelowHolder;
         foreach (SpriteRenderer weaponRenderer in GetComponentsInChildren<SpriteRenderer>(true))
         {
-            weaponRenderer.sortingLayerID = bodySortingLayerId;
+            weaponRenderer.sortingLayerID = bodyRenderer.sortingLayerID;
             weaponRenderer.sortingOrder = weaponSortingOrder;
         }
     }
 
-    // Finds the lowest drawn sprite on the holder outside this rig, which is the body (overlays such as health bars draw above it).
-    private bool TryGetHolderBodySorting(F_Character weaponHolder, out int bodySortingLayerId, out int bodySortingOrder)
+    // Distance along the aim direction (this rig's local +X) from the holder's centre to the front edge of its body sprite.
+    private float GetHolderBodyFrontEdgeDistance()
     {
-        bodySortingLayerId = 0;
-        bodySortingOrder = 0;
+        return F_Utility_Helper_Sprite.GetFurthestExtentAlongLocalX(GetHolderBodyRenderer(), transform);
+    }
+
+    // Finds the lowest drawn sprite on the holder outside this rig, which is the body (overlays such as health bars draw above it).
+    private SpriteRenderer GetHolderBodyRenderer()
+    {
+        F_Character weaponHolder = GetWeaponHolder();
+        if (weaponHolder == null)
+        {
+            return null;
+        }
+
+        SpriteRenderer bodyRenderer = null;
         int lowestLayerValue = 0;
-        bool hasFoundBody = false;
 
         foreach (SpriteRenderer holderRenderer in weaponHolder.GetComponentsInChildren<SpriteRenderer>())
         {
@@ -215,17 +256,16 @@ public class F_Character_HeldWeapon : MonoBehaviour
             }
 
             int layerValue = SortingLayer.GetLayerValueFromID(holderRenderer.sortingLayerID);
-            bool isLower = layerValue < lowestLayerValue || (layerValue == lowestLayerValue && holderRenderer.sortingOrder < bodySortingOrder);
-            if (!hasFoundBody || isLower)
+            bool isLower = bodyRenderer == null || layerValue < lowestLayerValue ||
+                           (layerValue == lowestLayerValue && holderRenderer.sortingOrder < bodyRenderer.sortingOrder);
+            if (isLower)
             {
                 lowestLayerValue = layerValue;
-                bodySortingLayerId = holderRenderer.sortingLayerID;
-                bodySortingOrder = holderRenderer.sortingOrder;
-                hasFoundBody = true;
+                bodyRenderer = holderRenderer;
             }
         }
 
-        return hasFoundBody;
+        return bodyRenderer;
     }
 
     // Keeps weapon held state accurate so only the held weapon's delays progress
@@ -280,6 +320,12 @@ public class F_Character_HeldWeapon : MonoBehaviour
             return;
         }
 
+        if (IsFireObstructed)
+        {
+            HandleObstructedFireAttempt(weaponItem);
+            return;
+        }
+
         Transform firePosition = heldWeaponCurrentlySelected.firePosition;
         if (!weaponItem.TryFireShot(firePosition.position))
         {
@@ -298,6 +344,19 @@ public class F_Character_HeldWeapon : MonoBehaviour
         {
             weaponItem.CompleteFireSequence(firePosition.position);
         }
+    }
+
+    // Blocks the shot and plays the dry-fire click, no faster than the weapon's fire rate so held triggers click like firing would.
+    private void HandleObstructedFireAttempt(F_Item_Weapon_Firearm weaponItem)
+    {
+        if (Time.time < heldWeaponNextObstructedFeedbackTime)
+        {
+            return;
+        }
+
+        heldWeaponNextObstructedFeedbackTime = Time.time + Mathf.Max(heldWeaponObstructedFeedbackIntervalMin, weaponItem.weaponFireRateDelay);
+        LastFireObstructedTime = Time.time;
+        weaponItem.PlayDryFireSound();
     }
 
     private IEnumerator FireBurstRoutine(F_Item_Weapon_Firearm weaponItem, Transform firePosition, int burstShotCount)
@@ -366,45 +425,21 @@ public class F_Character_HeldWeapon : MonoBehaviour
         }
     }
 
-    /// <summary>Refreshes the held weapon visual: firearms show their held arms, melee weapons show their own sprite in front of the holder.</summary>
+    /// <summary>Refreshes the held weapon visual: firearms show their configured held sprite, melee weapons show their own sprite in front of the holder.</summary>
     public void UpdateHeldWeaponSprite()
     {
-        F_playerHeldWeaponIndividual weaponToShow = GetHeldWeaponForSelectedItem();
+        F_Item_Weapon_Firearm heldFirearm = GetSelectedWeaponItem() as F_Item_Weapon_Firearm;
+        Sprite firearmHeldSprite = heldFirearm != null ? heldFirearm.WeaponHeldSpriteAsset : null;
 
-        heldWeaponCurrentlySelected = weaponToShow;
-        SetWeaponVisible(heldWeaponGunBig, weaponToShow == heldWeaponGunBig);
-        SetWeaponVisible(heldWeaponGunSmall, weaponToShow == heldWeaponGunSmall);
+        heldWeaponCurrentlySelected = heldFirearm != null ? heldWeaponFirearm : null;
+        if (heldWeaponFirearm != null)
+        {
+            heldWeaponFirearm.SetHeldSprite(firearmHeldSprite, heldWeaponHolderFrontEdgeDistance);
+        }
 
         if (heldWeaponMeleeHitbox != null)
         {
             heldWeaponMeleeHitbox.SetHeldWeapon(GetSelectedWeaponItem() as F_Item_Weapon_Melee);
-        }
-    }
-
-    private F_playerHeldWeaponIndividual GetHeldWeaponForSelectedItem()
-    {
-        F_Item_Weapon weaponItem = GetSelectedWeaponItem();
-        if (weaponItem == null)
-        {
-            return null;
-        }
-
-        switch (weaponItem.itemType)
-        {
-            case enumItemType.WeaponGunTwoHanded:
-                return heldWeaponGunBig;
-            case enumItemType.WeaponGunOneHanded:
-                return heldWeaponGunSmall;
-            default:
-                return null;
-        }
-    }
-
-    private static void SetWeaponVisible(F_playerHeldWeaponIndividual heldWeapon, bool isVisible)
-    {
-        if (heldWeapon != null && heldWeapon.spriteRenderer != null)
-        {
-            heldWeapon.spriteRenderer.enabled = isVisible;
         }
     }
 }

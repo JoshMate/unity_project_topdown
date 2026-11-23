@@ -26,6 +26,8 @@ public class F_Logic_Cursor : MonoBehaviour
     public Sprite cursorSpriteReload;
     public Sprite cursorSpriteOkay;
     public Sprite cursorSpriteDeploy;
+    // Shown briefly when a shot is stopped because the gun is obstructed
+    public Sprite cursorSpriteBlocked;
 
     [Header("Stats")]
     private float cursorPlaceMaxDistance = 2.5f;
@@ -33,6 +35,8 @@ public class F_Logic_Cursor : MonoBehaviour
     [Header("Constants Private")]
     private const float cfgCursorHeldCountScale = 1f;
     private const float cfgCursorHeldCountFontSize = 2f;
+    // Seconds the blocked cursor is shown after an obstructed fire attempt
+    private const float cfgCursorBlockedDisplayDuration = 0.5f;
 
     [Header("Privates")]
     private readonly Vector2 cursorHeldItemPadding = new Vector2(0.02f, -0.02f);
@@ -326,14 +330,19 @@ public class F_Logic_Cursor : MonoBehaviour
         }
         if (characterScreenManager.isMenuOpen == false)
         {
-            F_Item_Weapon heldWeapon = playerController != null && playerController.playerHeldWeapon != null
-                ? playerController.playerHeldWeapon.SelectedWeaponItem
-                : null;
+            F_PlayerHeldWeapon playerHeldWeapon = playerController != null ? playerController.playerHeldWeapon : null;
+            F_Item_Weapon heldWeapon = playerHeldWeapon != null ? playerHeldWeapon.SelectedWeaponItem : null;
             F_Item_Weapon_Firearm heldFirearm = heldWeapon as F_Item_Weapon_Firearm;
             bool isReloading = heldFirearm != null && heldFirearm.IsReloading && cursorSpriteReload != null;
             bool isDeploying = heldWeapon != null && heldWeapon.IsDeploying;
             bool isFinishingReload = heldFirearm != null && heldFirearm.IsFinishingReload && cursorSpriteOkay != null;
-            if (isDeploying)
+            bool isFireBlocked = playerHeldWeapon != null && cursorSpriteBlocked != null &&
+                                 Time.time < playerHeldWeapon.LastFireObstructedTime + cfgCursorBlockedDisplayDuration;
+            if (isFireBlocked)
+            {
+                cursorRendererPointer.sprite = cursorSpriteBlocked;
+            }
+            else if (isDeploying)
             {
                 cursorRendererPointer.sprite = cursorSpriteReload != null ? cursorSpriteReload : cursorSpriteDeploy;
             }

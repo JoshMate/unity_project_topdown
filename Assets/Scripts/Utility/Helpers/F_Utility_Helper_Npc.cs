@@ -97,16 +97,7 @@ public static class F_Utility_Helper_Npc
         for (int characterIndex = 0; characterIndex < activeCharacters.Count; characterIndex++)
         {
             F_Character candidate = activeCharacters[characterIndex];
-            if (candidate == null || candidate == looker || candidate.IsDead || !F_Utility_Helper_Faction.IsHostile(looker, candidate))
-            {
-                continue;
-            }
-
-            Vector2 candidatePosition = candidate.transform.position;
-            float distanceSqr = (candidatePosition - lookPosition).sqrMagnitude;
-            if (distanceSqr > closestDistanceSqr ||
-                !IsInSightCone(lookPosition, facingAngle, sightConeSize, candidatePosition) ||
-                !HasLineOfSight(lookPosition, candidatePosition, looker.transform, candidate.transform))
+            if (!IsVisibleHostile(looker, candidate, lookPosition, closestDistanceSqr, facingAngle, sightConeSize, out float distanceSqr))
             {
                 continue;
             }
@@ -116,6 +107,49 @@ public static class F_Utility_Helper_Npc
         }
 
         return closestHostile;
+    }
+
+    /// <summary>
+    /// Collects every living character the looker's faction is hostile to, within range, inside its sight cone and in line of sight.
+    /// </summary>
+    /// <param name="looker">The character searching; its faction decides who counts as hostile.</param>
+    /// <param name="lookPosition">Where the looker sees from.</param>
+    /// <param name="detectionRange">Characters further than this are ignored.</param>
+    /// <param name="facingAngle">The direction the looker faces, in degrees.</param>
+    /// <param name="sightConeSize">Total width of the looker's sight cone in degrees; 360 sees all around.</param>
+    /// <param name="visibleHostiles">Cleared, then filled with every visible hostile character.</param>
+    public static void FindVisibleHostiles(F_Character looker, Vector2 lookPosition, float detectionRange, float facingAngle,
+        float sightConeSize, List<F_Character> visibleHostiles)
+    {
+        visibleHostiles.Clear();
+        IReadOnlyList<F_Character> activeCharacters = F_Character.ActiveCharacters;
+        float detectionRangeSqr = detectionRange * detectionRange;
+
+        for (int characterIndex = 0; characterIndex < activeCharacters.Count; characterIndex++)
+        {
+            F_Character candidate = activeCharacters[characterIndex];
+            if (IsVisibleHostile(looker, candidate, lookPosition, detectionRangeSqr, facingAngle, sightConeSize, out _))
+            {
+                visibleHostiles.Add(candidate);
+            }
+        }
+    }
+
+    // Whether a candidate is a living hostile of the looker, within range, inside its sight cone and in line of sight.
+    private static bool IsVisibleHostile(F_Character looker, F_Character candidate, Vector2 lookPosition, float detectionRangeSqr,
+        float facingAngle, float sightConeSize, out float distanceSqr)
+    {
+        distanceSqr = float.MaxValue;
+        if (candidate == null || candidate == looker || candidate.IsDead || !F_Utility_Helper_Faction.IsHostile(looker, candidate))
+        {
+            return false;
+        }
+
+        Vector2 candidatePosition = candidate.transform.position;
+        distanceSqr = (candidatePosition - lookPosition).sqrMagnitude;
+        return distanceSqr <= detectionRangeSqr &&
+               IsInSightCone(lookPosition, facingAngle, sightConeSize, candidatePosition) &&
+               HasLineOfSight(lookPosition, candidatePosition, looker.transform, candidate.transform);
     }
 
     /// <summary>

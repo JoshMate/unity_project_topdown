@@ -10,6 +10,18 @@ public enum enumWeaponAmmoType
     AmmoShotgun
 }
 
+// Which held weapon sprite a firearm draws in front of the character holding it
+public enum enumWeaponHeldSprite
+{
+    SmallArmSmall,
+    SmallArmMedium,
+    SmallArmBig,
+    LongArmSmall,
+    LongArmMedium,
+    LongArmBig,
+    LongArmVeryBig
+}
+
 // Values represent hundredths of a second so fractional delays remain valid enum values.
 public enum enumWeaponDeployDelay
 {

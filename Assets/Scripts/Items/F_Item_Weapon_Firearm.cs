@@ -6,6 +6,10 @@ using UnityEngine;
 /// <summary>Weapon that fires projectiles and uses ammo. Durability, damage and deploy timing come from <see cref="F_Item_Weapon"/>.</summary>
 public class F_Item_Weapon_Firearm : F_Item_Weapon
 {
+    [Header("Firearm Draw Type")]
+    // Which held weapon sprite is drawn in front of the character holding this firearm
+    public enumWeaponHeldSprite weaponHeldSprite = enumWeaponHeldSprite.SmallArmMedium;
+
     [Header("Firearm Art Projectile")]
     public Sprite weaponProjectileSprite;
 
@@ -73,6 +77,8 @@ public class F_Item_Weapon_Firearm : F_Item_Weapon
     // Enum selector for the ammo prefab used by this weapon
     public enumWeaponAmmoType weaponAmmoType;
     public F_Item WeaponAmmoItem => F_Utility_Config_WeaponAmmo.GetAmmoItem(weaponAmmoType);
+    /// <summary>The sprite drawn in front of the character holding this firearm, from the held weapon config.</summary>
+    public Sprite WeaponHeldSpriteAsset => F_Utility_Config_HeldWeapons.GetHeldSprite(weaponHeldSprite);
     // How much ammo this weapon can hold before it needs to reload
     public int weaponAmmoCapacity = 5;
     // How much ammo is used per shot (The gun can't fire if there isn't enough loaded)
