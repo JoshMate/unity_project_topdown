@@ -82,9 +82,12 @@ MonoBehaviour:
   npcEquippedWeaponMelee: {fileID: 8175982676517353981, guid: b929ad96510336143b748728c06ed87f, type: 3}
   npcEquippedWeaponFirearm: {fileID: 7146244672435563995, guid: 8828cefe3d9a5f64496602cb59f7e62c, type: 3}
   npcEquippedWeaponAmmoCount: 90
-  npcPersonalityCombat: 0
-  npcStatDetectionRange: 6
-  npcStatLoseTargetRange: 9
+  npcPersonalityCombatApproach: 0
+  npcPersonalityCombatSkillAiming: 3
+  npcPersonalityCombatSightRange: 4
+  npcPersonalityCombatAwareness: 4
+  npcPersonalityCombatMemory: 4
+  npcPersonalityCombatLOSConeSize: 180
   npcIdleWanderRange: 4
   npcStatWanderWaitTimeMin: 1
   npcStatWanderWaitTimeMax: 3

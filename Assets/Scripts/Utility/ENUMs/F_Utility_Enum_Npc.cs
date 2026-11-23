@@ -142,3 +142,18 @@ public enum enumNpcWeaponChoice
     Melee,
     Firearm
 }
+
+/// <summary>
+/// The thought icon shown above an NPC's head. Each value maps to a sprite and display duration in
+/// F_Utility_Config_NpcThoughts, so a new thought is a new value here plus its config entry.
+/// </summary>
+/// <remarks>Serialised by index: only append new values at the end, never reorder or remove existing ones.</remarks>
+public enum enumNpcThought
+{
+    // Nothing shown
+    None,
+    // A target is in sight but has not been fully noticed yet (question mark)
+    Suspicious,
+    // The target has just been fully noticed and engaged (exclamation mark)
+    Alerted
+}

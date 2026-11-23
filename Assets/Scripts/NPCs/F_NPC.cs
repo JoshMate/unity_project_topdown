@@ -26,6 +26,10 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
     private const float npcIdleWanderRangeStandStill = 0f;
     // Below this speed the NPC counts as standing still and keeps its current facing
     private const float npcVelocityStopThreshold = 0.05f;
+    // Sight cone slider limits in degrees, and the default that sees all around
+    private const float npcSightConeSizeMin = 0f;
+    private const float npcSightConeSizeMax = 360f;
+    private const float npcDefaultSightConeSize = npcSightConeSizeMax;
 
     [Header("NPC Equipped Weapons")]
     // Melee weapon prefab this NPC spawns holding; leave empty for none
@@ -49,6 +53,9 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
     public enumNpcPersonalityCombatAwareness npcPersonalityCombatAwareness = enumNpcPersonalityCombatAwareness.Instant;
     // How long this NPC remembers its target after losing sight of it, searching where it was last seen before forgetting it (see F_Utility_Config_Npc)
     public enumNpcPersonalityCombatMemory npcPersonalityCombatMemory = enumNpcPersonalityCombatMemory.Medium;
+    // How wide, in degrees centred on its facing, this NPC can spot targets: 360 sees all around (even behind), lower values only see what is in front
+    [Range(npcSightConeSizeMin, npcSightConeSizeMax)]
+    public float npcPersonalityCombatLOSConeSize = npcDefaultSightConeSize;
 
     [Header("NPC Wander Stats")]
     // How far from its spawn point this NPC randomly wanders when it has no target (0 = stands still)
@@ -127,6 +134,8 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
     // Memory: where and when the target was last seen (or last revealed itself by attacking)
     private Vector2 npcTargetLastSeenPosition;
     private float npcTargetLastSeenTime;
+    // Thought icon shown above this NPC's head
+    private F_NPC_Thought npcThought;
 
     /// <summary>What this NPC is currently doing.</summary>
     public enumNpcState NpcState => npcStatusState;
@@ -164,6 +173,9 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
     // Whether the NPC is currently holding a firearm, so its aiming skill applies.
     private bool IsHoldingFirearm => npcHeldWeapon != null && npcHeldWeapon.SelectedWeaponItem is F_Item_Weapon_Firearm;
 
+    // The direction the NPC faces in degrees, with the sprite's rotation offset removed.
+    private float FacingAngle => npcRigidbody.rotation - npcStatRotationOffset;
+
     // Whether the NPC may fire at its target now: a clear line, or only friendlies in the way and its skill roll lets it shoot anyway.
     private bool CanShootTarget => npcHasLineOfFire || (npcIsFriendlyInLineOfFire && npcIsFriendlyFireShotAllowed);
 
@@ -182,6 +194,11 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
         npcAgent.stoppingDistance = npcStatStoppingDistance;
         npcAgent.enabled = false;
         npcSpawnPosition = npcRigidbody.position;
+        npcThought = GetComponent<F_NPC_Thought>();
+        if (npcThought == null)
+        {
+            npcThought = gameObject.AddComponent<F_NPC_Thought>();
+        }
     }
 
     protected override void OnEnable()
@@ -229,7 +246,7 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
         npcIsFriendlyInLineOfFire = false;
         npcFriendlyFireMeleeUntilTime = 0f;
         // A new target has to be noticed from scratch
-        npcIsNoticingTarget = false;
+        StopNoticingTarget();
         npcTargetEnt = target != null ? target.GetComponent<F_Ent>() : null;
         npcTargetRigidbody = target != null ? target.GetComponent<Rigidbody2D>() : null;
         npcTargetColliders = target != null ? target.GetComponentsInChildren<Collider2D>() : null;
@@ -508,14 +525,15 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
         npcTargetLastSeenTime = Time.time;
     }
 
-    // Engages once the target has stayed in sight within sight range for the whole awareness delay; losing sight of it
-    // (or it leaving sight range) starts the wait again.
+    // Engages once the target has stayed in sight within sight range and inside the sight cone for the whole awareness
+    // delay; losing sight of it (or it leaving sight range or the cone) starts the wait again.
     private void UpdateNoticeTarget()
     {
-        bool isTargetInSight = npcCanSeeTarget && npcTargetDistance <= SightRange;
+        bool isTargetInSight = npcCanSeeTarget && npcTargetDistance <= SightRange &&
+                               F_Utility_Helper_Npc.IsInSightCone(npcRigidbody.position, FacingAngle, npcPersonalityCombatLOSConeSize, npcTarget.position);
         if (!isTargetInSight)
         {
-            npcIsNoticingTarget = false;
+            StopNoticingTarget();
             return;
         }
 
@@ -523,12 +541,20 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
         {
             npcIsNoticingTarget = true;
             npcNoticeStartTime = Time.time;
+            npcThought.ShowThought(enumNpcThought.Suspicious);
         }
 
         if (Time.time - npcNoticeStartTime >= AwarenessDelay)
         {
             Engage();
         }
+    }
+
+    // Stops the awareness wait and hides the suspicious thought it shows.
+    private void StopNoticingTarget()
+    {
+        npcIsNoticingTarget = false;
+        npcThought.ClearThought(enumNpcThought.Suspicious);
     }
 
     // Every scan interval, while idle or while the current target is out of sight, switches to the closest visible hostile character.
@@ -540,7 +566,8 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
         }
 
         npcNextTargetScanTime = Time.time + F_Utility_Config_Npc.cfgNpcTargetScanInterval;
-        F_Character closestHostile = F_Utility_Helper_Npc.FindClosestVisibleHostile(this, npcRigidbody.position, SightRange);
+        F_Character closestHostile = F_Utility_Helper_Npc.FindClosestVisibleHostile(this, npcRigidbody.position, SightRange,
+            FacingAngle, npcPersonalityCombatLOSConeSize);
         if (closestHostile != null)
         {
             SetTarget(closestHostile.transform);
@@ -598,7 +625,8 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
     private void Engage()
     {
         npcIsEngaged = true;
-        npcIsNoticingTarget = false;
+        StopNoticingTarget();
+        npcThought.ShowThought(enumNpcThought.Alerted);
         npcNextRepathTime = 0f;
         F_NpcCombatProfile combatProfile = CombatProfile;
         if (combatProfile.profileCoverWhenNoticed)
@@ -612,13 +640,14 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
         npcCanSeeTarget = false;
         npcHasLineOfFire = false;
         npcIsFriendlyInLineOfFire = false;
-        npcIsNoticingTarget = false;
+        StopNoticingTarget();
         if (!npcIsEngaged)
         {
             return;
         }
 
         npcIsEngaged = false;
+        npcThought.ClearThought(enumNpcThought.Alerted);
         npcCoverUntilTime = 0f;
         npcIsSprintRequested = false;
         if (IsAgentUsable)
@@ -873,7 +902,7 @@ public class F_NPC : F_Character, IF_Item_Weapon_AmmoReserve
 
     private bool IsAimedAtTarget()
     {
-        float facingAngle = npcRigidbody.rotation - npcStatRotationOffset;
+        float facingAngle = FacingAngle;
         return Mathf.Abs(Mathf.DeltaAngle(facingAngle, GetDesiredAimAngle())) <= F_Utility_Config_Npc.cfgNpcAimToleranceDegrees;
     }
 

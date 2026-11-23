@@ -5170,7 +5170,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 740102605235527353, guid: acbde03d11abcba4bb2e63e882b909f7, type: 3}
       propertyPath: npcPersonalityCombatApproach
-      value: 6
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 740102605235527353, guid: acbde03d11abcba4bb2e63e882b909f7, type: 3}
       propertyPath: npcPersonalityCombatSkillAiming
@@ -6868,71 +6868,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 66137306358830210, guid: 38122c1ddeea0cf47b0ff9689c17540c, type: 3}
   m_PrefabInstance: {fileID: 1838995403}
   m_PrefabAsset: {fileID: 0}
---- !u!1001 &1855317459
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 489975696165763748, guid: acbde03d11abcba4bb2e63e882b909f7, type: 3}
-      propertyPath: m_Name
-      value: OB_NPC_Bandit_Friend (1)
-      objectReference: {fileID: 0}
-    - target: {fileID: 740102605235527353, guid: acbde03d11abcba4bb2e63e882b909f7, type: 3}
-      propertyPath: npcPersonalityCombatApproach
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 740102605235527353, guid: acbde03d11abcba4bb2e63e882b909f7, type: 3}
-      propertyPath: npcPersonalityCombatSkillAiming
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 6200309277858149209, guid: acbde03d11abcba4bb2e63e882b909f7, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6200309277858149209, guid: acbde03d11abcba4bb2e63e882b909f7, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 6200309277858149209, guid: acbde03d11abcba4bb2e63e882b909f7, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6200309277858149209, guid: acbde03d11abcba4bb2e63e882b909f7, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6200309277858149209, guid: acbde03d11abcba4bb2e63e882b909f7, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6200309277858149209, guid: acbde03d11abcba4bb2e63e882b909f7, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6200309277858149209, guid: acbde03d11abcba4bb2e63e882b909f7, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6200309277858149209, guid: acbde03d11abcba4bb2e63e882b909f7, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6200309277858149209, guid: acbde03d11abcba4bb2e63e882b909f7, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6200309277858149209, guid: acbde03d11abcba4bb2e63e882b909f7, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: acbde03d11abcba4bb2e63e882b909f7, type: 3}
 --- !u!1001 &1870051355
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8084,4 +8019,3 @@ SceneRoots:
   - {fileID: 1676653868}
   - {fileID: 156703361}
   - {fileID: 1391339679}
-  - {fileID: 1855317459}

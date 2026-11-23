@@ -11,6 +11,8 @@ public static class F_Utility_Helper_Npc
 {
     [Header("Constants Private")]
     private const float npcFullCircleDegrees = 360f;
+    // Half of a sight cone lies either side of the facing direction
+    private const float npcSightConeHalfFraction = 0.5f;
     // Offsets alternate rings so their points don't line up
     private const float npcRingAngleOffsetFraction = 0.5f;
     // Below this the intercept equation is treated as linear (target speed matches projectile speed)
@@ -59,12 +61,34 @@ public static class F_Utility_Helper_Npc
         return IsFriendlyNearLine(shooter, from, to, target) ? enumNpcLineOfFire.BlockedByFriendly : enumNpcLineOfFire.Clear;
     }
 
-    /// <summary>Finds the closest living character the looker's faction is hostile to, within range and in line of sight.</summary>
+    /// <summary>Whether a point lies within a looker's sight cone, centred on the direction it faces.</summary>
+    /// <param name="lookPosition">Where the looker sees from.</param>
+    /// <param name="facingAngle">The direction the looker faces, in degrees.</param>
+    /// <param name="sightConeSize">Total width of the cone in degrees; 360 or more sees all around.</param>
+    /// <param name="targetPosition">The point being checked.</param>
+    public static bool IsInSightCone(Vector2 lookPosition, float facingAngle, float sightConeSize, Vector2 targetPosition)
+    {
+        if (sightConeSize >= npcFullCircleDegrees)
+        {
+            return true;
+        }
+
+        Vector2 toTarget = targetPosition - lookPosition;
+        float targetAngle = Mathf.Atan2(toTarget.y, toTarget.x) * Mathf.Rad2Deg;
+        return Mathf.Abs(Mathf.DeltaAngle(facingAngle, targetAngle)) <= sightConeSize * npcSightConeHalfFraction;
+    }
+
+    /// <summary>
+    /// Finds the closest living character the looker's faction is hostile to, within range, inside its sight cone and in line of sight.
+    /// </summary>
     /// <param name="looker">The character searching; its faction decides who counts as hostile.</param>
     /// <param name="lookPosition">Where the looker sees from.</param>
     /// <param name="detectionRange">Characters further than this are ignored.</param>
+    /// <param name="facingAngle">The direction the looker faces, in degrees.</param>
+    /// <param name="sightConeSize">Total width of the looker's sight cone in degrees; 360 sees all around.</param>
     /// <returns>The closest visible hostile character, or null when there is none.</returns>
-    public static F_Character FindClosestVisibleHostile(F_Character looker, Vector2 lookPosition, float detectionRange)
+    public static F_Character FindClosestVisibleHostile(F_Character looker, Vector2 lookPosition, float detectionRange,
+        float facingAngle = 0f, float sightConeSize = npcFullCircleDegrees)
     {
         IReadOnlyList<F_Character> activeCharacters = F_Character.ActiveCharacters;
         float closestDistanceSqr = detectionRange * detectionRange;
@@ -80,7 +104,9 @@ public static class F_Utility_Helper_Npc
 
             Vector2 candidatePosition = candidate.transform.position;
             float distanceSqr = (candidatePosition - lookPosition).sqrMagnitude;
-            if (distanceSqr > closestDistanceSqr || !HasLineOfSight(lookPosition, candidatePosition, looker.transform, candidate.transform))
+            if (distanceSqr > closestDistanceSqr ||
+                !IsInSightCone(lookPosition, facingAngle, sightConeSize, candidatePosition) ||
+                !HasLineOfSight(lookPosition, candidatePosition, looker.transform, candidate.transform))
             {
                 continue;
             }

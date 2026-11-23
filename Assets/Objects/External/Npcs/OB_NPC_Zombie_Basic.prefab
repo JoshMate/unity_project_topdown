@@ -83,9 +83,11 @@ MonoBehaviour:
   npcEquippedWeaponFirearm: {fileID: 0}
   npcEquippedWeaponAmmoCount: 30
   npcPersonalityCombatApproach: 1
-  npcPersonalityCombatSkillAiming: 2
-  npcPersonalityCombatSightRange: 2
-  npcPersonalityCombatAwarenessLevel: 1
+  npcPersonalityCombatSkillAiming: 1
+  npcPersonalityCombatSightRange: 3
+  npcPersonalityCombatAwareness: 1
+  npcPersonalityCombatMemory: 2
+  npcPersonalityCombatLOSConeSize: 120
   npcIdleWanderRange: 4
   npcStatWanderWaitTimeMin: 1
   npcStatWanderWaitTimeMax: 3
